@@ -15,6 +15,9 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
+project settings
+.idea/
+
 # Windows shortcuts
 *.lnk
 
