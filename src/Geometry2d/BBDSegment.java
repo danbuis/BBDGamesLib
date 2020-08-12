@@ -95,4 +95,38 @@ public class BBDSegment implements BBDGeometry{
         BBDPoint[] points = {this.startPoint, this.endPoint};
         return points;
     }
+
+    /**
+     * Calculate slope as rise over run
+     * @return a ratio representing the slope
+     */
+    public double slopeInRatio(){
+        double dx = startPoint.getXLoc() - endPoint.getXLoc();
+        double dy = startPoint.getYLoc() - endPoint.getYLoc();
+
+        return dy/dx;
+    }
+
+    /**
+     * Calculate slope as radians, with right being 0.
+     * Since this uses the ratio as a base, the slope calc
+     * is agnostic of which side is the start and which
+     * is the end
+     * @return
+     */
+    public double slopeInRadians(){
+        return Math.atan(slopeInRatio());
+    }
+
+    /**
+     * returns the slope in degrees.  Does not account for
+     * which side is the start and which is the end.
+     * @return
+     */
+    public double slopeInDegrees(){
+        return 180 / Math.PI * slopeInRadians();
+    }
+
+
+
 }
