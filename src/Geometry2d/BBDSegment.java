@@ -197,5 +197,44 @@ public class BBDSegment implements BBDGeometry{
         return this.pointOnSegment(this.interceptPoint(otherSegment));
     }
 
+    /**
+     * Distance between 2 segments
+     * @param otherSegment
+     * @return
+     */
+    public double distanceToSegment(BBDSegment otherSegment){
+        double minDist = Double.MAX_VALUE;
 
+        for (BBDPoint thisPoint: this.getPoints()){
+            double distance = otherSegment.distanceToPoint(thisPoint);
+            if(distance < minDist){
+                minDist = distance;
+            }
+        }
+        for (BBDPoint otherPoint: otherSegment.getPoints()){
+            double distance = this.distanceToPoint(otherPoint);
+            if(distance < minDist){
+                minDist = distance;
+            }
+        }
+        return minDist;
+    }
+
+    /**
+     * Distance between a point and a segment
+     * @param otherPoint
+     * @return
+     */
+    public double distanceToPoint(BBDPoint otherPoint){
+        BBDSegment perpendicularSegment = new BBDSegment(otherPoint, this.slopeInDegrees()+90, 1);
+        BBDPoint interceptPoint = this.interceptPoint(perpendicularSegment);
+        if (this.pointOnSegment(interceptPoint)){
+            return interceptPoint.distanceToPoint(otherPoint);
+        }
+
+        double startDist = this.startPoint.distanceToPoint(otherPoint);
+        double endDist = this.endPoint.distanceToPoint(otherPoint);
+
+        return Math.min(startDist, endDist);
+    }
 }
