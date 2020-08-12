@@ -24,3 +24,5 @@ project settings
 # =========================
 # Operating System Files
 # =========================
+.idea/workspace.xml
+*.xml
