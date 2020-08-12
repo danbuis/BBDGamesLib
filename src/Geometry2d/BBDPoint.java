@@ -1,13 +1,27 @@
 package Geometry2d;
 
 public class BBDPoint implements BBDGeometry{
+    /**
+     * A class representing a single point in space. It adheres
+     * to the BBD geometry expectations and serves as the base
+     * for the rest of the BBD geometry classes.
+     */
 
+    //cartesian coordinates
     private double xLoc;
     private double yLoc;
 
     public BBDPoint(double x, double y){
         this.xLoc = x;
         this.yLoc = y;
+    }
+
+    public double getXLoc(){
+        return this.xLoc;
+    }
+
+    public double getYLoc(){
+        return this.yLoc;
     }
 
     @Override
@@ -27,7 +41,7 @@ public class BBDPoint implements BBDGeometry{
     /**
      * Use a reference point to scale the geometry.
      */
-    public void scaleFromPoint(double scaleFactor, BBDPoint centerOfScale) {
+    public void scaleFromPoint(BBDPoint centerOfScale, double scaleFactor) {
         double dx = this.xLoc - centerOfScale.xLoc;
         double dy = this.yLoc - centerOfScale.yLoc;
 

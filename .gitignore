@@ -15,9 +15,15 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
+project settings
+.idea/
+
 # Windows shortcuts
 *.lnk
 
 # =========================
 # Operating System Files
 # =========================
+.idea/workspace.xml
+*.xml
+.idea/workspace.xml
