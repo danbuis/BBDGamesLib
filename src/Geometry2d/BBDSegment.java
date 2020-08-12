@@ -127,6 +127,75 @@ public class BBDSegment implements BBDGeometry{
         return 180 / Math.PI * slopeInRadians();
     }
 
+    /**
+     * Determines if the given point lies on the segment.  If it does,
+     * then the slopes should match.  Need to do comparison with a
+     * epsilon value though due to floating point math.  If the point
+     * is on the segment it will also fall within the bounds of the 2 points.
+     * @param point point to test
+     * @return
+     */
+    public Boolean pointOnSegment(BBDPoint point){
+        BBDSegment seg1 = new BBDSegment(this.startPoint, point);
+        BBDSegment seg2 = new BBDSegment(point, this.endPoint);
+
+        Boolean sameSlope =  Math.abs(seg1.slopeInRatio()-seg2.slopeInRatio())<=0.001;
+        //can we cut out early?
+        if (!sameSlope){
+            return false;
+        }
+
+        double maxX, minX, maxY, minY;
+        if (startPoint.getXLoc()>endPoint.getXLoc()){
+            maxX = startPoint.getXLoc();
+            minX = endPoint.getXLoc();
+        }else{
+            minX = startPoint.getXLoc();
+            maxX = endPoint.getXLoc();
+        }
+        if (startPoint.getYLoc()>endPoint.getYLoc()){
+            maxY = startPoint.getYLoc();
+            minY = endPoint.getYLoc();
+        }else{
+            minY = startPoint.getYLoc();
+            maxY = endPoint.getYLoc();
+        }
+
+        return (maxX >= point.getXLoc())
+            && (point.getXLoc() >= minX)
+            && (maxY >= point.getYLoc())
+            && (point.getYLoc() >= minY);
+    }
+
+    /**
+     * Uses good old fashioned algebra to calculate the intercept point.  Each line is converted
+     * from point-slope form to slope-intercept form (y=mx+b).  The 2 are set equal and solved for x.
+     * @param otherSegment other segment we want to find an intercept for.
+     * @return
+     */
+    public BBDPoint interceptPoint(BBDSegment otherSegment){
+        double thisSlope = this.slopeInRatio();
+        double otherSlope = otherSegment.slopeInRatio();
+
+        double xCoord = (thisSlope * this.startPoint.getXLoc()
+                        - otherSlope * otherSegment.startPoint.getXLoc()
+                        + otherSegment.startPoint.getYLoc()
+                        - this.startPoint.getYLoc())
+                        / (thisSlope-otherSlope);
+
+        double yCoord = thisSlope * (xCoord - this.startPoint.getXLoc()) + this.startPoint.getYLoc();
+
+        return new BBDPoint(xCoord, yCoord);
+    }
+
+    /**
+     * Does this segment intersect the other one?
+     * @param otherSegment
+     * @return
+     */
+    public Boolean intersects(BBDSegment otherSegment){
+        return this.pointOnSegment(this.interceptPoint(otherSegment));
+    }
 
 
 }
