@@ -223,4 +223,53 @@ public class BBDPolygon implements BBDGeometry{
             return false;
         }
     }
+
+    /**
+     * Test if this polygon intersects with another
+     * @param otherPolygon
+     * @param countPerimeter Flag to indicate if the edge of the polygon counts as inside
+     *                       True means that if the segment just touches the perimeter, such as
+     *                       sharing a point, means that it intersects.
+     * @return
+     */
+    public boolean polygonIntersects(BBDPolygon otherPolygon, boolean countPerimeter){
+        for (BBDSegment otherSegment: otherPolygon.segments){
+            if(this.segmentIntersectPolygon(otherSegment, countPerimeter)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Test if this polygon touches another
+     * @param otherPolygon
+
+     * @return
+     */
+    public boolean polygonTouches(BBDPolygon otherPolygon){
+        for(BBDPoint otherPoint : otherPolygon.points){
+            if (this.pointOnPerimeter(otherPoint)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Test if this polygon contains another
+     * @param otherPolygon
+     * @param countPerimeter Flag to indicate if the edge of the polygon counts as inside
+     *                       True means that if the segment just touches the perimeter, such as
+     *                       sharing a point, means that it intersects.
+     * @return
+     */
+    public boolean polygonContains(BBDPolygon otherPolygon, boolean countPerimeter){
+        for (BBDPoint otherPoint: otherPolygon.points){
+            if (! this.pointInside(otherPoint, countPerimeter)){
+                return false;
+            }
+        }
+        return true;
+    }
 }
