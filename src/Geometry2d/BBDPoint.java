@@ -34,6 +34,7 @@ public class BBDPoint implements BBDGeometry{
     @Override
     /** Do nothing because scaling a single point means nothing */
     public void scale(double scaleFactor) {
+        System.out.println("***WARNING*** Scaling a point without defining another point to scale from is meaningless");
         return;
     }
 
@@ -51,6 +52,7 @@ public class BBDPoint implements BBDGeometry{
     @Override
     /**Do nothing because rotating a single point means nothing */
     public void rotate(double degrees) {
+        System.out.println("***WARNING*** Rotating a point without defining another point to scale from is meaningless");
         return;
     }
 
