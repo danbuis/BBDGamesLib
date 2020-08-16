@@ -16,7 +16,7 @@ public class BBDPolygon implements BBDGeometry{
     /**
      * General constructor that takes in a series of points and
      * creates the polygon object
-     * @param inputPoints
+     * @param inputPoints points used to define the perimeter of the polygon
      */
     public BBDPolygon (BBDPoint[] inputPoints){
         ArrayList<BBDSegment> segments = new ArrayList<BBDSegment>();
@@ -141,7 +141,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param pointToCheck
      * @return
      */
-    public boolean pointOnPerimeter(BBDPoint pointToCheck){
+    public boolean checkPointOnPerimeter(BBDPoint pointToCheck){
         for(BBDSegment segment: segments){
             if (segment.pointOnSegment(pointToCheck)){
                 return true;
@@ -159,7 +159,6 @@ public class BBDPolygon implements BBDGeometry{
      *                       sharing a point, means that it intersects.
      * @return
      */
-
     public BBDSegment[] segmentIntersectPolygonList(BBDSegment segmentToCheck, boolean countPerimeter){
         ArrayList<BBDSegment> intersectingSegments = new ArrayList<BBDSegment>();
 
@@ -173,7 +172,7 @@ public class BBDPolygon implements BBDGeometry{
             // boolean back
             if (!countPerimeter){
                 BBDPoint[] points = segment.getPoints();
-                if (this.pointOnPerimeter(points[0]) || this.pointOnPerimeter(points[1])){
+                if (this.checkPointOnPerimeter(points[0]) || this.checkPointOnPerimeter(points[1])){
                     thisSegmentIntersects = false;
                 }
             }
@@ -193,7 +192,7 @@ public class BBDPolygon implements BBDGeometry{
      *                      sharing a point, means that it intersects.
      * @return
      */
-    public boolean segmentIntersectPolygon(BBDSegment segmentToCheck, boolean countPerimeter){
+    public boolean checkSegmentIntersectPolygon(BBDSegment segmentToCheck, boolean countPerimeter){
         BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck, countPerimeter);
 
         if (intersectionList.length == 0){
@@ -212,7 +211,7 @@ public class BBDPolygon implements BBDGeometry{
      *                                sharing a point, means that it intersects.
      * @return
      */
-    public boolean pointInside(BBDPoint pointToCheck, boolean perimeterCountsAsInside){
+    public boolean checkPointInside(BBDPoint pointToCheck, boolean perimeterCountsAsInside){
         BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
         BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck, perimeterCountsAsInside);
 
@@ -232,9 +231,9 @@ public class BBDPolygon implements BBDGeometry{
      *                       sharing a point, means that it intersects.
      * @return
      */
-    public boolean polygonIntersects(BBDPolygon otherPolygon, boolean countPerimeter){
+    public boolean checkPolygonIntersectsPolygon(BBDPolygon otherPolygon, boolean countPerimeter){
         for (BBDSegment otherSegment: otherPolygon.segments){
-            if(this.segmentIntersectPolygon(otherSegment, countPerimeter)){
+            if(this.checkSegmentIntersectPolygon(otherSegment, countPerimeter)){
                 return true;
             }
         }
@@ -247,9 +246,9 @@ public class BBDPolygon implements BBDGeometry{
 
      * @return
      */
-    public boolean polygonTouches(BBDPolygon otherPolygon){
+    public boolean checkPolygonTouchesPolygon(BBDPolygon otherPolygon){
         for(BBDPoint otherPoint : otherPolygon.points){
-            if (this.pointOnPerimeter(otherPoint)){
+            if (this.checkPointOnPerimeter(otherPoint)){
                 return true;
             }
         }
@@ -264,12 +263,62 @@ public class BBDPolygon implements BBDGeometry{
      *                       sharing a point, means that it intersects.
      * @return
      */
-    public boolean polygonContains(BBDPolygon otherPolygon, boolean countPerimeter){
+    public boolean checkPolygonContainsPolygon(BBDPolygon otherPolygon, boolean countPerimeter){
         for (BBDPoint otherPoint: otherPolygon.points){
-            if (! this.pointInside(otherPoint, countPerimeter)){
+            if (! this.checkPointInside(otherPoint, countPerimeter)){
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Determine the distance to another polygon
+     * @param otherPolygon
+     * @return
+     */
+    public double distanceToPolygon(BBDPolygon otherPolygon){
+        double minDist = Double.MAX_VALUE;
+
+        for (BBDSegment thisSegment: this.segments){
+            for (BBDSegment otherSegment: otherPolygon.segments){
+                if (thisSegment.distanceToSegment(otherSegment) < minDist){
+                    minDist = thisSegment.distanceToSegment(otherSegment);
+                }
+            }
+        }
+        return minDist;
+    }
+
+    /**
+     * Determine the distance to another segment
+     * @param otherSegment
+     * @return
+     */
+    public double distanceToSegment (BBDSegment otherSegment){
+        double minDist = Double.MAX_VALUE;
+
+        for (BBDSegment thisSegment: this.segments){
+            if (thisSegment.distanceToSegment(otherSegment) < minDist){
+                minDist = thisSegment.distanceToSegment(otherSegment);
+            }
+        }
+        return minDist;
+    }
+
+    /**
+     * Determine the distance to another point
+     * @param otherPoint
+     * @return
+     */
+    public double distanceToPoint (BBDPoint otherPoint){
+        double minDist = Double.MAX_VALUE;
+
+        for (BBDSegment thisSegment: this.segments){
+            if (thisSegment.distanceToPoint(otherPoint) < minDist){
+                minDist = thisSegment.distanceToPoint(otherPoint);
+            }
+        }
+        return minDist;
     }
 }
