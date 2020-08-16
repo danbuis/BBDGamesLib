@@ -107,4 +107,18 @@ public class BBDPoint implements BBDGeometry{
 
         return Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
     }
+
+    /**
+     * Calculate the angle to another point
+     * Rotations +for counterclockwise, and - for clockwise.  0 degrees is north
+     * on the screen, west is 90 degrees, south is 180 degrees, and east is 270 degree
+     * @param otherPoint The other point to measure to
+     * @return angle to that point in degrees
+     */
+    public double angleToOtherPoint(BBDPoint otherPoint){
+        double deltaX = otherPoint.xLoc - this.xLoc;
+        double deltaY = otherPoint.yLoc - this.yLoc;
+
+        return -Math.atan2(deltaY, deltaX);
+    }
 }
