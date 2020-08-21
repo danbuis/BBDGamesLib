@@ -26,8 +26,8 @@ public class BBDSegment implements BBDGeometry{
     public BBDSegment(BBDPoint startPoint, double angle, double distance){
         double radians = Math.PI/180 * angle;
         this.startPoint = startPoint;
-        this.endPoint = new BBDPoint(startPoint.getXLoc()+Math.cos(radians)*distance,
-                                     startPoint.getYLoc()+Math.sin(radians)*distance);
+        this.endPoint = new BBDPoint(startPoint.getXLoc()+Math.sin(radians)*distance,
+                                     startPoint.getYLoc()+Math.cos(radians)*distance);
     }
 
     @Override
