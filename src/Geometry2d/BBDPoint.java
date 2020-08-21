@@ -54,7 +54,8 @@ public class BBDPoint implements BBDGeometry{
         double dx = this.xLoc - centerOfScale.xLoc;
         double dy = this.yLoc - centerOfScale.yLoc;
 
-        translate(scaleFactor*dx, scaleFactor*dy);
+        this.xLoc = centerOfScale.getXLoc() + scaleFactor*dx;
+        this.yLoc = centerOfScale.getYLoc() + scaleFactor*dy;
     }
 
     /**
@@ -67,24 +68,22 @@ public class BBDPoint implements BBDGeometry{
     }
 
     /**
-     * Rotations +for counterclockwise, and - for clockwise.  0 degrees is north
-     * on the screen, west is 90 degrees, south is 180 degrees, and east is 270 degree
+     * Rotations +for counterclockwise, and - for clockwise.
      * @param centerOfRotation point to rotate around
      * @param degrees how far to rotate
      */
     @Override
     public void rotateAroundPoint(BBDPoint centerOfRotation, double degrees) {
-        double deltaX = centerOfRotation.xLoc - this.xLoc;
-        double deltaY = centerOfRotation.yLoc - this.yLoc;
-
         //get some polar coordinates
-        double angleFromCenterToOrig = -Math.atan2(deltaY, deltaX);
+        double angleFromCenterToOrig = centerOfRotation.angleToOtherPoint(this);
         double distanceToCenter = distanceToPoint(centerOfRotation);
 
-        double angleFromCenterToNew = angleFromCenterToOrig + (Math.PI/180)*degrees;
+        double angleFromCenterToNew = angleFromCenterToOrig + degrees;
 
-        this.xLoc = centerOfRotation.getXLoc() + Math.cos(angleFromCenterToNew)*distanceToCenter;
-        this.yLoc = centerOfRotation.getYLoc() + Math.sin(angleFromCenterToNew)*distanceToCenter;
+        double newAngleInRadians = Math.PI/180 * angleFromCenterToNew;
+
+        this.xLoc = centerOfRotation.getXLoc() + Math.cos(newAngleInRadians) * distanceToCenter;
+        this.yLoc = centerOfRotation.getYLoc() + Math.sin(newAngleInRadians) * distanceToCenter;
     }
 
     /**
@@ -110,8 +109,8 @@ public class BBDPoint implements BBDGeometry{
 
     /**
      * Calculate the angle to another point
-     * Rotations +for counterclockwise, and - for clockwise.  0 degrees is north
-     * on the screen, west is 90 degrees, south is 180 degrees, and east is 270 degree
+     * 0 degrees is east on the screen, north is 90 degrees, west is +180 degrees,
+     * and south is -90 degrees
      * @param otherPoint The other point to measure to
      * @return angle to that point in degrees
      */
@@ -119,6 +118,17 @@ public class BBDPoint implements BBDGeometry{
         double deltaX = otherPoint.xLoc - this.xLoc;
         double deltaY = otherPoint.yLoc - this.yLoc;
 
-        return -Math.atan2(deltaY, deltaX);
+        double radians =  Math.atan2(deltaY, deltaX);
+        double degrees =  radians * 180/Math.PI;
+        if (degrees == -180){
+            degrees = 180;
+        }else if(degrees == -0.0){
+            degrees = 0;
+        }
+        return degrees;
+    }
+
+    public String toString(){
+        return"BBDPoint object located at ("+this.xLoc+","+this.yLoc+").";
     }
 }

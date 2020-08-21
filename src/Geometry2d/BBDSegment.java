@@ -168,8 +168,9 @@ public class BBDSegment implements BBDGeometry{
     }
 
     /**
-     * Uses good old fashioned algebra to calculate the intercept point.  Each line is converted
-     * from point-slope form to slope-intercept form (y=mx+b).  The 2 are set equal and solved for x.
+     * Uses good old fashioned algebra to calculate the intercept point.  Each line is put into
+     * point-slope form, with y isolated.  The 2 are set equal and solved for x.  Once x is
+     * solved we can solve for the y coordinate of the point.
      * @param otherSegment other segment we want to find an intercept for.
      * @return
      */
@@ -177,15 +178,15 @@ public class BBDSegment implements BBDGeometry{
         double thisSlope = this.slopeInRatio();
         double otherSlope = otherSegment.slopeInRatio();
 
-        double xCoord = (thisSlope * this.startPoint.getXLoc()
+        double xLoc = (thisSlope * this.startPoint.getXLoc()
                         - otherSlope * otherSegment.startPoint.getXLoc()
                         + otherSegment.startPoint.getYLoc()
                         - this.startPoint.getYLoc())
                         / (thisSlope-otherSlope);
 
-        double yCoord = thisSlope * (xCoord - this.startPoint.getXLoc()) + this.startPoint.getYLoc();
+        double yLoc = thisSlope * (xLoc - this.startPoint.getXLoc()) + this.startPoint.getYLoc();
 
-        return new BBDPoint(xCoord, yCoord);
+        return new BBDPoint(xLoc, yLoc);
     }
 
     /**
