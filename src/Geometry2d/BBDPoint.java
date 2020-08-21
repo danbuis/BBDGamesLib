@@ -142,6 +142,6 @@ public class BBDPoint implements BBDGeometry{
         }
         BBDPoint otherPoint = (BBDPoint)other;
         return (Math.abs(this.xLoc - otherPoint.xLoc) < 0.0000005
-                && Math.abs(this.yLoc - otherPoint.yLoc) < 0.000005);
+                && Math.abs(this.yLoc - otherPoint.yLoc) < 0.0000005);
     }
 }
