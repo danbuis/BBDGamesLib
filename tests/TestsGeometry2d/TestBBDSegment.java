@@ -105,4 +105,120 @@ public class TestBBDSegment {
         assertEquals(new BBDPoint(1, 0.5), center);
     }
 
+    @Test
+    public void testSlopeRatio(){
+        BBDSegment horizontal = this.buildHorizontal();
+        assertEquals(0, horizontal.slopeInRatio());
+
+        BBDSegment vertical = this.buildVertical();
+        assertEquals(Double.POSITIVE_INFINITY, vertical.slopeInRatio());
+
+        BBDSegment angled1 = this.buildAngleOne();
+        assertEquals(1, angled1.slopeInRatio());
+
+        BBDSegment angled2 = this.buildAngleTwo();
+        assertEquals(-1, angled2.slopeInRatio());
+    }
+
+    @Test
+    public void testSlopeRadians(){
+        BBDSegment horizontal = this.buildHorizontal();
+        assertEquals(0, horizontal.slopeInRadians());
+
+        BBDSegment vertical = this.buildVertical();
+        assertEquals(Math.PI/2, vertical.slopeInRadians(), 0.000005);
+
+        BBDSegment angled1 = this.buildAngleOne();
+        assertEquals(Math.PI/4, angled1.slopeInRadians(), 0.000005);
+
+        BBDSegment angled2 = this.buildAngleTwo();
+        assertEquals(Math.PI/-4, angled2.slopeInRadians(),0.000005);
+
+        //test that slope is direction agnostic
+        angled2.rotate(180);
+        assertEquals(Math.PI/-4, angled2.slopeInRadians(),0.000005);
+    }
+
+    @Test
+    public void testSlopeDegrees(){
+        BBDSegment horizontal = this.buildHorizontal();
+        assertEquals(0, horizontal.slopeInDegrees());
+
+        BBDSegment vertical = this.buildVertical();
+        assertEquals(90, vertical.slopeInDegrees(), 0.000005);
+
+        BBDSegment angled1 = this.buildAngleOne();
+        assertEquals(45, angled1.slopeInDegrees(), 0.000005);
+
+        BBDSegment angled2 = this.buildAngleTwo();
+        assertEquals(-45, angled2.slopeInDegrees(),0.000005);
+
+        //test that slope is direction agnostic
+        angled2.rotate(180);
+        assertEquals(-45, angled2.slopeInDegrees(),0.000005);
+    }
+
+    @Test
+    public void testPointOnSegment(){
+        BBDSegment testLine = new BBDSegment(new BBDPoint(0,0), new BBDPoint(5,5));
+        //test a point definitely on the line
+        assertTrue(testLine.pointOnSegment(new BBDPoint(2,2)));
+        //test one of the end points
+        assertTrue(testLine.pointOnSegment(new BBDPoint(0,0)));
+        //test a point well off the line
+        assertFalse(testLine.pointOnSegment(new BBDPoint(10,0)));
+        //test a point aligned with the line, but outside its bounds
+        assertFalse(testLine.pointOnSegment(new BBDPoint(6,6)));
+    }
+
+    @Test
+    public void testInterceptPoint(){
+        BBDSegment test1 = new BBDSegment(new BBDPoint(0,1), new BBDPoint(1,0));
+        BBDSegment test2 = new BBDSegment(new BBDPoint(0,0), new BBDPoint(1,1));
+        BBDSegment test3 = new BBDSegment(new BBDPoint(4,4), new BBDPoint(8,8));
+
+        assertEquals(new BBDPoint(0.5, 0.5), test1.interceptPoint(test2));
+        assertEquals(new BBDPoint(0.5, 0.5), test1.interceptPoint(test3));
+    }
+
+    @Test
+    public void testIntersection(){
+        BBDSegment test1 = new BBDSegment(new BBDPoint(0,1), new BBDPoint(1,0));
+        BBDSegment test2 = new BBDSegment(new BBDPoint(0,0), new BBDPoint(1,1));
+        BBDSegment test3 = new BBDSegment(new BBDPoint(4,4), new BBDPoint(8,8));
+        BBDSegment test4 = new BBDSegment(new BBDPoint(0.5, 0.5), new BBDPoint(0.6, 4));
+
+        assertTrue(test1.intersects(test2));
+        //check reverse
+        assertTrue(test2.intersects(test1));
+
+        System.out.println(test1.interceptPoint(test3));
+        assertFalse(test1.intersects(test3));
+        //check if end point of one is the intersection
+        assertTrue(test4.intersects(test1));
+    }
+
+    @Test
+    public void testDistanceToPoint(){
+        BBDSegment testSeg = this.buildVertical();
+
+        BBDPoint point1 = new BBDPoint(1,0);
+        assertEquals(0, testSeg.distanceToPoint(point1));
+
+        BBDPoint point1a = new BBDPoint(1, 0.5);
+        //assertEquals(0, testSeg.distanceToPoint(point1a));
+
+        BBDPoint point2 = new BBDPoint(1, 0.5);
+        //assertEquals(1, testSeg.distanceToPoint(point2));
+
+        BBDPoint point3 = new BBDPoint(1,4);
+        assertEquals(3, testSeg.distanceToPoint(point3));
+
+        BBDPoint point4 = new BBDPoint(5,5);
+        assertEquals(Math.sqrt(2)*4, testSeg.distanceToPoint(point4), 0.00001);
+    }
+
+
+
+
 }
