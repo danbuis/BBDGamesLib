@@ -104,6 +104,9 @@ public class BBDSegment implements BBDGeometry{
         double dx = startPoint.getXLoc() - endPoint.getXLoc();
         double dy = startPoint.getYLoc() - endPoint.getYLoc();
 
+        if (dx == 0){
+            return Double.POSITIVE_INFINITY;
+        }
         return dy/dx;
     }
 
@@ -139,8 +142,15 @@ public class BBDSegment implements BBDGeometry{
         BBDSegment seg1 = new BBDSegment(this.startPoint, point);
         BBDSegment seg2 = new BBDSegment(point, this.endPoint);
 
+
         Boolean sameSlope =  Math.abs(seg1.slopeInRatio()-seg2.slopeInRatio())<=0.001;
         //can we cut out early?
+        if ((startPoint.getXLoc() == point.getXLoc() && startPoint.getYLoc() == point.getYLoc())
+         || (endPoint.getXLoc() == point.getXLoc() && endPoint.getYLoc() == point.getYLoc())){
+            return true;
+        }
+        //need to check end points first because otherwise
+        // dx is 0, leading to one slope being Infinity
         if (!sameSlope){
             return false;
         }
@@ -195,7 +205,8 @@ public class BBDSegment implements BBDGeometry{
      * @return
      */
     public Boolean intersects(BBDSegment otherSegment){
-        return this.pointOnSegment(this.interceptPoint(otherSegment));
+        BBDPoint interceptPoint = this.interceptPoint(otherSegment);
+        return (this.pointOnSegment(interceptPoint) && otherSegment.pointOnSegment(interceptPoint));
     }
 
     /**
