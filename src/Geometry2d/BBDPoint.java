@@ -131,4 +131,17 @@ public class BBDPoint implements BBDGeometry{
     public String toString(){
         return"BBDPoint object located at ("+this.xLoc+","+this.yLoc+").";
     }
+
+    @Override
+    public boolean equals(Object other){
+        if (this == other){
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        BBDPoint otherPoint = (BBDPoint)other;
+        return (Math.abs(this.xLoc - otherPoint.xLoc) < 0.0000005
+                && Math.abs(this.yLoc - otherPoint.yLoc) < 0.0000005);
+    }
 }
