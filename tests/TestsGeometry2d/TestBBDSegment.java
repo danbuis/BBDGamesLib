@@ -217,8 +217,18 @@ public class TestBBDSegment {
         BBDPoint point4 = new BBDPoint(5,5);
         assertEquals(Math.sqrt(2)*4, testSeg.distanceToPoint(point4), 0.00001);
     }
+    
+    @Test
+    public void testConnected(){
+        BBDSegment horizontal = this.buildHorizontal();
+        BBDSegment vertical = this.buildVertical();
+        BBDSegment other = new BBDSegment(new BBDPoint(-2,-5), new BBDPoint(-5, 12));
+        BBDSegment crossing = new BBDSegment(new BBDPoint(0,0), new BBDPoint(4,4));
 
-
-
-
+        assertTrue(horizontal.segmentConnected(vertical));
+        assertTrue(vertical.segmentConnected(horizontal));
+        assertFalse(horizontal.segmentConnected(other));
+        assertFalse(other.segmentConnected(vertical));
+        assertFalse(crossing.segmentConnected(horizontal));
+    }
 }

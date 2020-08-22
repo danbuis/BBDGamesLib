@@ -30,6 +30,14 @@ public class BBDSegment implements BBDGeometry{
                                      startPoint.getYLoc()+Math.cos(radians)*distance);
     }
 
+    public BBDPoint getStartPoint(){
+        return this.startPoint;
+    }
+
+    public BBDPoint getEndPoint(){
+        return  this.endPoint;
+    }
+
     /**
      * Translate the segment a specified amount in both cardinal directions
      */
@@ -146,8 +154,8 @@ public class BBDSegment implements BBDGeometry{
         boolean sameSlope =  Math.abs(seg1.slopeInRatio()-seg2.slopeInRatio())<=0.001;
 
         //can we cut out early?
-        if ((startPoint.getXLoc() == point.getXLoc() && startPoint.getYLoc() == point.getYLoc())
-         || (endPoint.getXLoc() == point.getXLoc() && endPoint.getYLoc() == point.getYLoc())){
+        if (startPoint.equals(point)
+         || endPoint.equals(point)){
             return true;
         }
         //need to check end points first because otherwise
@@ -257,9 +265,9 @@ public class BBDSegment implements BBDGeometry{
      * @return are these segments connected?
      */
     public boolean segmentConnected(BBDSegment other){
-        return (this.endPoint == other.endPoint
-        || this.endPoint == other.startPoint
-        || this.startPoint == other.startPoint
-        || this.startPoint == other.endPoint);
+        return (this.endPoint.equals(other.getEndPoint())
+        || this.endPoint.equals(other.getStartPoint())
+        || this.startPoint.equals(other.getStartPoint())
+        || this.startPoint.equals(other.getEndPoint()));
     }
 }
