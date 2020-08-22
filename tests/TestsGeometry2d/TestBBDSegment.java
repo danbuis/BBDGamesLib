@@ -231,4 +231,14 @@ public class TestBBDSegment {
         assertFalse(other.segmentConnected(vertical));
         assertFalse(crossing.segmentConnected(horizontal));
     }
+
+    public void testEquals(){
+        BBDSegment test1 = new BBDSegment(new BBDPoint(0,0), new BBDPoint(1,1));
+        BBDSegment test2 = new BBDSegment(new BBDPoint(1,1), new BBDPoint(0,0));
+        BBDSegment test3 = new BBDSegment(new BBDPoint(10,10), new BBDPoint(1,1));
+
+        assertTrue(test1.equals(test2));
+        assertTrue(test2.equals(test1));
+        assertFalse(test1.equals(test3));
+    }
 }

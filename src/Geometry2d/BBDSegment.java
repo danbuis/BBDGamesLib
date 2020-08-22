@@ -270,4 +270,23 @@ public class BBDSegment implements BBDGeometry{
         || this.startPoint.equals(other.getStartPoint())
         || this.startPoint.equals(other.getEndPoint()));
     }
+
+    @Override
+    public boolean equals(Object other){
+        if (this == other){
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        BBDSegment otherSegment = (BBDSegment) other;
+        if (this.startPoint.equals(otherSegment.getStartPoint())){
+            return this.endPoint.equals(otherSegment.getEndPoint());
+        }
+        if (this.startPoint.equals(otherSegment.getEndPoint())){
+            return this.endPoint.equals(otherSegment.getStartPoint());
+        }
+
+        return false;
+    }
 }
