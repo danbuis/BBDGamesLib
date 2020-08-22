@@ -31,6 +31,7 @@ public class BBDPoint implements BBDGeometry{
      */
     @Override
     public void translate(double dx, double dy) {
+
         this.xLoc += dx;
         this.yLoc += dy;
     }

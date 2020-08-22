@@ -53,6 +53,10 @@ public class TestBBDPoint {
         testPoint.translate(12,12);
         assertEquals(7, testPoint.getXLoc());
         assertEquals(2, testPoint.getYLoc());
+
+        testPoint.translate(0,0);
+        assertEquals(7, testPoint.getXLoc());
+        assertEquals(2, testPoint.getYLoc());
     }
 
     /**
