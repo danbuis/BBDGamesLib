@@ -13,6 +13,14 @@ public class BBDPolygon implements BBDGeometry{
     private BBDPoint[] points;
     private BBDSegment[] segments;
 
+    public BBDPoint[] getPoints(){
+        return this.points;
+    }
+
+    public BBDSegment[] getSegments(){
+        return this.segments;
+    }
+
     /**
      * General constructor that takes in a series of points and
      * creates the polygon object
@@ -20,7 +28,7 @@ public class BBDPolygon implements BBDGeometry{
      */
     public BBDPolygon (BBDPoint[] inputPoints){
         ArrayList<BBDSegment> segments = new ArrayList<BBDSegment>();
-        for(int index =0; index< inputPoints.length; index++){
+        for(int index = 0; index< inputPoints.length; index++){
             int nextIndex = (index + 1) % inputPoints.length;
             segments.add(new BBDSegment(inputPoints[index], inputPoints[nextIndex]));
         }
@@ -39,9 +47,8 @@ public class BBDPolygon implements BBDGeometry{
 
         for (BBDPoint point : points){
             double x = point.getXLoc();
-            if(x > minX){minX = x;}
-            if(x < maxX){maxX = x;}
-
+            if(x < minX){minX = x;}
+            if(x > maxX){maxX = x;}
         }
         return maxX - minX;
     }
@@ -56,8 +63,8 @@ public class BBDPolygon implements BBDGeometry{
 
         for (BBDPoint point : points){
             double y = point.getYLoc();
-            if(y > minY){minY = y;}
-            if(y < maxY){maxY = y;}
+            if(y < minY){minY = y;}
+            if(y > maxY){maxY = y;}
 
         }
         return maxY - minY;
@@ -79,8 +86,9 @@ public class BBDPolygon implements BBDGeometry{
      * Scale the polygon by a given amount
      */
     public void scale(double scaleFactor) {
+        BBDPoint center = this.center();
         for (BBDPoint point: this.points){
-            point.scaleFromPoint(this.center(), scaleFactor);
+            point.scaleFromPoint(center, scaleFactor);
         }
     }
 
@@ -128,10 +136,10 @@ public class BBDPolygon implements BBDGeometry{
         for (BBDPoint point : points){
             double x = point.getXLoc();
             double y = point.getYLoc();
-            if(x > minX){minX = x;}
-            if(x < maxX){maxX = x;}
-            if(y > minY){minY = y;}
-            if(y < maxY){maxY = y;}
+            if(x < minX){minX = x;}
+            if(x > maxX){maxX = x;}
+            if(y < minY){minY = y;}
+            if(y > maxY){maxY = y;}
         }
         return new BBDPoint((minX+maxX)/2, (minY+maxY)/2);
     }
@@ -171,12 +179,19 @@ public class BBDPolygon implements BBDGeometry{
             // if we aren't counting the perimeter as intersecting, see if we need to change
             // boolean back
             if (!countPerimeter){
-                BBDPoint[] points = segment.getPoints();
-                if (this.checkPointOnPerimeter(points[0]) || this.checkPointOnPerimeter(points[1])){
+                BBDPoint[] segmentPoints = segment.getPoints();
+                BBDPoint[] segmentToCheckPoints = segmentToCheck.getPoints();
+
+                //first check if the polygon's points are on the segment
+                if (segment.distanceToPoint(segmentToCheckPoints[0]) < 0.0005 || segment.distanceToPoint(segmentToCheckPoints[1]) < 0.0005){
+                    thisSegmentIntersects = false;
+                }
+
+                //then check if the segment to check has a vertex on the segment
+                if (segmentToCheck.distanceToPoint(segmentPoints[0]) < 0.0005 || segmentToCheck.distanceToPoint(segmentPoints[1]) < 0.0005){
                     thisSegmentIntersects = false;
                 }
             }
-
             if (thisSegmentIntersects){
                 intersectingSegments.add(segment);
             }
@@ -214,7 +229,7 @@ public class BBDPolygon implements BBDGeometry{
     public boolean checkPointInside(BBDPoint pointToCheck, boolean perimeterCountsAsInside){
         BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
         BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck, perimeterCountsAsInside);
-
+        System.out.println("Intersection length: "+intersectionList.length);
         //if the segment intersects an odd number of things, than it is inside the polygon.
         if (intersectionList.length % 2 ==1){
             return true;
