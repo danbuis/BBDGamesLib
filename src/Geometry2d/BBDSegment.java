@@ -189,13 +189,28 @@ public class BBDSegment implements BBDGeometry{
     /**
      * Uses good old fashioned algebra to calculate the intercept point.  Each line is put into
      * point-slope form, with y isolated.  The 2 are set equal and solved for x.  Once x is
-     * solved we can solve for the y coordinate of the point.
+     * solved we can solve for the y coordinate of the point.  Ensure that you don't send two parallel
+     * lines into this function as it will throw an exception.  Using intersects() is an insufficient
+     * filter because that one returns true for parallel, co-linear, overlapping segments.
      * @param otherSegment other segment we want to find an intercept for.
      * @return the point at which these 2 segments would intersect
      */
     public BBDPoint interceptPoint(BBDSegment otherSegment){
         double thisSlope = this.slopeInRatio();
         double otherSlope = otherSegment.slopeInRatio();
+        BBDPoint origin = new BBDPoint(0,0);
+        boolean needToRotateToAvoidVerticalLines = false;
+        double angleToRotate = 0;
+        if( thisSlope == Double.POSITIVE_INFINITY || otherSlope == Double.POSITIVE_INFINITY){
+            needToRotateToAvoidVerticalLines = true;
+            double thisDegrees = this.slopeInDegrees();
+            double otherDegrees = this.slopeInDegrees();
+            double angleDiff = thisDegrees - otherDegrees;
+
+            angleToRotate = angleDiff/2;
+            this.rotateAroundPoint(origin, angleToRotate);
+            otherSegment.rotateAroundPoint(origin, angleToRotate);
+        }
 
         double xLoc = (thisSlope * this.startPoint.getXLoc()
                         - otherSlope * otherSegment.startPoint.getXLoc()
@@ -205,17 +220,33 @@ public class BBDSegment implements BBDGeometry{
 
         double yLoc = thisSlope * (xLoc - this.startPoint.getXLoc()) + this.startPoint.getYLoc();
 
-        return new BBDPoint(xLoc, yLoc);
+        BBDPoint returnPoint = new BBDPoint(xLoc, yLoc);
+
+        if(needToRotateToAvoidVerticalLines){
+            this.rotateAroundPoint(origin, -angleToRotate);
+            otherSegment.rotateAroundPoint(origin, -angleToRotate);
+            returnPoint.rotateAroundPoint(origin, -angleToRotate);
+        }
+        return returnPoint;
     }
 
     /**
-     * Does this segment intersect the other one?
+     * Does this segment intersect the other one?  Do not use this method to determine
+     * the location of intersection since parallel lines will eventually trip you up
      * @param otherSegment the other segment to check against
      * @return intersect?
      */
     public Boolean intersects(BBDSegment otherSegment){
-        BBDPoint interceptPoint = this.interceptPoint(otherSegment);
-        return (this.pointOnSegment(interceptPoint) && otherSegment.pointOnSegment(interceptPoint));
+        // if segments are co-linear, then if at least one vertex is on the other segment than
+        // they intersect
+        if (this.slopeInDegrees() == otherSegment.slopeInDegrees()){
+            return (this.pointOnSegment(otherSegment.startPoint) || this.pointOnSegment(otherSegment.endPoint)
+                    || otherSegment.pointOnSegment(this.startPoint) || otherSegment.pointOnSegment(this.endPoint));
+        }
+        else {
+            BBDPoint interceptPoint = this.interceptPoint(otherSegment);
+            return (this.pointOnSegment(interceptPoint) && otherSegment.pointOnSegment(interceptPoint));
+        }
     }
 
     /**
@@ -288,5 +319,9 @@ public class BBDSegment implements BBDGeometry{
         }
 
         return false;
+    }
+
+    public String toString(){
+        return ("Segment from "+this.startPoint+" to "+this.endPoint);
     }
 }

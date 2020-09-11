@@ -34,7 +34,11 @@ public class BBDGeometryUtils {
         return point1.distanceToPoint(point2);
     }
 
-    public static double distance (BBDPolygon poly1, BBDPolygon poly2){
+    public static double distance(BBDPolygon poly1, BBDPolygon poly2){
         return poly1.distanceToPolygon(poly2);
+    }
+
+    public static boolean checkParallelSegments(BBDSegment seg1, BBDSegment seg2){
+        return seg1.slopeInDegrees() == seg2.slopeInDegrees();
     }
 }

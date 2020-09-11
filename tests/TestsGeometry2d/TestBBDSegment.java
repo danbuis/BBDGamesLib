@@ -192,7 +192,7 @@ public class TestBBDSegment {
         //check reverse
         assertTrue(test2.intersects(test1));
 
-        System.out.println(test1.interceptPoint(test3));
+        //System.out.println(test1.interceptPoint(test3));
         assertFalse(test1.intersects(test3));
         //check if end point of one is the intersection
         assertTrue(test4.intersects(test1));
@@ -206,10 +206,10 @@ public class TestBBDSegment {
         assertEquals(0, testSeg.distanceToPoint(point1));
 
         BBDPoint point1a = new BBDPoint(1, 0.5);
-        //assertEquals(0, testSeg.distanceToPoint(point1a));
+        assertEquals(0, testSeg.distanceToPoint(point1a));
 
         BBDPoint point2 = new BBDPoint(1, 0.5);
-        //assertEquals(1, testSeg.distanceToPoint(point2));
+        assertEquals(1, testSeg.distanceToPoint(point2));
 
         BBDPoint point3 = new BBDPoint(1,4);
         assertEquals(3, testSeg.distanceToPoint(point3));

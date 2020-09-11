@@ -13,6 +13,14 @@ public class BBDPolygon implements BBDGeometry{
     private BBDPoint[] points;
     private BBDSegment[] segments;
 
+    public BBDPoint[] getPoints(){
+        return this.points;
+    }
+
+    public BBDSegment[] getSegments(){
+        return this.segments;
+    }
+
     /**
      * General constructor that takes in a series of points and
      * creates the polygon object
@@ -20,7 +28,7 @@ public class BBDPolygon implements BBDGeometry{
      */
     public BBDPolygon (BBDPoint[] inputPoints){
         ArrayList<BBDSegment> segments = new ArrayList<BBDSegment>();
-        for(int index =0; index< inputPoints.length; index++){
+        for(int index = 0; index< inputPoints.length; index++){
             int nextIndex = (index + 1) % inputPoints.length;
             segments.add(new BBDSegment(inputPoints[index], inputPoints[nextIndex]));
         }
@@ -39,9 +47,8 @@ public class BBDPolygon implements BBDGeometry{
 
         for (BBDPoint point : points){
             double x = point.getXLoc();
-            if(x > minX){minX = x;}
-            if(x < maxX){maxX = x;}
-
+            if(x < minX){minX = x;}
+            if(x > maxX){maxX = x;}
         }
         return maxX - minX;
     }
@@ -56,8 +63,8 @@ public class BBDPolygon implements BBDGeometry{
 
         for (BBDPoint point : points){
             double y = point.getYLoc();
-            if(y > minY){minY = y;}
-            if(y < maxY){maxY = y;}
+            if(y < minY){minY = y;}
+            if(y > maxY){maxY = y;}
 
         }
         return maxY - minY;
@@ -79,8 +86,9 @@ public class BBDPolygon implements BBDGeometry{
      * Scale the polygon by a given amount
      */
     public void scale(double scaleFactor) {
+        BBDPoint center = this.center();
         for (BBDPoint point: this.points){
-            point.scaleFromPoint(this.center(), scaleFactor);
+            point.scaleFromPoint(center, scaleFactor);
         }
     }
 
@@ -128,10 +136,10 @@ public class BBDPolygon implements BBDGeometry{
         for (BBDPoint point : points){
             double x = point.getXLoc();
             double y = point.getYLoc();
-            if(x > minX){minX = x;}
-            if(x < maxX){maxX = x;}
-            if(y > minY){minY = y;}
-            if(y < maxY){maxY = y;}
+            if(x < minX){minX = x;}
+            if(x > maxX){maxX = x;}
+            if(y < minY){minY = y;}
+            if(y > maxY){maxY = y;}
         }
         return new BBDPoint((minX+maxX)/2, (minY+maxY)/2);
     }
@@ -154,12 +162,9 @@ public class BBDPolygon implements BBDGeometry{
      * Function to create a list of polygon segments that intersect a given segment
      *
      * @param segmentToCheck Segment not part of polygon to check for intersection
-     * @param countPerimeter Flag to indicate if the edge of the polygon counts as inside
-     *                       True means that if the segment just touches the perimeter, such as
-     *                       sharing a point, means that it intersects.
      * @return
      */
-    public BBDSegment[] segmentIntersectPolygonList(BBDSegment segmentToCheck, boolean countPerimeter){
+    public BBDSegment[] segmentIntersectPolygonList(BBDSegment segmentToCheck){
         ArrayList<BBDSegment> intersectingSegments = new ArrayList<BBDSegment>();
 
         for (BBDSegment segment: segments){
@@ -168,15 +173,6 @@ public class BBDPolygon implements BBDGeometry{
             if(segment.intersects(segmentToCheck)){
                 thisSegmentIntersects = true;
             }
-            // if we aren't counting the perimeter as intersecting, see if we need to change
-            // boolean back
-            if (!countPerimeter){
-                BBDPoint[] points = segment.getPoints();
-                if (this.checkPointOnPerimeter(points[0]) || this.checkPointOnPerimeter(points[1])){
-                    thisSegmentIntersects = false;
-                }
-            }
-
             if (thisSegmentIntersects){
                 intersectingSegments.add(segment);
             }
@@ -187,13 +183,10 @@ public class BBDPolygon implements BBDGeometry{
     /**
      * helper function to determine if a segment intersects the polygon.
      * @param segmentToCheck Segment not part of polygon to check for intersection
-     * @param countPerimeter Flag to indicate if the edge of the polygon counts as inside
-     *                      True means that if the segment just touches the perimeter, such as
-     *                      sharing a point, means that it intersects.
      * @return
      */
-    public boolean checkSegmentIntersectPolygon(BBDSegment segmentToCheck, boolean countPerimeter){
-        BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck, countPerimeter);
+    public boolean checkSegmentIntersectPolygon(BBDSegment segmentToCheck){
+        BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck);
 
         if (intersectionList.length == 0){
             return false;
@@ -206,17 +199,29 @@ public class BBDPolygon implements BBDGeometry{
      * Function to check if a point is inside the polygon.
      *
      * @param pointToCheck Point that is not part of the polygon to check
-     * @param perimeterCountsAsInside Flag to indicate if the edge of the polygon counts as inside
-     *                                True means that if the segment just touches the perimeter, such as
-     *                                sharing a point, means that it intersects.
      * @return
      */
-    public boolean checkPointInside(BBDPoint pointToCheck, boolean perimeterCountsAsInside){
+    public boolean checkPointInside(BBDPoint pointToCheck){
         BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
-        BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck, perimeterCountsAsInside);
+        System.out.println(segmentToCheck);
+        System.out.println(this.extendedToString());
+        BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck);
+        System.out.println("Intersection length: "+intersectionList.length);
+
+        // find unique intersection points
+        ArrayList<BBDPoint> intersectionPoints = new ArrayList<BBDPoint>();
+
+        BBDPoint intersection = null;
+        for(BBDSegment seg: intersectionList){
+            intersection = seg.interceptPoint(segmentToCheck);
+            if(!intersectionPoints.contains(intersection)) {
+                intersectionPoints.add(intersection);
+            }
+        }
+        
 
         //if the segment intersects an odd number of things, than it is inside the polygon.
-        if (intersectionList.length % 2 ==1){
+        if (intersectionPoints.size() % 2 ==1){
             return true;
         }else{
             return false;
@@ -224,16 +229,13 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Test if this polygon intersects with another
+     * Test if this polygon intersects another
      * @param otherPolygon
-     * @param countPerimeter Flag to indicate if the edge of the polygon counts as inside
-     *                       True means that if the segment just touches the perimeter, such as
-     *                       sharing a point, means that it intersects.
      * @return
      */
-    public boolean checkPolygonIntersectsPolygon(BBDPolygon otherPolygon, boolean countPerimeter){
+    public boolean checkPolygonIntersectsPolygon(BBDPolygon otherPolygon){
         for (BBDSegment otherSegment: otherPolygon.segments){
-            if(this.checkSegmentIntersectPolygon(otherSegment, countPerimeter)){
+            if(this.checkSegmentIntersectPolygon(otherSegment)){
                 return true;
             }
         }
@@ -252,20 +254,23 @@ public class BBDPolygon implements BBDGeometry{
                 return true;
             }
         }
+
+        for(BBDPoint otherPoint : this.points){
+            if (otherPolygon.checkPointOnPerimeter(otherPoint)){
+                return true;
+            }
+        }
         return false;
     }
 
     /**
      * Test if this polygon contains another
      * @param otherPolygon
-     * @param countPerimeter Flag to indicate if the edge of the polygon counts as inside
-     *                       True means that if the segment just touches the perimeter, such as
-     *                       sharing a point, means that it intersects.
      * @return
      */
-    public boolean checkPolygonContainsPolygon(BBDPolygon otherPolygon, boolean countPerimeter){
+    public boolean checkPolygonContainsPolygon(BBDPolygon otherPolygon){
         for (BBDPoint otherPoint: otherPolygon.points){
-            if (! this.checkPointInside(otherPoint, countPerimeter)){
+            if (! this.checkPointInside(otherPoint)){
                 return false;
             }
         }
@@ -320,5 +325,17 @@ public class BBDPolygon implements BBDGeometry{
             }
         }
         return minDist;
+    }
+
+    public String toString(){
+        return "BBDPolygon object consisting of "+this.points.length+" vertices ";
+    }
+
+    public String extendedToString(){
+        String aggregatedString = this.toString();
+        for (BBDSegment seg : this.segments){
+            aggregatedString += seg.toString()+" ";
+        }
+        return aggregatedString;
     }
 }
