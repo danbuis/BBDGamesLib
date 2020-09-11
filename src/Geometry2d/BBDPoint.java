@@ -65,7 +65,7 @@ public class BBDPoint implements BBDGeometry{
      */
     @Override
     public void rotate(double degrees) {
-        System.out.println("***WARNING*** Rotating a point without defining another point to scale from is meaningless");
+        System.out.println("***WARNING*** Rotating a point without defining another point to rotate around is meaningless");
     }
 
     /**
@@ -130,7 +130,7 @@ public class BBDPoint implements BBDGeometry{
     }
 
     public String toString(){
-        return"BBDPoint object located at ("+this.xLoc+","+this.yLoc+").";
+        return"BBDPoint object located at ("+this.xLoc+","+this.yLoc+")";
     }
 
     @Override

@@ -144,50 +144,35 @@ public class TestBBDPolygon {
         BBDSegment partDiagonal = new BBDSegment(new BBDPoint(0,0), new BBDPoint(-5,-5));
 
         //check a few lines that cross in 1 and 2 locations and clearly are partially inside
-        assertEquals(2, diamond.segmentIntersectPolygonList(fullDiagonal, true).length);
-        assertEquals(1, diamond.segmentIntersectPolygonList(partDiagonal, true).length);
-        assertEquals(2, diamond.segmentIntersectPolygonList(fullDiagonal, false).length);
-        assertEquals(1, diamond.segmentIntersectPolygonList(partDiagonal, false).length);
+        assertEquals(2, diamond.segmentIntersectPolygonList(fullDiagonal).length);
+        assertEquals(1, diamond.segmentIntersectPolygonList(partDiagonal).length);
 
         //check a line that is touching a segment
         BBDSegment touchSegment = new BBDSegment(new BBDPoint(0.5,0.5), new BBDPoint(4,4));
-        assertEquals(1, diamond.segmentIntersectPolygonList(touchSegment, true).length);
-        assertEquals(0, diamond.segmentIntersectPolygonList(touchSegment, false).length);
+        assertEquals(1, diamond.segmentIntersectPolygonList(touchSegment).length);
 
         //check a line that is touching a vertex
         BBDSegment touchVertex = new BBDSegment(new BBDPoint(0,1), new BBDPoint(4,4));
-        assertEquals(2, diamond.segmentIntersectPolygonList(touchVertex, true).length);
-        assertEquals(0, diamond.segmentIntersectPolygonList(touchVertex, false).length);
-
+        assertEquals(2, diamond.segmentIntersectPolygonList(touchVertex).length);
 
         //check a line that is touching a vertex
         BBDSegment colinear = new BBDSegment(new BBDPoint(-1,2), new BBDPoint(2,-1));
-        assertEquals(3, diamond.segmentIntersectPolygonList(colinear, true).length);
-        assertEquals(0, diamond.segmentIntersectPolygonList(colinear, false).length);
+        assertEquals(3, diamond.segmentIntersectPolygonList(colinear).length);
     }
 
     @Test
     public void testCheckPointInside(){
         BBDPolygon diamond = this.buildDiamond();
-        BBDPoint inside = new BBDPoint(0.5,0);
+        BBDPoint inside = new BBDPoint(0.1,0.1);
         BBDPoint insideVertex = new BBDPoint(0,0);
         BBDPoint outside = new BBDPoint(2,1);
         BBDPoint onVertex = new BBDPoint(1,0);
         BBDPoint onEdge = new BBDPoint(0.5, 0.5);
 
-        assertTrue(diamond.checkPointInside(inside, true));
-        assertTrue(diamond.checkPointInside(inside, false));
-
-        assertTrue(diamond.checkPointInside(insideVertex, true));
-        assertTrue(diamond.checkPointInside(insideVertex, false));
-
-        assertFalse(diamond.checkPointInside(outside, true));
-        assertFalse(diamond.checkPointInside(outside, false));
-
-        assertTrue(diamond.checkPointInside(onVertex, true));
-        assertFalse(diamond.checkPointInside(onVertex, false));
-
-        assertTrue(diamond.checkPointInside(onEdge, true));
-        assertFalse(diamond.checkPointInside(onEdge, false));
+        assertTrue(diamond.checkPointInside(inside));
+        assertTrue(diamond.checkPointInside(insideVertex));
+        assertFalse(diamond.checkPointInside(outside));
+        assertTrue(diamond.checkPointInside(onVertex));
+        assertTrue(diamond.checkPointInside(onEdge));
     }
 }

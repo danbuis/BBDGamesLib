@@ -198,18 +198,18 @@ public class BBDSegment implements BBDGeometry{
     public BBDPoint interceptPoint(BBDSegment otherSegment){
         double thisSlope = this.slopeInRatio();
         double otherSlope = otherSegment.slopeInRatio();
-
+        BBDPoint origin = new BBDPoint(0,0);
         boolean needToRotateToAvoidVerticalLines = false;
         double angleToRotate = 0;
         if( thisSlope == Double.POSITIVE_INFINITY || otherSlope == Double.POSITIVE_INFINITY){
             needToRotateToAvoidVerticalLines = true;
             double thisDegrees = this.slopeInDegrees();
             double otherDegrees = this.slopeInDegrees();
-
             double angleDiff = thisDegrees - otherDegrees;
+
             angleToRotate = angleDiff/2;
-            this.rotate(angleToRotate);
-            otherSegment.rotate(angleToRotate);
+            this.rotateAroundPoint(origin, angleToRotate);
+            otherSegment.rotateAroundPoint(origin, angleToRotate);
         }
 
         double xLoc = (thisSlope * this.startPoint.getXLoc()
@@ -223,9 +223,9 @@ public class BBDSegment implements BBDGeometry{
         BBDPoint returnPoint = new BBDPoint(xLoc, yLoc);
 
         if(needToRotateToAvoidVerticalLines){
-            this.rotate(-angleToRotate);
-            otherSegment.rotate(-angleToRotate);
-            returnPoint.rotate(-angleToRotate);
+            this.rotateAroundPoint(origin, -angleToRotate);
+            otherSegment.rotateAroundPoint(origin, -angleToRotate);
+            returnPoint.rotateAroundPoint(origin, -angleToRotate);
         }
         return returnPoint;
     }
