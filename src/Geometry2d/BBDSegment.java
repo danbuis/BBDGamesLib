@@ -18,7 +18,8 @@ public class BBDSegment implements BBDGeometry{
     }
 
     /**
-     * A constructor that takes in a starting point and directions to the 2nd point
+     * A constructor that takes in a starting point and directions to the 2nd point.  0 degrees is east, 90 degrees is
+     * north, and -90 is south
      * @param startPoint known point
      * @param angle angle in degrees to the next point
      * @param distance distance to the next point
@@ -26,8 +27,8 @@ public class BBDSegment implements BBDGeometry{
     public BBDSegment(BBDPoint startPoint, double angle, double distance){
         double radians = Math.PI/180 * angle;
         this.startPoint = startPoint;
-        this.endPoint = new BBDPoint(startPoint.getXLoc()+Math.sin(radians)*distance,
-                                     startPoint.getYLoc()+Math.cos(radians)*distance);
+        this.endPoint = new BBDPoint(startPoint.getXLoc()+Math.cos(radians)*distance,
+                                     startPoint.getYLoc()+Math.sin(radians)*distance);
     }
 
     public BBDPoint getStartPoint(){

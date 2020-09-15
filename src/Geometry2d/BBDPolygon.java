@@ -1,6 +1,8 @@
 package Geometry2d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class BBDPolygon implements BBDGeometry{
 
@@ -27,19 +29,19 @@ public class BBDPolygon implements BBDGeometry{
      * @param inputPoints points used to define the perimeter of the polygon
      */
     public BBDPolygon (BBDPoint[] inputPoints){
-        ArrayList<BBDSegment> segments = new ArrayList<BBDSegment>();
+        ArrayList<BBDSegment> segments = new ArrayList<>();
         for(int index = 0; index< inputPoints.length; index++){
             int nextIndex = (index + 1) % inputPoints.length;
             segments.add(new BBDSegment(inputPoints[index], inputPoints[nextIndex]));
         }
 
         this.points = inputPoints;
-        this.segments = segments.toArray(new BBDSegment[segments.size()]);
+        this.segments = segments.toArray(new BBDSegment[0]);
     }
 
     /**
      * The horizontal dimension of this polygon
-     * @return
+     * @return max width of the polygon
      */
     public double width(){
         double maxX = Double.NEGATIVE_INFINITY;
@@ -55,7 +57,7 @@ public class BBDPolygon implements BBDGeometry{
 
     /**
      * The horizontal dimension of this polygon
-     * @return
+     * @return max height of the polygon
      */
     public double height(){
         double maxY = Double.NEGATIVE_INFINITY;
@@ -71,20 +73,25 @@ public class BBDPolygon implements BBDGeometry{
     }
 
 
-    @Override
     /**
+     *
      * Translate the polygon a specified amount in both cardinal directions
+     *
+     * @param dx distance on x axis
+     * @param dy distance on y axis
      */
+    @Override
     public void translate(double dx, double dy) {
         for (BBDPoint point: this.points){
             point.translate(dx, dy);
         }
     }
 
-    @Override
     /**
-     * Scale the polygon by a given amount
+     * Scale the polygon by a given amount using the center as the location to scale from
+     * @param scaleFactor factor to scale by
      */
+    @Override
     public void scale(double scaleFactor) {
         BBDPoint center = this.center();
         for (BBDPoint point: this.points){
@@ -92,41 +99,48 @@ public class BBDPolygon implements BBDGeometry{
         }
     }
 
-    @Override
     /**
      * Scale the polygon by a given amount centered on a given location
+     * @param centerOfScale point from which the polygon is scaled
+     * @param scaleFactor factor to scale by
      */
+    @Override
     public void scaleFromPoint(BBDPoint centerOfScale, double scaleFactor) {
         for (BBDPoint point: this.points){
             point.scaleFromPoint(centerOfScale, scaleFactor);
         }
     }
 
-    @Override
     /**
      * Rotate the polygon around the center.  Positive degrees are clockwise,
      * and negative degrees are counter-clockwise
+     * @param degrees how much to rotate
      */
+    @Override
     public void rotate(double degrees) {
         this.rotateAroundPoint(this.center(), degrees);
     }
 
-    @Override
     /**
      * Rotate the polygon around a specific point.  Positive degrees are clockwise,
      * and negative degrees are counter-clockwise
+     * @param centerOfRotation point from which the polygon is rotated
+     * @param degrees how much to rotate
      */
+    @Override
     public void rotateAroundPoint(BBDPoint centerOfRotation, double degrees) {
         for (BBDPoint point: points){
             point.rotateAroundPoint(centerOfRotation, degrees);
         }
     }
 
-    @Override
+
     /**
      * Calculates the geometric center of the polygon by finding the max/min x/y
      *  and then averaging.
+     *  @return geometric center of polygon
      */
+    @Override
     public BBDPoint center() {
         double maxX = Double.NEGATIVE_INFINITY;
         double maxY = Double.NEGATIVE_INFINITY;
@@ -146,8 +160,8 @@ public class BBDPolygon implements BBDGeometry{
 
     /**
      * Check if the given point is on the perimeter of the polygon.
-     * @param pointToCheck
-     * @return
+     * @param pointToCheck point to check
+     * @return boolean stating is the pointToCheck on the perimeter
      */
     public boolean checkPointOnPerimeter(BBDPoint pointToCheck){
         for(BBDSegment segment: segments){
@@ -162,10 +176,10 @@ public class BBDPolygon implements BBDGeometry{
      * Function to create a list of polygon segments that intersect a given segment
      *
      * @param segmentToCheck Segment not part of polygon to check for intersection
-     * @return
+     * @return list of segments that the given segment intersects
      */
     public BBDSegment[] segmentIntersectPolygonList(BBDSegment segmentToCheck){
-        ArrayList<BBDSegment> intersectingSegments = new ArrayList<BBDSegment>();
+        ArrayList<BBDSegment> intersectingSegments = new ArrayList<>();
 
         for (BBDSegment segment: segments){
             boolean thisSegmentIntersects = false;
@@ -177,29 +191,25 @@ public class BBDPolygon implements BBDGeometry{
                 intersectingSegments.add(segment);
             }
         }
-        return intersectingSegments.toArray(new BBDSegment[intersectingSegments.size()]);
+        return intersectingSegments.toArray(new BBDSegment[0]);
     }
 
     /**
      * helper function to determine if a segment intersects the polygon.
      * @param segmentToCheck Segment not part of polygon to check for intersection
-     * @return
+     * @return boolean stating if this segment intersects the polygon
      */
     public boolean checkSegmentIntersectPolygon(BBDSegment segmentToCheck){
         BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck);
 
-        if (intersectionList.length == 0){
-            return false;
-        }else{
-            return true;
-        }
+        return (intersectionList.length != 0);
     }
 
     /**
      * Function to check if a point is inside the polygon.
      *
      * @param pointToCheck Point that is not part of the polygon to check
-     * @return
+     * @return boolean stating if the point is inside the polygon.
      */
     public boolean checkPointInside(BBDPoint pointToCheck){
         BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
@@ -209,9 +219,9 @@ public class BBDPolygon implements BBDGeometry{
         System.out.println("Intersection length: "+intersectionList.length);
 
         // find unique intersection points
-        ArrayList<BBDPoint> intersectionPoints = new ArrayList<BBDPoint>();
+        ArrayList<BBDPoint> intersectionPoints = new ArrayList<>();
 
-        BBDPoint intersection = null;
+        BBDPoint intersection;
         for(BBDSegment seg: intersectionList){
             intersection = seg.interceptPoint(segmentToCheck);
             if(!intersectionPoints.contains(intersection)) {
@@ -221,17 +231,13 @@ public class BBDPolygon implements BBDGeometry{
         
 
         //if the segment intersects an odd number of things, than it is inside the polygon.
-        if (intersectionPoints.size() % 2 ==1){
-            return true;
-        }else{
-            return false;
-        }
+        return intersectionPoints.size() % 2 ==1;
     }
 
     /**
      * Test if this polygon intersects another
-     * @param otherPolygon
-     * @return
+     * @param otherPolygon the other polygon that this one might be intersecting
+     * @return boolean stating if these polygons intersect
      */
     public boolean checkPolygonIntersectsPolygon(BBDPolygon otherPolygon){
         for (BBDSegment otherSegment: otherPolygon.segments){
@@ -244,9 +250,8 @@ public class BBDPolygon implements BBDGeometry{
 
     /**
      * Test if this polygon touches another
-     * @param otherPolygon
-
-     * @return
+     * @param otherPolygon other polygon that this one might be touching
+     * @return boolean stating if these polygons touch
      */
     public boolean checkPolygonTouchesPolygon(BBDPolygon otherPolygon){
         for(BBDPoint otherPoint : otherPolygon.points){
@@ -265,8 +270,8 @@ public class BBDPolygon implements BBDGeometry{
 
     /**
      * Test if this polygon contains another
-     * @param otherPolygon
-     * @return
+     * @param otherPolygon other polygon that might be contained within this one
+     * @return boolean stating if the given polygon is contained within this one
      */
     public boolean checkPolygonContainsPolygon(BBDPolygon otherPolygon){
         for (BBDPoint otherPoint: otherPolygon.points){
@@ -279,8 +284,8 @@ public class BBDPolygon implements BBDGeometry{
 
     /**
      * Determine the distance to another polygon
-     * @param otherPolygon
-     * @return
+     * @param otherPolygon other polygon to measure distance to
+     * @return distance to the other polygon
      */
     public double distanceToPolygon(BBDPolygon otherPolygon){
         double minDist = Double.MAX_VALUE;
@@ -297,8 +302,8 @@ public class BBDPolygon implements BBDGeometry{
 
     /**
      * Determine the distance to another segment
-     * @param otherSegment
-     * @return
+     * @param otherSegment other segment to measure distance to
+     * @return distance to the other segment
      */
     public double distanceToSegment (BBDSegment otherSegment){
         double minDist = Double.MAX_VALUE;
@@ -313,8 +318,8 @@ public class BBDPolygon implements BBDGeometry{
 
     /**
      * Determine the distance to another point
-     * @param otherPoint
-     * @return
+     * @param otherPoint other point to measure distance to
+     * @return distance to the other point
      */
     public double distanceToPoint (BBDPoint otherPoint){
         double minDist = Double.MAX_VALUE;
@@ -332,10 +337,49 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     public String extendedToString(){
-        String aggregatedString = this.toString();
+        StringBuilder aggregatedString = new StringBuilder(this.toString());
         for (BBDSegment seg : this.segments){
-            aggregatedString += seg.toString()+" ";
+            aggregatedString.append(seg.toString()).append(" ");
         }
-        return aggregatedString;
+        return aggregatedString.toString();
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if (this == other){
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        BBDPolygon otherPolygon = (BBDPolygon)other;
+        // check size first
+        if (otherPolygon.points.length != this.points.length){
+            return false;
+        }
+
+        // then rotate through the points until we have a sequential match
+        // checking forward and backward ordered lists
+        ArrayList<BBDPoint> forwardList = new ArrayList<>(Arrays.asList(this.points));
+        ArrayList<BBDPoint> backwardList = new ArrayList<>(Arrays.asList(this.points));
+        Collections.reverse(backwardList);
+
+        int count = this.points.length;
+        for (int i = 0; i< count; i++){
+            int index = 0;
+            while(otherPolygon.points[index].equals(forwardList.get(index))
+                    || otherPolygon.points[index].equals(backwardList.get(index))) {
+                index++;
+            }
+            // if we made it all the way through the polygon's points
+            if (index == count-1){
+                return true;
+            }
+            Collections.rotate(forwardList, 1);
+            Collections.rotate(backwardList, 1);
+            i++;
+        }
+
+        return false;
     }
 }

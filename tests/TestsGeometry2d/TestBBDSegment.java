@@ -50,7 +50,7 @@ public class TestBBDSegment {
         BBDSegment seg2 = new BBDSegment(p1, 0, 2);
         BBDPoint[] points2 = seg2.getPoints();
         assertEquals(new BBDPoint(1,1), points2[0]);
-        assertEquals(new BBDPoint(1, 3), points2[1]);
+        assertEquals(new BBDPoint(3, 1), points2[1]);
     }
 
     @Test
