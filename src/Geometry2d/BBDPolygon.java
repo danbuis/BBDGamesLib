@@ -1,6 +1,8 @@
 package Geometry2d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class BBDPolygon implements BBDGeometry{
 
@@ -219,7 +221,7 @@ public class BBDPolygon implements BBDGeometry{
         // find unique intersection points
         ArrayList<BBDPoint> intersectionPoints = new ArrayList<>();
 
-        BBDPoint intersection = null;
+        BBDPoint intersection;
         for(BBDSegment seg: intersectionList){
             intersection = seg.interceptPoint(segmentToCheck);
             if(!intersectionPoints.contains(intersection)) {
@@ -350,8 +352,34 @@ public class BBDPolygon implements BBDGeometry{
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        BBDPoint otherPoint = (BBDPoint)other;
-        return (Math.abs(this.xLoc - otherPoint.xLoc) < 0.0000005
-                && Math.abs(this.yLoc - otherPoint.yLoc) < 0.0000005);
+        BBDPolygon otherPolygon = (BBDPolygon)other;
+        // check size first
+        if (otherPolygon.points.length != this.points.length){
+            return false;
+        }
+
+        // then rotate through the points until we have a sequential match
+        // checking forward and backward ordered lists
+        ArrayList<BBDPoint> forwardList = new ArrayList<>(Arrays.asList(this.points));
+        ArrayList<BBDPoint> backwardList = new ArrayList<>(Arrays.asList(this.points));
+        Collections.reverse(backwardList);
+
+        int count = this.points.length;
+        for (int i = 0; i< count; i++){
+            int index = 0;
+            while(otherPolygon.points[index].equals(forwardList.get(index))
+                    || otherPolygon.points[index].equals(backwardList.get(index))) {
+                index++;
+            }
+            // if we made it all the way through the polygon's points
+            if (index == count-1){
+                return true;
+            }
+            Collections.rotate(forwardList, 1);
+            Collections.rotate(backwardList, 1);
+            i++;
+        }
+
+        return false;
     }
 }
