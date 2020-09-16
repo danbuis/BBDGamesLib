@@ -1,5 +1,7 @@
 package Geometry2d;
 
+import Geometry2d.Exceptions.ParallelLinesException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -221,10 +223,16 @@ public class BBDPolygon implements BBDGeometry{
         // find unique intersection points
         ArrayList<BBDPoint> intersectionPoints = new ArrayList<>();
 
-        BBDPoint intersection;
+        BBDPoint intersection = null;
         for(BBDSegment seg: intersectionList){
-            intersection = seg.interceptPoint(segmentToCheck);
-            if(!intersectionPoints.contains(intersection)) {
+            try {
+                intersection = seg.interceptPoint(segmentToCheck);
+            } catch(ParallelLinesException e){
+                if(seg.intersects(segmentToCheck)){
+
+                }
+            }
+            if(intersection != null && !intersectionPoints.contains(intersection)) {
                 intersectionPoints.add(intersection);
             }
         }
