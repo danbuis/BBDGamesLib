@@ -154,7 +154,11 @@ public class BBDSegment implements BBDGeometry{
         BBDSegment seg1 = new BBDSegment(this.startPoint, point);
         BBDSegment seg2 = new BBDSegment(point, this.endPoint);
 
-        boolean sameSlope =  Math.abs(seg1.slopeInRatio()-seg2.slopeInRatio())<=0.001;
+        // if delta of slopes is effectively 0, then they are the same
+        // if both slopes are basically vertical, then they are the same, but they might be +- of vert
+        // depending on floating point drift
+        boolean sameSlope =  ((Math.abs(seg1.slopeInRadians()-seg2.slopeInRadians())<=0.00001)
+                || ((Math.abs(seg1.slopeInRadians())-1.57079 <= 0.001) && (Math.abs(seg2.slopeInRadians())-1.57079 <= 0.001)));
 
         //can we cut out early?
         if (startPoint.equals(point)
@@ -183,10 +187,26 @@ public class BBDSegment implements BBDGeometry{
             maxY = endPoint.getYLoc();
         }
 
-        return (maxX >= point.getXLoc())
+        boolean within =  (maxX >= point.getXLoc())
             && (point.getXLoc() >= minX)
             && (maxY >= point.getYLoc())
             && (point.getYLoc() >= minY);
+
+        if(within){
+            return true;
+        }else{
+            //apply a delta around the mins and maxs due to floating point math drift
+            maxX += 0.0001;
+            maxY += 0.0001;
+            minX -= 0.0001;
+            minY -= 0.0001;
+
+            return (maxX >= point.getXLoc())
+                    && (point.getXLoc() >= minX)
+                    && (maxY >= point.getYLoc())
+                    && (point.getYLoc() >= minY);
+        }
+
     }
 
     /**
@@ -206,21 +226,22 @@ public class BBDSegment implements BBDGeometry{
 
         double thisSlope = this.slopeInRatio();
         double otherSlope = otherSegment.slopeInRatio();
-
         BBDPoint origin = new BBDPoint(0,0);
         boolean needToRotateToAvoidVerticalLines = false;
         double angleToRotate = 0;
         if( thisSlope == Double.POSITIVE_INFINITY || otherSlope == Double.POSITIVE_INFINITY){
             needToRotateToAvoidVerticalLines = true;
+
             double thisDegrees = this.slopeInDegrees();
-            double otherDegrees = this.slopeInDegrees();
+            double otherDegrees = otherSegment.slopeInDegrees();
             double angleDiff = thisDegrees - otherDegrees;
 
             angleToRotate = angleDiff/2;
             this.rotateAroundPoint(origin, angleToRotate);
             otherSegment.rotateAroundPoint(origin, angleToRotate);
+            thisSlope = this.slopeInRatio();
+            otherSlope = otherSegment.slopeInRatio();
         }
-
 
         double xLoc = (thisSlope * this.startPoint.getXLoc()
                         - otherSlope * otherSegment.startPoint.getXLoc()
@@ -297,6 +318,7 @@ public class BBDSegment implements BBDGeometry{
             System.out.println("Somehow you managed to make what should be a perpendicular segment be parallel...");
             e.printStackTrace();
         }
+
         if (interceptPoint != null && this.pointOnSegment(interceptPoint)){
             return interceptPoint.distanceToPoint(otherPoint);
         }
