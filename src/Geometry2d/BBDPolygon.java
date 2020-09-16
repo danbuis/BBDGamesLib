@@ -1,5 +1,6 @@
 package Geometry2d;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -330,6 +331,36 @@ public class BBDPolygon implements BBDGeometry{
             }
         }
         return minDist;
+    }
+
+    /**
+     * Calculate the area of this polygon
+     * @return area
+     */
+    public double area(){
+        double accumulatedTotal = 0;
+        ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
+        
+        while(remainingPoints.size() >= 3){
+            //cycle through 3 adjacent vertices until we find a triangle with an interior inside the polygon
+            BBDPolygon test = null;
+            for(int i=1; i< remainingPoints.size()-1; i++){
+                test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
+                if(this.checkPointInside(test.center())){
+                    BBDPoint A = remainingPoints.get(i - 1);
+                    BBDPoint B = remainingPoints.get(i);
+                    BBDPoint C = remainingPoints.get(i + 1);
+
+                    accumulatedTotal += (A.getXLoc()*(B.getYLoc()-C.getYLoc())
+                            + B.getXLoc()*(C.getYLoc()-A.getYLoc())
+                            + C.getXLoc()*(A.getYLoc()-B.getYLoc()))/ 2.0;
+
+                    remainingPoints.remove(i);
+                }
+            }
+        }
+
+        return accumulatedTotal;
     }
 
     public String toString(){
