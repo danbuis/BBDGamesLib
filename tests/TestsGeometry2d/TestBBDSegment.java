@@ -2,6 +2,7 @@ package TestsGeometry2d;
 
 import Geometry2d.BBDPoint;
 import Geometry2d.BBDSegment;
+import Geometry2d.Exceptions.ParallelLinesException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -176,9 +177,24 @@ public class TestBBDSegment {
         BBDSegment test1 = new BBDSegment(new BBDPoint(0,1), new BBDPoint(1,0));
         BBDSegment test2 = new BBDSegment(new BBDPoint(0,0), new BBDPoint(1,1));
         BBDSegment test3 = new BBDSegment(new BBDPoint(4,4), new BBDPoint(8,8));
+        BBDSegment parallel = new BBDSegment(new BBDPoint(0,2), new BBDPoint(2,0));
 
-        assertEquals(new BBDPoint(0.5, 0.5), test1.interceptPoint(test2));
-        assertEquals(new BBDPoint(0.5, 0.5), test1.interceptPoint(test3));
+        try{
+            assertEquals(new BBDPoint(0.5, 0.5), test1.interceptPoint(test2));
+            assertEquals(new BBDPoint(0.5, 0.5), test1.interceptPoint(test3));
+        } catch(ParallelLinesException e){
+            System.out.println("You probably shouldn't be getting an exception here");
+            e.printStackTrace();
+        }
+
+
+        Exception exception = assertThrows(ParallelLinesException.class, () -> test1.interceptPoint(parallel));
+
+        String expectedMessage = "Can not calculate an intercept point between 2 parallel lines";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
     }
 
     @Test
@@ -203,17 +219,21 @@ public class TestBBDSegment {
         BBDSegment testSeg = this.buildVertical();
 
         BBDPoint point1 = new BBDPoint(1,0);
-        assertEquals(0, testSeg.distanceToPoint(point1));
+        assertEquals(0, testSeg.distanceToPoint(point1), 0.00001);
 
-        BBDPoint point1a = new BBDPoint(1, 0.5);
-        assertEquals(0, testSeg.distanceToPoint(point1a));
+        testSeg = this.buildVertical();
+        BBDPoint point1a = new BBDPoint(1, 0.6);
+        assertEquals(0, testSeg.distanceToPoint(point1a), 0.00001);
 
-        BBDPoint point2 = new BBDPoint(1, 0.5);
-        assertEquals(1, testSeg.distanceToPoint(point2));
+        testSeg = this.buildVertical();
+        BBDPoint point2 = new BBDPoint(2, 0.5);
+        assertEquals(1, testSeg.distanceToPoint(point2), 0.00001);
 
+        testSeg = this.buildVertical();
         BBDPoint point3 = new BBDPoint(1,4);
-        assertEquals(3, testSeg.distanceToPoint(point3));
+        assertEquals(3, testSeg.distanceToPoint(point3), 0.00001);
 
+        testSeg = this.buildVertical();
         BBDPoint point4 = new BBDPoint(5,5);
         assertEquals(Math.sqrt(2)*4, testSeg.distanceToPoint(point4), 0.00001);
     }
@@ -232,13 +252,14 @@ public class TestBBDSegment {
         assertFalse(crossing.segmentConnected(horizontal));
     }
 
+    @Test
     public void testEquals(){
         BBDSegment test1 = new BBDSegment(new BBDPoint(0,0), new BBDPoint(1,1));
         BBDSegment test2 = new BBDSegment(new BBDPoint(1,1), new BBDPoint(0,0));
         BBDSegment test3 = new BBDSegment(new BBDPoint(10,10), new BBDPoint(1,1));
 
-        assertTrue(test1.equals(test2));
-        assertTrue(test2.equals(test1));
-        assertFalse(test1.equals(test3));
+        assertEquals(test2, test1);
+        assertEquals(test1, test2);
+        assertNotEquals(test3, test1);
     }
 }
