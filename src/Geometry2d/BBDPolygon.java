@@ -1,7 +1,6 @@
 package Geometry2d;
 
 import Geometry2d.Exceptions.ParallelLinesException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -161,6 +160,26 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
+     * A different method for determining the center of a poly.  This one does an
+     * average of all the coordinates, rather than an absolute center using the max and min
+     * bounds like center() does.
+     * @return the average of all the points
+     */
+    public BBDPoint centerAverage(){
+        double aggX = 0;
+        double aggY = 0;
+
+        for (BBDPoint point : points){
+            aggX += point.getXLoc();
+            aggY += point.getYLoc();
+        }
+
+        int size = this.points.length;
+
+        return new BBDPoint(aggX/size, aggY / size);
+    }
+
+    /**
      * Check if the given point is on the perimeter of the polygon.
      * @param pointToCheck point to check
      * @return boolean stating is the pointToCheck on the perimeter
@@ -215,10 +234,7 @@ public class BBDPolygon implements BBDGeometry{
      */
     public boolean checkPointInside(BBDPoint pointToCheck){
         BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
-        System.out.println(segmentToCheck);
-        System.out.println(this.extendedToString());
         BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck);
-        System.out.println("Intersection length: "+intersectionList.length);
 
         // find unique intersection points
         ArrayList<BBDPoint> intersectionPoints = new ArrayList<>();
@@ -340,14 +356,46 @@ public class BBDPolygon implements BBDGeometry{
         return minDist;
     }
 
+    /**
+     * Calculate the area of this polygon
+     * @return area
+     */
+    public double area(){
+        double accumulatedTotal = 0;
+        ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
+        
+        while(remainingPoints.size() >= 3){
+            BBDPolygon temp = new BBDPolygon(remainingPoints.toArray(new BBDPoint[0]));
+            //cycle through 3 adjacent vertices until we find a triangle with an interior inside the polygon
+            BBDPolygon test = null;
+            for(int i=1; i< remainingPoints.size()-1; i++){
+                test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
+                BBDPoint center = test.centerAverage();
+                if(temp.checkPointOnPerimeter(center) || temp.checkPointInside(center)){
+                    BBDPoint A = remainingPoints.get(i - 1);
+                    BBDPoint B = remainingPoints.get(i);
+                    BBDPoint C = remainingPoints.get(i + 1);
+
+                    accumulatedTotal += Math.abs((A.getXLoc()*(B.getYLoc()-C.getYLoc())
+                            + B.getXLoc()*(C.getYLoc()-A.getYLoc())
+                            + C.getXLoc()*(A.getYLoc()-B.getYLoc()))/ 2.0);
+                    remainingPoints.remove(i);
+                    break;
+                }
+            }
+        }
+
+        return accumulatedTotal;
+    }
+
     public String toString(){
         return "BBDPolygon object consisting of "+this.points.length+" vertices ";
     }
 
     public String extendedToString(){
         StringBuilder aggregatedString = new StringBuilder(this.toString());
-        for (BBDSegment seg : this.segments){
-            aggregatedString.append(seg.toString()).append(" ");
+        for (BBDPoint point : this.points){
+            aggregatedString.append(point.toString()).append(" ");
         }
         return aggregatedString.toString();
     }
