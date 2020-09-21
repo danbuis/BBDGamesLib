@@ -148,23 +148,24 @@ public class BBDSegment implements BBDGeometry{
      * epsilon value though due to floating point math.  If the point
      * is on the segment it will also fall within the bounds of the 2 points.
      * @param point point to test
-     * @return is the point on the segment?
+     * @return is the point on the segment  ?
      */
     public boolean pointOnSegment(BBDPoint point){
+        //can we cut out early?
+        if (startPoint.equals(point)
+                || endPoint.equals(point)){
+            return true;
+        }
+
         BBDSegment seg1 = new BBDSegment(this.startPoint, point);
         BBDSegment seg2 = new BBDSegment(point, this.endPoint);
 
         // if delta of slopes is effectively 0, then they are the same
         // if both slopes are basically vertical, then they are the same, but they might be +- of vert
         // depending on floating point drift
-        boolean sameSlope =  ((Math.abs(seg1.slopeInRadians()-seg2.slopeInRadians())<=0.00001)
-                || ((Math.abs(seg1.slopeInRadians())-1.57079 <= 0.001) && (Math.abs(seg2.slopeInRadians())-1.57079 <= 0.001)));
+        boolean sameSlope =  ((Math.abs(seg1.slopeInDegrees()-seg2.slopeInDegrees())<=0.00001)
+                || ((1.57079-Math.abs(seg1.slopeInRadians()) <= 0.001) && (1.57079-Math.abs(seg2.slopeInRadians()) <= 0.001)));
 
-        //can we cut out early?
-        if (startPoint.equals(point)
-         || endPoint.equals(point)){
-            return true;
-        }
         //need to check end points first because otherwise
         // dx is 0, leading to one slope being Infinity
         if (!sameSlope){
@@ -186,7 +187,6 @@ public class BBDSegment implements BBDGeometry{
             minY = startPoint.getYLoc();
             maxY = endPoint.getYLoc();
         }
-        System.out.println("Checking max/mins");
 
         boolean within =  (maxX >= point.getXLoc())
             && (point.getXLoc() >= minX)
@@ -196,7 +196,7 @@ public class BBDSegment implements BBDGeometry{
         if(within){
             return true;
         }else{
-            //apply a delta around the mins and maxs due to floating point math drift
+            //apply a delta around the min and max due to floating point math drift
             maxX += 0.0001;
             maxY += 0.0001;
             minX -= 0.0001;
@@ -207,7 +207,6 @@ public class BBDSegment implements BBDGeometry{
                     && (maxY >= point.getYLoc())
                     && (point.getYLoc() >= minY);
         }
-
     }
 
     /**
@@ -230,7 +229,8 @@ public class BBDSegment implements BBDGeometry{
         BBDPoint origin = new BBDPoint(0,0);
         boolean needToRotateToAvoidVerticalLines = false;
         double angleToRotate = 0;
-        if( thisSlope == Double.POSITIVE_INFINITY || otherSlope == Double.POSITIVE_INFINITY){
+        //if we are kinda close to vertical, let's just call it and do some rotation.
+        if( 90-Math.abs(this.slopeInDegrees()) <= 0.1 || 90-Math.abs(otherSegment.slopeInDegrees()) <= 0.1){
             needToRotateToAvoidVerticalLines = true;
 
             double thisDegrees = this.slopeInDegrees();
