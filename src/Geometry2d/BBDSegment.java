@@ -180,6 +180,7 @@ public class BBDSegment implements BBDGeometry{
             minY = startPoint.getYLoc();
             maxY = endPoint.getYLoc();
         }
+        System.out.println("Checking max/mins");
 
         return (maxX >= point.getXLoc())
             && (point.getXLoc() >= minX)
@@ -237,15 +238,23 @@ public class BBDSegment implements BBDGeometry{
      * @param otherSegment the other segment to check against
      * @return intersect?
      */
-    public Boolean intersects(BBDSegment otherSegment){
+    public boolean intersects(BBDSegment otherSegment){
         // if segments are co-linear, then if at least one vertex is on the other segment than
         // they intersect
+        System.out.println("START OF INTERSECTS()");
+        System.out.println(this);
+        System.out.println(otherSegment);
         if (this.slopeInDegrees() == otherSegment.slopeInDegrees()){
+            System.out.println("In if block");
             return (this.pointOnSegment(otherSegment.startPoint) || this.pointOnSegment(otherSegment.endPoint)
                     || otherSegment.pointOnSegment(this.startPoint) || otherSegment.pointOnSegment(this.endPoint));
         }
         else {
             BBDPoint interceptPoint = this.interceptPoint(otherSegment);
+            System.out.println("In else block");
+            System.out.println(interceptPoint);
+            System.out.println(this.pointOnSegment(interceptPoint));
+            System.out.println(otherSegment.pointOnSegment(interceptPoint));
             return (this.pointOnSegment(interceptPoint) && otherSegment.pointOnSegment(interceptPoint));
         }
     }

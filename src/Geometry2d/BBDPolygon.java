@@ -342,10 +342,14 @@ public class BBDPolygon implements BBDGeometry{
         ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
         
         while(remainingPoints.size() >= 3){
+            System.out.println("Remaining points: "+remainingPoints.size());
+            System.out.println(remainingPoints);
             //cycle through 3 adjacent vertices until we find a triangle with an interior inside the polygon
             BBDPolygon test = null;
             for(int i=1; i< remainingPoints.size()-1; i++){
+                System.out.println("index: "+i);
                 test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
+                System.out.println("Test tri : "+test.extendedToString());
                 if(this.checkPointInside(test.center())){
                     BBDPoint A = remainingPoints.get(i - 1);
                     BBDPoint B = remainingPoints.get(i);
