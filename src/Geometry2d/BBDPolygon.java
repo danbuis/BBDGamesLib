@@ -244,9 +244,12 @@ public class BBDPolygon implements BBDGeometry{
             try {
                 intersection = seg.interceptPoint(segmentToCheck);
             } catch(ParallelLinesException e){
-                if(seg.intersects(segmentToCheck)){
-
-                }
+                /*if we get here, it is because the lines are parallel. If they are colinear, we will do nothing
+                 * , because the perimeter segment is guaranteed to have both points on the test segment
+                 * due the way the test is created.  Therefore both points will be covered by the
+                 * neighboring segments.  If they aren't then there is no intersection anyway, so no change.
+                 * But we need the try catch because it is a thrown exception.
+                 */
             }
             if(intersection != null && !intersectionPoints.contains(intersection)) {
                 intersectionPoints.add(intersection);
@@ -367,7 +370,7 @@ public class BBDPolygon implements BBDGeometry{
         while(remainingPoints.size() >= 3){
             BBDPolygon temp = new BBDPolygon(remainingPoints.toArray(new BBDPoint[0]));
             //cycle through 3 adjacent vertices until we find a triangle with an interior inside the polygon
-            BBDPolygon test = null;
+            BBDPolygon test;
             for(int i=1; i< remainingPoints.size()-1; i++){
                 test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
                 BBDPoint center = test.centerAverage();

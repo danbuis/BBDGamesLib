@@ -16,6 +16,11 @@ public class BBDPoint implements BBDGeometry{
         this.yLoc = y;
     }
 
+    public BBDPoint(BBDPoint toCopy) {
+        this.xLoc = toCopy.xLoc;
+        this.yLoc = toCopy.yLoc;
+    }
+
     public double getXLoc(){
         return this.xLoc;
     }
