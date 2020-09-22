@@ -1,6 +1,7 @@
 package TestsGeometry2d;
 
 import Geometry2d.BBDPoint;
+import Geometry2d.Exceptions.CoordinateOverflowException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -136,5 +137,21 @@ public class TestBBDPoint {
         assertEquals(0, point2.angleToOtherPoint(point1));
         assertEquals(45, point2.angleToOtherPoint(point3));
         assertEquals(-45, point3.angleToOtherPoint(point1));
+    }
+
+    @Test
+    public void testOverflow(){
+        /*Doubles work differently from ints with overflow.  Basically once it has reached
+        the maximum or minimum, it stays there, even after subtraction.  The only way it will
+        change is by going to Infinity.
+         */
+        BBDPoint original = new BBDPoint(1,1);
+        BBDPoint test1 = new BBDPoint(original);
+
+        //make sure that validate is called...
+        Exception exception = assertThrows(CoordinateOverflowException.class, () -> test1.translate(Double.MAX_VALUE, 1));
+        String expectedMessage = "has reached the bounds";
+        assertTrue(exception.getMessage().contains(expectedMessage));
+
     }
 }

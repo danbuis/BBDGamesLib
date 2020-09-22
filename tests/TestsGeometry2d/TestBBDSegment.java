@@ -2,6 +2,7 @@ package TestsGeometry2d;
 
 import Geometry2d.BBDPoint;
 import Geometry2d.BBDSegment;
+import Geometry2d.Exceptions.CoordinateOverflowException;
 import Geometry2d.Exceptions.ParallelLinesException;
 import org.junit.jupiter.api.Test;
 
@@ -194,7 +195,6 @@ public class TestBBDSegment {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
-
     }
 
     @Test

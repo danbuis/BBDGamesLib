@@ -1,5 +1,7 @@
 package Geometry2d;
 
+import Geometry2d.Exceptions.CoordinateOverflowException;
+
 public class BBDPoint implements BBDGeometry{
     /**
      * A class representing a single point in space. It adheres
@@ -36,9 +38,10 @@ public class BBDPoint implements BBDGeometry{
      */
     @Override
     public void translate(double dx, double dy) {
-
         this.xLoc += dx;
         this.yLoc += dy;
+
+        validateCoordinates();
     }
 
     /**
@@ -62,6 +65,8 @@ public class BBDPoint implements BBDGeometry{
 
         this.xLoc = centerOfScale.getXLoc() + scaleFactor*dx;
         this.yLoc = centerOfScale.getYLoc() + scaleFactor*dy;
+
+        validateCoordinates();
     }
 
     /**
@@ -90,6 +95,8 @@ public class BBDPoint implements BBDGeometry{
 
         this.xLoc = centerOfRotation.getXLoc() + Math.cos(newAngleInRadians) * distanceToCenter;
         this.yLoc = centerOfRotation.getYLoc() + Math.sin(newAngleInRadians) * distanceToCenter;
+
+        validateCoordinates();
     }
 
     /**
@@ -149,5 +156,23 @@ public class BBDPoint implements BBDGeometry{
         BBDPoint otherPoint = (BBDPoint)other;
         return (Math.abs(this.xLoc - otherPoint.xLoc) < 0.0000005
                 && Math.abs(this.yLoc - otherPoint.yLoc) < 0.0000005);
+    }
+
+    private void validateCoordinates(){
+        //validate xLoc
+        if(this.xLoc == Double.MAX_VALUE
+                || this.xLoc == Double.POSITIVE_INFINITY
+                || this.xLoc == Double.MIN_VALUE
+                || this.xLoc == Double.NEGATIVE_INFINITY){
+            throw new CoordinateOverflowException("X coordinate of a point has reached the bounds provided by the Double type");
+        }
+
+        //validate yLoc
+        if(this.yLoc == Double.MAX_VALUE
+                || this.yLoc == Double.POSITIVE_INFINITY
+                || this.yLoc == Double.MIN_VALUE
+                || this.yLoc == Double.NEGATIVE_INFINITY){
+            throw new CoordinateOverflowException("Y coordinate of a point has reached the bounds provided by the Double type");
+        }
     }
 }
