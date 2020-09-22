@@ -198,23 +198,6 @@ public class TestBBDSegment {
     }
 
     @Test
-    public void testOverflow(){
-        BBDPoint original = new BBDPoint(1,1);
-        BBDPoint test1 = new BBDPoint(original);
-
-        //make sure that validate is called...
-        Exception exception = assertThrows(CoordinateOverflowException.class, () -> test1.translate(Double.MAX_VALUE, 1));
-        String expectedMessage = "has reached the bounds";
-        assertTrue(exception.getMessage().contains(expectedMessage));
-
-        BBDPoint test2 = new BBDPoint(Double.MAX_VALUE-1, Double.MAX_VALUE-1);
-        test2.translate(0,0);
-        exception = assertThrows(CoordinateOverflowException.class, () -> test1.scaleFromPoint(new BBDPoint(0,0), Double.POSITIVE_INFINITY));
-        assertTrue(exception.getMessage().contains(expectedMessage));
-
-    }
-
-    @Test
     public void testIntersection(){
         BBDSegment test1 = new BBDSegment(new BBDPoint(0,1), new BBDPoint(1,0));
         BBDSegment test2 = new BBDSegment(new BBDPoint(0,0), new BBDPoint(1,1));
