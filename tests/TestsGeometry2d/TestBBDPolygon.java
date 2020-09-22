@@ -1,5 +1,6 @@
 package TestsGeometry2d;
 
+import Geometry2d.BBDGeometryUtils;
 import Geometry2d.BBDPoint;
 import Geometry2d.BBDPolygon;
 import Geometry2d.BBDSegment;
@@ -180,10 +181,10 @@ public class TestBBDPolygon {
     public void testArea(){
         BBDPolygon square = this.buildSquare();
         //check basic method
-        assertEquals(4, square.area(), 0.00001);
+        assertEquals(4, square.area(), BBDGeometryUtils.ALLOWABLE_DELTA);
         //check if object is modified
         square.scale(2);
-        assertEquals(16, square.area(), 0.00001);
+        assertEquals(16, square.area(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //construct a square that has co-linear points on the edges.
         BBDPoint point1 = new BBDPoint(1,1);
@@ -196,11 +197,11 @@ public class TestBBDPolygon {
         BBDPoint point45 = new BBDPoint(0,1);
 
         BBDPoint[] points = {point1, point15, point2, point25, point3, point35, point4, point45};
-        assertEquals(4, new BBDPolygon(points).area(), 0.00001);
+        assertEquals(4, new BBDPolygon(points).area(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //make a concave polygon, and make sure that the first 3 points make a triangle NOT inside
         point2 = new BBDPoint(0,0);
         BBDPoint[] points2 = {point15, point2, point25, point3, point35, point4, point45, point1};
-        assertEquals(3, new BBDPolygon(points2).area(), 0.00001);
+        assertEquals(3, new BBDPolygon(points2).area(), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 }

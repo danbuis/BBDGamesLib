@@ -1,5 +1,6 @@
 package TestsGeometry2d;
 
+import Geometry2d.BBDGeometryUtils;
 import Geometry2d.BBDPoint;
 import Geometry2d.Exceptions.CoordinateOverflowException;
 import org.junit.jupiter.api.Test;
@@ -72,13 +73,13 @@ public class TestBBDPoint {
         assertEquals(3, testPoint.getXLoc());
         assertEquals(3, testPoint.getYLoc());
         testPoint.scaleFromPoint(new BBDPoint(0,0), 0.1);
-        assertEquals(0.3, testPoint.getXLoc(), 0.0005);
-        assertEquals(0.3, testPoint.getYLoc(), 0.0005);
+        assertEquals(0.3, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0.3, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testPoint = new BBDPoint(10,10);
         testPoint.scaleFromPoint(new BBDPoint(12, 15), 2);
-        assertEquals(8, testPoint.getXLoc(), 0.0005);
-        assertEquals(5, testPoint.getYLoc(), 0.0005);
+        assertEquals(8, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(5, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testPoint = new BBDPoint(1,1);
         testPoint.scaleFromPoint(new BBDPoint(0,0), -1);
@@ -95,18 +96,18 @@ public class TestBBDPoint {
     public void testRotateAroundPoint(){
         BBDPoint testPoint = new BBDPoint(1,0);
         testPoint.rotateAroundPoint(new BBDPoint(0,0), 90);
-        assertEquals(0, testPoint.getXLoc(), 0.0005);
-        assertEquals(1, testPoint.getYLoc(), 0.0005);
+        assertEquals(0, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testPoint = new BBDPoint(1,0);
         testPoint.rotateAroundPoint(new BBDPoint(0,0), 720);
-        assertEquals(1, testPoint.getXLoc(), 0.0005);
-        assertEquals(0, testPoint.getYLoc(), 0.0005);
+        assertEquals(1, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testPoint.rotateAroundPoint(new BBDPoint(-1,1), -90);
         System.out.println(testPoint);
-        assertEquals(-2, testPoint.getXLoc(), 0.0005);
-        assertEquals(-1, testPoint.getYLoc(), 0.0005);
+        assertEquals(-2, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-1, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
     /**
@@ -121,7 +122,7 @@ public class TestBBDPoint {
 
         assertEquals(2, point1.distanceToPoint(point2));
         assertEquals(2, point2.distanceToPoint(point1));
-        assertEquals(1.414, point1.distanceToPoint(point3), 0.0005);
+        assertEquals(Math.sqrt(2.0), point1.distanceToPoint(point3), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
     /**

@@ -154,8 +154,8 @@ public class BBDPoint implements BBDGeometry{
             return false;
         }
         BBDPoint otherPoint = (BBDPoint)other;
-        return (Math.abs(this.xLoc - otherPoint.xLoc) < 0.0000005
-                && Math.abs(this.yLoc - otherPoint.yLoc) < 0.0000005);
+        return (Math.abs(this.xLoc - otherPoint.xLoc) < BBDGeometryUtils.ALLOWABLE_DELTA
+                && Math.abs(this.yLoc - otherPoint.yLoc) < BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
     private void validateCoordinates(){

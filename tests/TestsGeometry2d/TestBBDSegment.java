@@ -1,5 +1,6 @@
 package TestsGeometry2d;
 
+import Geometry2d.BBDGeometryUtils;
 import Geometry2d.BBDPoint;
 import Geometry2d.BBDSegment;
 import Geometry2d.Exceptions.CoordinateOverflowException;
@@ -128,17 +129,17 @@ public class TestBBDSegment {
         assertEquals(0, horizontal.slopeInRadians());
 
         BBDSegment vertical = this.buildVertical();
-        assertEquals(Math.PI/2, vertical.slopeInRadians(), 0.000005);
+        assertEquals(Math.PI/2, vertical.slopeInRadians(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         BBDSegment angled1 = this.buildAngleOne();
-        assertEquals(Math.PI/4, angled1.slopeInRadians(), 0.000005);
+        assertEquals(Math.PI/4, angled1.slopeInRadians(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         BBDSegment angled2 = this.buildAngleTwo();
-        assertEquals(Math.PI/-4, angled2.slopeInRadians(),0.000005);
+        assertEquals(Math.PI/-4, angled2.slopeInRadians(),BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //test that slope is direction agnostic
         angled2.rotate(180);
-        assertEquals(Math.PI/-4, angled2.slopeInRadians(),0.000005);
+        assertEquals(Math.PI/-4, angled2.slopeInRadians(),BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
     @Test
@@ -147,17 +148,17 @@ public class TestBBDSegment {
         assertEquals(0, horizontal.slopeInDegrees());
 
         BBDSegment vertical = this.buildVertical();
-        assertEquals(90, vertical.slopeInDegrees(), 0.000005);
+        assertEquals(90, vertical.slopeInDegrees(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         BBDSegment angled1 = this.buildAngleOne();
-        assertEquals(45, angled1.slopeInDegrees(), 0.000005);
+        assertEquals(45, angled1.slopeInDegrees(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         BBDSegment angled2 = this.buildAngleTwo();
-        assertEquals(-45, angled2.slopeInDegrees(),0.000005);
+        assertEquals(-45, angled2.slopeInDegrees(),BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //test that slope is direction agnostic
         angled2.rotate(180);
-        assertEquals(-45, angled2.slopeInDegrees(),0.000005);
+        assertEquals(-45, angled2.slopeInDegrees(),BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
     @Test
@@ -208,7 +209,6 @@ public class TestBBDSegment {
         //check reverse
         assertTrue(test2.intersects(test1));
 
-        //System.out.println(test1.interceptPoint(test3));
         assertFalse(test1.intersects(test3));
         //check if end point of one is the intersection
         assertTrue(test4.intersects(test1));
@@ -219,23 +219,23 @@ public class TestBBDSegment {
         BBDSegment testSeg = this.buildVertical();
 
         BBDPoint point1 = new BBDPoint(1,0);
-        assertEquals(0, testSeg.distanceToPoint(point1), 0.00001);
+        assertEquals(0, testSeg.distanceToPoint(point1), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point1a = new BBDPoint(1, 0.6);
-        assertEquals(0, testSeg.distanceToPoint(point1a), 0.00001);
+        assertEquals(0, testSeg.distanceToPoint(point1a), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point2 = new BBDPoint(2, 0.5);
-        assertEquals(1, testSeg.distanceToPoint(point2), 0.00001);
+        assertEquals(1, testSeg.distanceToPoint(point2), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point3 = new BBDPoint(1,4);
-        assertEquals(3, testSeg.distanceToPoint(point3), 0.00001);
+        assertEquals(3, testSeg.distanceToPoint(point3), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point4 = new BBDPoint(5,5);
-        assertEquals(Math.sqrt(2)*4, testSeg.distanceToPoint(point4), 0.00001);
+        assertEquals(Math.sqrt(2)*4, testSeg.distanceToPoint(point4), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
     
     @Test

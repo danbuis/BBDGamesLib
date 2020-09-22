@@ -1,6 +1,7 @@
 package Geometry2d;
 
 public class BBDGeometryUtils {
+    public static double ALLOWABLE_DELTA = 0.0000001;
 
     public static double distance(BBDSegment seg, BBDPoint point){
         return seg.distanceToPoint(point);
