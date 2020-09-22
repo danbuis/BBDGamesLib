@@ -175,4 +175,32 @@ public class TestBBDPolygon {
         assertTrue(diamond.checkPointInside(onVertex));
         assertTrue(diamond.checkPointInside(onEdge));
     }
+
+    @Test
+    public void testArea(){
+        BBDPolygon square = this.buildSquare();
+        //check basic method
+        assertEquals(4, square.area(), 0.00001);
+        //check if object is modified
+        square.scale(2);
+        assertEquals(16, square.area(), 0.00001);
+
+        //construct a square that has co-linear points on the edges.
+        BBDPoint point1 = new BBDPoint(1,1);
+        BBDPoint point15 = new BBDPoint(1,0);
+        BBDPoint point2 = new BBDPoint(1,-1);
+        BBDPoint point25 = new BBDPoint(0,-1);
+        BBDPoint point3 = new BBDPoint(-1,-1);
+        BBDPoint point35 = new BBDPoint(-1,0);
+        BBDPoint point4 = new BBDPoint(-1,1);
+        BBDPoint point45 = new BBDPoint(0,1);
+
+        BBDPoint[] points = {point1, point15, point2, point25, point3, point35, point4, point45};
+        assertEquals(4, new BBDPolygon(points).area(), 0.00001);
+
+        //make a concave polygon, and make sure that the first 3 points make a triangle NOT inside
+        point2 = new BBDPoint(0,0);
+        BBDPoint[] points2 = {point15, point2, point25, point3, point35, point4, point45, point1};
+        assertEquals(3, new BBDPolygon(points2).area(), 0.00001);
+    }
 }
