@@ -244,9 +244,12 @@ public class BBDPolygon implements BBDGeometry{
             try {
                 intersection = seg.interceptPoint(segmentToCheck);
             } catch(ParallelLinesException e){
-                if(seg.intersects(segmentToCheck)){
-
-                }
+                /**if we get here, it is because the lines are parallel. If they are colinear, we will do nothing
+                 * , becausethe perimeter segment is guaranteed to have both points on the test segment
+                 * due the way the test is created.  Therefore both points will be covered by the
+                 * neighboring segments.  If they aren't then there is no intersection anyway, so no change.
+                 * But we need the try catch because it is a thrown exception.
+                 */
             }
             if(intersection != null && !intersectionPoints.contains(intersection)) {
                 intersectionPoints.add(intersection);
