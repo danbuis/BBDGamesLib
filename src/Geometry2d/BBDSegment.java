@@ -188,10 +188,7 @@ public class BBDSegment implements BBDGeometry{
             maxY = endPoint.getYLoc();
         }
 
-        boolean within =  (maxX >= point.getXLoc())
-            && (point.getXLoc() >= minX)
-            && (maxY >= point.getYLoc())
-            && (point.getYLoc() >= minY);
+        boolean within = withinSegmentBounds(point, maxX, minX, maxY, minY);
 
         if(within){
             return true;
@@ -202,10 +199,7 @@ public class BBDSegment implements BBDGeometry{
             minX -= 0.0001;
             minY -= 0.0001;
 
-            return (maxX >= point.getXLoc())
-                    && (point.getXLoc() >= minX)
-                    && (maxY >= point.getYLoc())
-                    && (point.getYLoc() >= minY);
+            return withinSegmentBounds(point, maxX, minX, maxY, minY);
         }
     }
 
