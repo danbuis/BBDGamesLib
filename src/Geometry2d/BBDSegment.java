@@ -210,6 +210,22 @@ public class BBDSegment implements BBDGeometry{
     }
 
     /**
+     * Check if a point is within the box defined by the given bounds
+     * @param point point to check
+     * @param maxX max X value
+     * @param minX min X value
+     * @param maxY max Y value
+     * @param minY min Y value
+     * @return is the point within the bounds
+     */
+    private boolean withinSegmentBounds(BBDPoint point, double maxX, double minX, double maxY, double minY){
+        return (maxX >= point.getXLoc())
+                && (point.getXLoc() >= minX)
+                && (maxY >= point.getYLoc())
+                && (point.getYLoc() >= minY);
+    }
+
+    /**
      * Uses good old fashioned algebra to calculate the intercept point.  Each line is put into
      * point-slope form, with y isolated.  The 2 are set equal and solved for x.  Once x is
      * solved we can solve for the y coordinate of the point.  Ensure that you don't send two parallel
