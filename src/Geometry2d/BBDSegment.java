@@ -33,6 +33,11 @@ public class BBDSegment implements BBDGeometry{
                                      startPoint.getYLoc()+Math.sin(radians)*distance);
     }
 
+    public BBDSegment(BBDSegment toCopy){
+        this.startPoint = new BBDPoint(toCopy.startPoint);
+        this.endPoint = new BBDPoint(toCopy.endPoint);
+    }
+
     public BBDPoint getStartPoint(){
         return this.startPoint;
     }
@@ -234,42 +239,58 @@ public class BBDSegment implements BBDGeometry{
                     + this.toString()+ " and "+ otherSegment.toString());
         }
 
-        double thisSlope = this.slopeInRatio();
-        double otherSlope = otherSegment.slopeInRatio();
-        BBDPoint origin = new BBDPoint(0,0);
+        //will we be rotating the whole assembly?
         boolean needToRotateToAvoidVerticalLines = false;
-        double angleToRotate = 0;
         //if we are kinda close to vertical, let's just call it and do some rotation.
-        if( 90-Math.abs(this.slopeInDegrees()) <= 0.1 || 90-Math.abs(otherSegment.slopeInDegrees()) <= 0.1){
+        if( 90-Math.abs(this.slopeInDegrees()) <= 0.1 || 90-Math.abs(otherSegment.slopeInDegrees()) <= 0.1) {
             needToRotateToAvoidVerticalLines = true;
-
-            double thisDegrees = this.slopeInDegrees();
-            double otherDegrees = otherSegment.slopeInDegrees();
-            double angleDiff = thisDegrees - otherDegrees;
-
-            angleToRotate = angleDiff/2;
-            this.rotateAroundPoint(origin, angleToRotate);
-            otherSegment.rotateAroundPoint(origin, angleToRotate);
-            thisSlope = this.slopeInRatio();
-            otherSlope = otherSegment.slopeInRatio();
         }
 
-        double xLoc = (thisSlope * this.startPoint.getXLoc()
-                        - otherSlope * otherSegment.startPoint.getXLoc()
-                        + otherSegment.startPoint.getYLoc()
-                        - this.startPoint.getYLoc())
-                        / (thisSlope-otherSlope);
+        BBDSegment thisCopy = new BBDSegment(this);
+        BBDSegment otherCopy = new BBDSegment(otherSegment);
+        BBDPoint intercept;
 
-        double yLoc = thisSlope * (xLoc - this.startPoint.getXLoc()) + this.startPoint.getYLoc();
-
-        BBDPoint returnPoint = new BBDPoint(xLoc, yLoc);
-
+        //if we are kinda close to vertical, let's just call it and do some rotation.
         if(needToRotateToAvoidVerticalLines){
-            this.rotateAroundPoint(origin, -angleToRotate);
-            otherSegment.rotateAroundPoint(origin, -angleToRotate);
-            returnPoint.rotateAroundPoint(origin, -angleToRotate);
+            BBDPoint origin = new BBDPoint(0,0);
+
+            double thisDegrees = thisCopy.slopeInDegrees();
+            double otherDegrees = otherCopy.slopeInDegrees();
+            double angleDiff = thisDegrees - otherDegrees;
+            double angleToRotate = angleDiff/2;
+
+            thisCopy.rotateAroundPoint(origin, angleToRotate);
+            otherCopy.rotateAroundPoint(origin, angleToRotate);
+
+            intercept = calculateIntercept(thisCopy, otherCopy);
+            intercept.rotateAroundPoint(origin, -angleToRotate);
+        }else{
+            intercept = calculateIntercept(thisCopy, otherCopy);
         }
-        return returnPoint;
+
+        return intercept;
+    }
+
+    /**
+     * Private function to remove math logic from the interceptPoint function
+     * to improve its logic flow
+     * @param thisCopy
+     * @param otherCopy
+     * @return
+     */
+    private BBDPoint calculateIntercept(BBDSegment thisCopy, BBDSegment otherCopy){
+        double thisSlope = thisCopy.slopeInRatio();
+        double otherSlope = otherCopy.slopeInRatio();
+
+        double xLoc = (thisSlope * thisCopy.startPoint.getXLoc()
+                - otherSlope * otherCopy.startPoint.getXLoc()
+                + otherCopy.startPoint.getYLoc()
+                - thisCopy.startPoint.getYLoc())
+                / (thisSlope-otherSlope);
+
+        double yLoc = thisSlope * (xLoc - thisCopy.startPoint.getXLoc()) + thisCopy.startPoint.getYLoc();
+
+        return new BBDPoint(xLoc, yLoc);
     }
 
     /**
