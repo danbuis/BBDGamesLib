@@ -361,6 +361,14 @@ public class BBDSegment implements BBDGeometry{
     }
 
     /**
+     * Return the length squared of the segment.  Using squared distance to be consistent with the other distance items.
+     * @return the length squared of the segment
+     */
+    public double lengthSquared(){
+        return this.startPoint.distanceSquaredToPoint(this.endPoint);
+    }
+
+    /**
      * 2 segments are connected if and only if they share an endpoint.
      * @param other the other segment to check against
      * @return are these segments connected?
