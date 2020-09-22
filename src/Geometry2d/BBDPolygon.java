@@ -252,7 +252,6 @@ public class BBDPolygon implements BBDGeometry{
                 intersectionPoints.add(intersection);
             }
         }
-        
 
         //if the segment intersects an odd number of things, than it is inside the polygon.
         return intersectionPoints.size() % 2 ==1;
