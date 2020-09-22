@@ -313,21 +313,21 @@ public class BBDSegment implements BBDGeometry{
     }
 
     /**
-     * Distance between 2 segments
+     * Distance squared between 2 segments
      * @param otherSegment the other segment to measure to
      * @return the distance between the segments
      */
-    public double distanceToSegment(BBDSegment otherSegment){
+    public double distanceSquaredToSegment(BBDSegment otherSegment){
         double minDist = Double.MAX_VALUE;
 
         for (BBDPoint thisPoint: this.getPoints()){
-            double distance = otherSegment.distanceToPoint(thisPoint);
+            double distance = otherSegment.distanceSquaredToPoint(thisPoint);
             if(distance < minDist){
                 minDist = distance;
             }
         }
         for (BBDPoint otherPoint: otherSegment.getPoints()){
-            double distance = this.distanceToPoint(otherPoint);
+            double distance = this.distanceSquaredToPoint(otherPoint);
             if(distance < minDist){
                 minDist = distance;
             }
@@ -336,11 +336,11 @@ public class BBDSegment implements BBDGeometry{
     }
 
     /**
-     * Distance between a point and a segment
+     * Distance squared between a point and a segment
      * @param otherPoint the point to check against
      * @return the distance to the other point
      */
-    public double distanceToPoint(BBDPoint otherPoint){
+    public double distanceSquaredToPoint(BBDPoint otherPoint){
         BBDSegment perpendicularSegment = new BBDSegment(otherPoint, this.slopeInDegrees()+90, 1);
         BBDPoint interceptPoint = null;
         try{
@@ -351,11 +351,11 @@ public class BBDSegment implements BBDGeometry{
         }
 
         if (interceptPoint != null && this.pointOnSegment(interceptPoint)){
-            return interceptPoint.distanceToPoint(otherPoint);
+            return interceptPoint.distanceSquaredToPoint(otherPoint);
         }
 
-        double startDist = this.startPoint.distanceToPoint(otherPoint);
-        double endDist = this.endPoint.distanceToPoint(otherPoint);
+        double startDist = this.startPoint.distanceSquaredToPoint(otherPoint);
+        double endDist = this.endPoint.distanceSquaredToPoint(otherPoint);
 
         return Math.min(startDist, endDist);
     }

@@ -219,23 +219,23 @@ public class TestBBDSegment {
         BBDSegment testSeg = this.buildVertical();
 
         BBDPoint point1 = new BBDPoint(1,0);
-        assertEquals(0, testSeg.distanceToPoint(point1), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, testSeg.distanceSquaredToPoint(point1), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point1a = new BBDPoint(1, 0.6);
-        assertEquals(0, testSeg.distanceToPoint(point1a), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, testSeg.distanceSquaredToPoint(point1a), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point2 = new BBDPoint(2, 0.5);
-        assertEquals(1, testSeg.distanceToPoint(point2), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, testSeg.distanceSquaredToPoint(point2), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point3 = new BBDPoint(1,4);
-        assertEquals(3, testSeg.distanceToPoint(point3), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, testSeg.distanceSquaredToPoint(point3), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point4 = new BBDPoint(5,5);
-        assertEquals(Math.sqrt(2)*4, testSeg.distanceToPoint(point4), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(32, testSeg.distanceSquaredToPoint(point4), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
     
     @Test

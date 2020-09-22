@@ -309,17 +309,17 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance to another polygon
+     * Determine the distance squared to another polygon
      * @param otherPolygon other polygon to measure distance to
      * @return distance to the other polygon
      */
-    public double distanceToPolygon(BBDPolygon otherPolygon){
+    public double distanceSquaredToPolygon(BBDPolygon otherPolygon){
         double minDist = Double.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
             for (BBDSegment otherSegment: otherPolygon.segments){
-                if (thisSegment.distanceToSegment(otherSegment) < minDist){
-                    minDist = thisSegment.distanceToSegment(otherSegment);
+                if (thisSegment.distanceSquaredToSegment(otherSegment) < minDist){
+                    minDist = thisSegment.distanceSquaredToSegment(otherSegment);
                 }
             }
         }
@@ -327,32 +327,32 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance to another segment
+     * Determine the distance squared to another segment
      * @param otherSegment other segment to measure distance to
      * @return distance to the other segment
      */
-    public double distanceToSegment (BBDSegment otherSegment){
+    public double distanceSquaredToSegment (BBDSegment otherSegment){
         double minDist = Double.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
-            if (thisSegment.distanceToSegment(otherSegment) < minDist){
-                minDist = thisSegment.distanceToSegment(otherSegment);
+            if (thisSegment.distanceSquaredToSegment(otherSegment) < minDist){
+                minDist = thisSegment.distanceSquaredToSegment(otherSegment);
             }
         }
         return minDist;
     }
 
     /**
-     * Determine the distance to another point
+     * Determine the distance squared to another point
      * @param otherPoint other point to measure distance to
      * @return distance to the other point
      */
-    public double distanceToPoint (BBDPoint otherPoint){
+    public double distanceSquaredToPoint (BBDPoint otherPoint){
         double minDist = Double.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
-            if (thisSegment.distanceToPoint(otherPoint) < minDist){
-                minDist = thisSegment.distanceToPoint(otherPoint);
+            if (thisSegment.distanceSquaredToPoint(otherPoint) < minDist){
+                minDist = thisSegment.distanceSquaredToPoint(otherPoint);
             }
         }
         return minDist;

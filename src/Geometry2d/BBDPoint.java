@@ -87,7 +87,7 @@ public class BBDPoint implements BBDGeometry{
     public void rotateAroundPoint(BBDPoint centerOfRotation, double degrees) {
         //get some polar coordinates
         double angleFromCenterToOrig = centerOfRotation.angleToOtherPoint(this);
-        double distanceToCenter = distanceToPoint(centerOfRotation);
+        double distanceToCenter = Math.sqrt(distanceSquaredToPoint(centerOfRotation));
 
         double angleFromCenterToNew = angleFromCenterToOrig + degrees;
 
@@ -109,15 +109,15 @@ public class BBDPoint implements BBDGeometry{
     }
 
     /**
-     * Calculate the distance to another point
+     * Calculate the distance squared to another point
      * @param other the other point
      * @return how far apart this point and the other point are
      */
-    public double distanceToPoint(BBDPoint other){
+    public double distanceSquaredToPoint(BBDPoint other){
         double deltaX = this.xLoc - other.xLoc;
         double deltaY = this.yLoc - other.yLoc;
 
-        return Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
+        return (deltaX*deltaX)+(deltaY*deltaY);
     }
 
     /**

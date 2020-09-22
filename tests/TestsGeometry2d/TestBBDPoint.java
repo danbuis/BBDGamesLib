@@ -120,9 +120,9 @@ public class TestBBDPoint {
         BBDPoint point2 = new BBDPoint(-1,0);
         BBDPoint point3 = new BBDPoint(0,1);
 
-        assertEquals(2, point1.distanceToPoint(point2));
-        assertEquals(2, point2.distanceToPoint(point1));
-        assertEquals(Math.sqrt(2.0), point1.distanceToPoint(point3), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(4, point1.distanceSquaredToPoint(point2));
+        assertEquals(4, point2.distanceSquaredToPoint(point1));
+        assertEquals(2.0, point1.distanceSquaredToPoint(point3), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
     /**
