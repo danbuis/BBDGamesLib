@@ -113,25 +113,25 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Rotate the polygon around the center.  Positive degrees are clockwise,
-     * and negative degrees are counter-clockwise
-     * @param degrees how much to rotate
+     * Rotate the polygon around the center.  Positive radians are clockwise,
+     * and negative radians are counter-clockwise
+     * @param radians how much to rotate
      */
     @Override
-    public void rotate(double degrees) {
-        this.rotateAroundPoint(this.center(), degrees);
+    public void rotate(double radians) {
+        this.rotateAroundPoint(this.center(), radians);
     }
 
     /**
-     * Rotate the polygon around a specific point.  Positive degrees are clockwise,
-     * and negative degrees are counter-clockwise
+     * Rotate the polygon around a specific point.  Positive radians are clockwise,
+     * and negative radians are counter-clockwise
      * @param centerOfRotation point from which the polygon is rotated
-     * @param degrees how much to rotate
+     * @param radians how much to rotate
      */
     @Override
-    public void rotateAroundPoint(BBDPoint centerOfRotation, double degrees) {
+    public void rotateAroundPoint(BBDPoint centerOfRotation, double radians) {
         for (BBDPoint point: points){
-            point.rotateAroundPoint(centerOfRotation, degrees);
+            point.rotateAroundPoint(centerOfRotation, radians);
         }
     }
 
@@ -309,17 +309,17 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance to another polygon
+     * Determine the distance squared to another polygon
      * @param otherPolygon other polygon to measure distance to
      * @return distance to the other polygon
      */
-    public double distanceToPolygon(BBDPolygon otherPolygon){
+    public double distanceSquaredToPolygon(BBDPolygon otherPolygon){
         double minDist = Double.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
             for (BBDSegment otherSegment: otherPolygon.segments){
-                if (thisSegment.distanceToSegment(otherSegment) < minDist){
-                    minDist = thisSegment.distanceToSegment(otherSegment);
+                if (thisSegment.distanceSquaredToSegment(otherSegment) < minDist){
+                    minDist = thisSegment.distanceSquaredToSegment(otherSegment);
                 }
             }
         }
@@ -327,32 +327,32 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance to another segment
+     * Determine the distance squared to another segment
      * @param otherSegment other segment to measure distance to
      * @return distance to the other segment
      */
-    public double distanceToSegment (BBDSegment otherSegment){
+    public double distanceSquaredToSegment (BBDSegment otherSegment){
         double minDist = Double.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
-            if (thisSegment.distanceToSegment(otherSegment) < minDist){
-                minDist = thisSegment.distanceToSegment(otherSegment);
+            if (thisSegment.distanceSquaredToSegment(otherSegment) < minDist){
+                minDist = thisSegment.distanceSquaredToSegment(otherSegment);
             }
         }
         return minDist;
     }
 
     /**
-     * Determine the distance to another point
+     * Determine the distance squared to another point
      * @param otherPoint other point to measure distance to
      * @return distance to the other point
      */
-    public double distanceToPoint (BBDPoint otherPoint){
+    public double distanceSquaredToPoint (BBDPoint otherPoint){
         double minDist = Double.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
-            if (thisSegment.distanceToPoint(otherPoint) < minDist){
-                minDist = thisSegment.distanceToPoint(otherPoint);
+            if (thisSegment.distanceSquaredToPoint(otherPoint) < minDist){
+                minDist = thisSegment.distanceSquaredToPoint(otherPoint);
             }
         }
         return minDist;
