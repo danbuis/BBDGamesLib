@@ -106,7 +106,7 @@ public class TestBBDPolygon {
     public void testRotate(){
         BBDPolygon square = this.buildSquare();
 
-        square.rotate(180);
+        square.rotate(Math.PI);
         assertEquals(new BBDPoint(-1, -1), square.getPoints()[0]);
         assertEquals(new BBDPoint(-1, 1), square.getPoints()[1]);
         assertEquals(new BBDPoint(1, 1), square.getPoints()[2]);
@@ -117,7 +117,7 @@ public class TestBBDPolygon {
     public void testRotateAroundPoint(){
         BBDPolygon square = this.buildSquare();
 
-        square.rotateAroundPoint(new BBDPoint(1,1), 180);
+        square.rotateAroundPoint(new BBDPoint(1,1), Math.PI);
         assertEquals(new BBDPoint(1, 1), square.getPoints()[0]);
         assertEquals(new BBDPoint(1, 3), square.getPoints()[1]);
         assertEquals(new BBDPoint(3, 3), square.getPoints()[2]);

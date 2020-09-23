@@ -95,16 +95,16 @@ public class TestBBDPoint {
     @Test
     public void testRotateAroundPoint(){
         BBDPoint testPoint = new BBDPoint(1,0);
-        testPoint.rotateAroundPoint(new BBDPoint(0,0), 90);
+        testPoint.rotateAroundPoint(new BBDPoint(0,0), Math.PI/2);
         assertEquals(0, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(1, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testPoint = new BBDPoint(1,0);
-        testPoint.rotateAroundPoint(new BBDPoint(0,0), 720);
+        testPoint.rotateAroundPoint(new BBDPoint(0,0), Math.PI*6);
         assertEquals(1, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
-        testPoint.rotateAroundPoint(new BBDPoint(-1,1), -90);
+        testPoint.rotateAroundPoint(new BBDPoint(-1,1), Math.PI/-2);
         System.out.println(testPoint);
         assertEquals(-2, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-1, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -134,10 +134,10 @@ public class TestBBDPoint {
         BBDPoint point1 = new BBDPoint(1,0);
         BBDPoint point2 = new BBDPoint(-1,0);
         BBDPoint point3 = new BBDPoint(0,1);
-        assertEquals(180, point1.angleToOtherPoint(point2));
+        assertEquals(Math.PI, point1.angleToOtherPoint(point2));
         assertEquals(0, point2.angleToOtherPoint(point1));
-        assertEquals(45, point2.angleToOtherPoint(point3));
-        assertEquals(-45, point3.angleToOtherPoint(point1));
+        assertEquals(Math.PI/4, point2.angleToOtherPoint(point3));
+        assertEquals(Math.PI/-4, point3.angleToOtherPoint(point1));
     }
 
     @Test

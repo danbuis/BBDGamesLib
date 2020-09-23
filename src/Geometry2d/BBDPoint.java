@@ -71,30 +71,28 @@ public class BBDPoint implements BBDGeometry{
 
     /**
      * Do nothing because rotating a single point means nothing
-     * @param degrees how far to rotate
+     * @param radians how far to rotate
      */
     @Override
-    public void rotate(double degrees) {
+    public void rotate(double radians) {
         System.out.println("***WARNING*** Rotating a point without defining another point to rotate around is meaningless");
     }
 
     /**
      * Rotations +for counterclockwise, and - for clockwise.
      * @param centerOfRotation point to rotate around
-     * @param degrees how far to rotate
+     * @param radians how far to rotate
      */
     @Override
-    public void rotateAroundPoint(BBDPoint centerOfRotation, double degrees) {
+    public void rotateAroundPoint(BBDPoint centerOfRotation, double radians) {
         //get some polar coordinates
         double angleFromCenterToOrig = centerOfRotation.angleToOtherPoint(this);
         double distanceToCenter = Math.sqrt(distanceSquaredToPoint(centerOfRotation));
 
-        double angleFromCenterToNew = angleFromCenterToOrig + degrees;
+        double angleFromCenterToNew = angleFromCenterToOrig + radians;
 
-        double newAngleInRadians = Math.PI/180 * angleFromCenterToNew;
-
-        this.xLoc = centerOfRotation.getXLoc() + Math.cos(newAngleInRadians) * distanceToCenter;
-        this.yLoc = centerOfRotation.getYLoc() + Math.sin(newAngleInRadians) * distanceToCenter;
+        this.xLoc = centerOfRotation.getXLoc() + Math.cos(angleFromCenterToNew) * distanceToCenter;
+        this.yLoc = centerOfRotation.getYLoc() + Math.sin(angleFromCenterToNew) * distanceToCenter;
 
         validateCoordinates();
     }
@@ -131,14 +129,7 @@ public class BBDPoint implements BBDGeometry{
         double deltaX = otherPoint.xLoc - this.xLoc;
         double deltaY = otherPoint.yLoc - this.yLoc;
 
-        double radians =  Math.atan2(deltaY, deltaX);
-        double degrees =  radians * 180/Math.PI;
-        if (degrees == -180){
-            degrees = 180;
-        }else if(degrees == -0.0){
-            degrees = 0;
-        }
-        return degrees;
+        return  Math.atan2(deltaY, deltaX);
     }
 
     public String toString(){

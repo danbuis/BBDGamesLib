@@ -76,22 +76,22 @@ public class BBDSegment implements BBDGeometry{
     }
 
     /**
-     * Rotate the segment around the center.  Positive degrees are clockwise,
-     * and negative degrees are counter-clockwise
+     * Rotate the segment around the center.  Positive radians are clockwise,
+     * and negative radians are counter-clockwise
      */
     @Override
-    public void rotate(double degrees) {
-        this.rotateAroundPoint(this.center(), degrees);
+    public void rotate(double radians) {
+        this.rotateAroundPoint(this.center(), radians);
     }
 
     /**
-     * Rotate the segment around a specific point.  Positive degrees are clockwise,
-     * and negative degrees are counter-clockwise
+     * Rotate the segment around a specific point.  Positive radians are clockwise,
+     * and negative radians are counter-clockwise
      */
     @Override
-    public void rotateAroundPoint(BBDPoint centerOfRotation, double degrees) {
+    public void rotateAroundPoint(BBDPoint centerOfRotation, double radians) {
         for (BBDPoint point: this.getPoints()){
-            point.rotateAroundPoint(centerOfRotation, degrees);
+            point.rotateAroundPoint(centerOfRotation, radians);
         }
     }
 

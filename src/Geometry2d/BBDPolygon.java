@@ -113,25 +113,25 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Rotate the polygon around the center.  Positive degrees are clockwise,
-     * and negative degrees are counter-clockwise
-     * @param degrees how much to rotate
+     * Rotate the polygon around the center.  Positive radians are clockwise,
+     * and negative radians are counter-clockwise
+     * @param radians how much to rotate
      */
     @Override
-    public void rotate(double degrees) {
-        this.rotateAroundPoint(this.center(), degrees);
+    public void rotate(double radians) {
+        this.rotateAroundPoint(this.center(), radians);
     }
 
     /**
-     * Rotate the polygon around a specific point.  Positive degrees are clockwise,
-     * and negative degrees are counter-clockwise
+     * Rotate the polygon around a specific point.  Positive radians are clockwise,
+     * and negative radians are counter-clockwise
      * @param centerOfRotation point from which the polygon is rotated
-     * @param degrees how much to rotate
+     * @param radians how much to rotate
      */
     @Override
-    public void rotateAroundPoint(BBDPoint centerOfRotation, double degrees) {
+    public void rotateAroundPoint(BBDPoint centerOfRotation, double radians) {
         for (BBDPoint point: points){
-            point.rotateAroundPoint(centerOfRotation, degrees);
+            point.rotateAroundPoint(centerOfRotation, radians);
         }
     }
 

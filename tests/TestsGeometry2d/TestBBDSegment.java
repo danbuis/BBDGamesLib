@@ -86,7 +86,7 @@ public class TestBBDSegment {
     @Test
     public void testRotate(){
         BBDSegment testSegment = this.buildVertical();
-        testSegment.rotate(90);
+        testSegment.rotate(Math.PI/2);
         BBDPoint[] points = testSegment.getPoints();
         assertEquals(new BBDPoint(1.5, 0.5), points[0]);
         assertEquals(new BBDPoint(0.5, 0.5), points[1]);
@@ -96,7 +96,7 @@ public class TestBBDSegment {
     public void testRotateAroundPoint(){
         BBDSegment testSegment = this.buildVertical();
         BBDPoint[] points = testSegment.getPoints();
-        testSegment.rotateAroundPoint(points[0],90);
+        testSegment.rotateAroundPoint(points[0],Math.PI/2);
         assertEquals(new BBDPoint(1, 0), points[0]);
         assertEquals(new BBDPoint(0, 0), points[1]);
     }
@@ -138,7 +138,7 @@ public class TestBBDSegment {
         assertEquals(Math.PI/-4, angled2.slopeInRadians(),BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //test that slope is direction agnostic
-        angled2.rotate(180);
+        angled2.rotate(Math.PI);
         assertEquals(Math.PI/-4, angled2.slopeInRadians(),BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
@@ -157,7 +157,7 @@ public class TestBBDSegment {
         assertEquals(-45, angled2.slopeInDegrees(),BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //test that slope is direction agnostic
-        angled2.rotate(180);
+        angled2.rotate(Math.PI);
         assertEquals(-45, angled2.slopeInDegrees(),BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
