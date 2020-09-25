@@ -313,6 +313,18 @@ public class BBDSegment implements BBDGeometry{
     }
 
     /**
+     * 2 segments are connected if and only if they share an endpoint.
+     * @param other the other segment to check against
+     * @return are these segments connected?
+     */
+    public boolean segmentConnected(BBDSegment other){
+        return (this.endPoint.equals(other.getEndPoint())
+                || this.endPoint.equals(other.getStartPoint())
+                || this.startPoint.equals(other.getStartPoint())
+                || this.startPoint.equals(other.getEndPoint()));
+    }
+
+    /**
      * Distance squared between 2 segments
      * @param otherSegment the other segment to measure to
      * @return the distance between the segments
@@ -366,18 +378,6 @@ public class BBDSegment implements BBDGeometry{
      */
     public double lengthSquared(){
         return this.startPoint.distanceSquaredToPoint(this.endPoint);
-    }
-
-    /**
-     * 2 segments are connected if and only if they share an endpoint.
-     * @param other the other segment to check against
-     * @return are these segments connected?
-     */
-    public boolean segmentConnected(BBDSegment other){
-        return (this.endPoint.equals(other.getEndPoint())
-        || this.endPoint.equals(other.getStartPoint())
-        || this.startPoint.equals(other.getStartPoint())
-        || this.startPoint.equals(other.getEndPoint()));
     }
 
     @Override

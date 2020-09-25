@@ -1,0 +1,8 @@
+Geometry2d
+Contains several classes to perform geometry calculations, specifically Points, Segments, and Polygons.
+All Polygons are by definition closed polys, but there is not restriction on concave/convex.
+All distance measurements use distance squared to avoid the overhead of repeatedly calculating sqrts.
+The Utils class provides some static methods to simplify interacting with the geometry api, particularly
+by overloading the distance() function so that the end user doesn't need to remember which object
+can measure distance to other objects.
+All angles use East as 0 degrees, North as 90, and South as -90.

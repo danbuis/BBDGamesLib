@@ -275,19 +275,23 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Test if this polygon touches another
+     * Test if this polygon touches another but don't overlap.
      * @param otherPolygon other polygon that this one might be touching
      * @return boolean stating if these polygons touch
      */
     public boolean checkPolygonTouchesPolygon(BBDPolygon otherPolygon){
         for(BBDPoint otherPoint : otherPolygon.points){
             if (this.checkPointOnPerimeter(otherPoint)){
+                System.out.print(this.extendedToString());
+                System.out.println(otherPoint);
                 return true;
             }
         }
 
         for(BBDPoint otherPoint : this.points){
             if (otherPolygon.checkPointOnPerimeter(otherPoint)){
+                System.out.print(otherPolygon.extendedToString());
+                System.out.println(otherPoint);
                 return true;
             }
         }

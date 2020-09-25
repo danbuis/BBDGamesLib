@@ -204,4 +204,65 @@ public class TestBBDPolygon {
         BBDPoint[] points2 = {point15, point2, point25, point3, point35, point4, point45, point1};
         assertEquals(3, new BBDPolygon(points2).area(), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
+
+    @Test
+    public void testPolygonIntersectsPolygon(){
+        //test clearly overlapping
+        BBDPolygon poly1 = this.buildDiamond();
+        BBDPolygon poly2 = this.buildSquare();
+        assertTrue(poly1.checkPolygonIntersectsPolygon(poly2));
+        assertTrue(poly2.checkPolygonIntersectsPolygon(poly1));
+
+        //test not overlapping
+        poly2.translate(10,10);
+        assertFalse(poly2.checkPolygonIntersectsPolygon(poly1));
+        assertFalse(poly1.checkPolygonIntersectsPolygon(poly2));
+
+        //test touching
+        BBDPolygon poly3 = this.buildSquare();
+        BBDPolygon poly4 = this.buildSquare();
+        poly4.translate(2,0);
+        //fully share a segment
+        assertTrue(poly3.checkPolygonIntersectsPolygon(poly4));
+        assertTrue(poly4.checkPolygonIntersectsPolygon(poly3));
+        poly4.translate(0,1);
+        //half shared seg
+        assertTrue(poly3.checkPolygonIntersectsPolygon(poly4));
+        assertTrue(poly4.checkPolygonIntersectsPolygon(poly3));
+        poly4.translate(0,1);
+        //shared vert
+        assertTrue(poly3.checkPolygonIntersectsPolygon(poly4));
+        assertTrue(poly4.checkPolygonIntersectsPolygon(poly3));
+    }
+
+    @Test
+    public void testPolygonTouchesPolygon(){
+        //test clearly overlapping
+        BBDPolygon poly1 = this.buildDiamond();
+        poly1.scale(1.2);
+        BBDPolygon poly2 = this.buildSquare();
+        assertFalse(poly1.checkPolygonTouchesPolygon(poly2));
+        assertFalse(poly2.checkPolygonTouchesPolygon(poly1));
+
+        //test not overlapping
+        poly2.translate(10,10);
+        assertFalse(poly2.checkPolygonTouchesPolygon(poly1));
+        assertFalse(poly1.checkPolygonTouchesPolygon(poly2));
+
+        //test touching
+        BBDPolygon poly3 = this.buildSquare();
+        BBDPolygon poly4 = this.buildSquare();
+        poly4.translate(2,0);
+        //fully share a segment
+        assertTrue(poly3.checkPolygonTouchesPolygon(poly4));
+        assertTrue(poly4.checkPolygonTouchesPolygon(poly3));
+        poly4.translate(0,1);
+        //half shared seg
+        assertTrue(poly3.checkPolygonTouchesPolygon(poly4));
+        assertTrue(poly4.checkPolygonTouchesPolygon(poly3));
+        poly4.translate(0,1);
+        //shared vert
+        assertTrue(poly3.checkPolygonTouchesPolygon(poly4));
+        assertTrue(poly4.checkPolygonTouchesPolygon(poly3));
+    }
 }

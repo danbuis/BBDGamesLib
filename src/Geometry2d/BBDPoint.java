@@ -107,18 +107,6 @@ public class BBDPoint implements BBDGeometry{
     }
 
     /**
-     * Calculate the distance squared to another point
-     * @param other the other point
-     * @return how far apart this point and the other point are
-     */
-    public double distanceSquaredToPoint(BBDPoint other){
-        double deltaX = this.xLoc - other.xLoc;
-        double deltaY = this.yLoc - other.yLoc;
-
-        return (deltaX*deltaX)+(deltaY*deltaY);
-    }
-
-    /**
      * Calculate the angle to another point
      * 0 degrees is east on the screen, north is 90 degrees, west is +180 degrees,
      * and south is -90 degrees
@@ -130,6 +118,18 @@ public class BBDPoint implements BBDGeometry{
         double deltaY = otherPoint.yLoc - this.yLoc;
 
         return  Math.atan2(deltaY, deltaX);
+    }
+
+    /**
+     * Calculate the distance squared to another point
+     * @param other the other point
+     * @return how far apart this point and the other point are
+     */
+    public double distanceSquaredToPoint(BBDPoint other){
+        double deltaX = this.xLoc - other.xLoc;
+        double deltaY = this.yLoc - other.yLoc;
+
+        return (deltaX*deltaX)+(deltaY*deltaY);
     }
 
     public String toString(){
