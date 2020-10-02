@@ -1,11 +1,15 @@
-package GameEngine;
+package GameEngine.SampleGame;
 
+import GameEngine.GameItem;
+import openGL.Mesh;
+import openGL.Window;
+import openGL.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class DummyCube extends GameItem{
+public class DummyCube extends GameItem {
     private int displxInc = 0;
 
     private int displyInc = 0;

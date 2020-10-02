@@ -1,5 +1,7 @@
 package GameEngine;
 
+import openGL.Window;
+
 public interface GameComponent {
 
     void init(Window window) throws Exception;

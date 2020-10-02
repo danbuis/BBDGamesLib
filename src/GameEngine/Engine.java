@@ -1,5 +1,7 @@
 package GameEngine;
 
+import openGL.Window;
+
 public class Engine implements Runnable {
 
     public static final int TARGET_FPS = 75;

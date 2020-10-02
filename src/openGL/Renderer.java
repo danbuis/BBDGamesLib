@@ -1,5 +1,7 @@
-package GameEngine;
+package openGL;
 
+import GameEngine.GameItem;
+import GameEngine.Transformation;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.opengl.GL11.*;

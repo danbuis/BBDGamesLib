@@ -1,4 +1,4 @@
-package GameEngine;
+package openGL;
 
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;

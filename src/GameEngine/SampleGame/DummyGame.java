@@ -1,4 +1,7 @@
-package GameEngine;
+package GameEngine.SampleGame;
+
+import GameEngine.*;
+import openGL.*;
 
 public class DummyGame implements GameComponent {
 

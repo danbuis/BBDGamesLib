@@ -1,4 +1,4 @@
-package GameEngine;
+package openGL;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
