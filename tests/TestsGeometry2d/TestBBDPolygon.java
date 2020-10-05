@@ -81,8 +81,8 @@ public class TestBBDPolygon {
     public void testScale(){
         BBDPolygon square = this.buildSquare();
 
-        square.scale(0.5);
-        assertEquals(new BBDPoint(0.5, 0.5), square.getPoints()[0]);
+        square.scale(0.5f);
+        assertEquals(new BBDPoint(0.5f, 0.5f), square.getPoints()[0]);
 
         square.scale(4);
         assertEquals(new BBDPoint(2,2), square.getPoints()[0]);
@@ -95,7 +95,7 @@ public class TestBBDPolygon {
     public void testScaleFromPoint(){
         BBDPolygon square = this.buildSquare();
 
-        square.scaleFromPoint(new BBDPoint(1,1), 0.5);
+        square.scaleFromPoint(new BBDPoint(1,1), 0.5f);
         assertEquals(new BBDPoint(1, 1), square.getPoints()[0]);
         assertEquals(new BBDPoint(1, 0), square.getPoints()[1]);
         assertEquals(new BBDPoint(0, 0), square.getPoints()[2]);
@@ -106,7 +106,7 @@ public class TestBBDPolygon {
     public void testRotate(){
         BBDPolygon square = this.buildSquare();
 
-        square.rotate(Math.PI);
+        square.rotate((float) Math.PI);
         assertEquals(new BBDPoint(-1, -1), square.getPoints()[0]);
         assertEquals(new BBDPoint(-1, 1), square.getPoints()[1]);
         assertEquals(new BBDPoint(1, 1), square.getPoints()[2]);
@@ -117,7 +117,7 @@ public class TestBBDPolygon {
     public void testRotateAroundPoint(){
         BBDPolygon square = this.buildSquare();
 
-        square.rotateAroundPoint(new BBDPoint(1,1), Math.PI);
+        square.rotateAroundPoint(new BBDPoint(1,1), (float) Math.PI);
         assertEquals(new BBDPoint(1, 1), square.getPoints()[0]);
         assertEquals(new BBDPoint(1, 3), square.getPoints()[1]);
         assertEquals(new BBDPoint(3, 3), square.getPoints()[2]);
@@ -129,10 +129,10 @@ public class TestBBDPolygon {
         BBDPolygon diamond = this.buildDiamond();
 
         //check point on segment and one on a vertex
-        assertTrue(diamond.checkPointOnPerimeter(new BBDPoint(0.5, 0.5)));
+        assertTrue(diamond.checkPointOnPerimeter(new BBDPoint(0.5f, 0.5f)));
         assertTrue(diamond.checkPointOnPerimeter(new BBDPoint(0, 1)));
         //check point just off the line
-        assertFalse(diamond.checkPointOnPerimeter(new BBDPoint(0.5, 0.51)));
+        assertFalse(diamond.checkPointOnPerimeter(new BBDPoint(0.5f, 0.51f)));
         //check an interior point and an exterior point
         assertFalse(diamond.checkPointOnPerimeter(new BBDPoint(0, 0)));
         assertFalse(diamond.checkPointOnPerimeter(new BBDPoint(-56, 12)));
@@ -149,7 +149,7 @@ public class TestBBDPolygon {
         assertEquals(1, diamond.segmentIntersectPolygonList(partDiagonal).length);
 
         //check a line that is touching a segment
-        BBDSegment touchSegment = new BBDSegment(new BBDPoint(0.5,0.5), new BBDPoint(4,4));
+        BBDSegment touchSegment = new BBDSegment(new BBDPoint(0.5f,0.5f), new BBDPoint(4,4));
         assertEquals(1, diamond.segmentIntersectPolygonList(touchSegment).length);
 
         //check a line that is touching a vertex
@@ -164,11 +164,11 @@ public class TestBBDPolygon {
     @Test
     public void testCheckPointInside(){
         BBDPolygon diamond = this.buildDiamond();
-        BBDPoint inside = new BBDPoint(0.1,0.1);
+        BBDPoint inside = new BBDPoint(0.1f,0.1f);
         BBDPoint insideVertex = new BBDPoint(0,0);
         BBDPoint outside = new BBDPoint(2,1);
         BBDPoint onVertex = new BBDPoint(1,0);
-        BBDPoint onEdge = new BBDPoint(0.5, 0.5);
+        BBDPoint onEdge = new BBDPoint(0.5f, 0.5f);
 
         assertTrue(diamond.checkPointInside(inside));
         assertTrue(diamond.checkPointInside(insideVertex));
@@ -239,7 +239,7 @@ public class TestBBDPolygon {
     public void testPolygonTouchesPolygon(){
         //test clearly overlapping
         BBDPolygon poly1 = this.buildDiamond();
-        poly1.scale(1.2);
+        poly1.scale(1.2f);
         BBDPolygon poly2 = this.buildSquare();
         assertFalse(poly1.checkPolygonTouchesPolygon(poly2));
         assertFalse(poly2.checkPolygonTouchesPolygon(poly1));

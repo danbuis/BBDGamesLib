@@ -1,41 +1,41 @@
 package Geometry2d;
 
 public class BBDGeometryUtils {
-    public static double ALLOWABLE_DELTA = 0.0000001;
+    public static float ALLOWABLE_DELTA = 0.0001f;
 
-    public static double distance(BBDSegment seg, BBDPoint point){
+    public static float distance(BBDSegment seg, BBDPoint point){
         return seg.distanceSquaredToPoint(point);
     }
 
-    public static double distance(BBDPoint point, BBDSegment seg){
+    public static float distance(BBDPoint point, BBDSegment seg){
         return seg.distanceSquaredToPoint(point);
     }
 
-    public static double distance(BBDPolygon poly, BBDPoint point){
+    public static float distance(BBDPolygon poly, BBDPoint point){
         return poly.distanceSquaredToPoint(point);
     }
 
-    public static double distance(BBDPoint point, BBDPolygon poly){
+    public static float distance(BBDPoint point, BBDPolygon poly){
         return poly.distanceSquaredToPoint(point);
     }
 
-    public static double distance(BBDSegment seg, BBDPolygon poly){
+    public static float distance(BBDSegment seg, BBDPolygon poly){
         return poly.distanceSquaredToSegment(seg);
     }
 
-    public static double distance(BBDPolygon poly, BBDSegment seg){
+    public static float distance(BBDPolygon poly, BBDSegment seg){
         return poly.distanceSquaredToSegment(seg);
     }
 
-    public static double distance(BBDSegment seg1, BBDSegment seg2){
+    public static float distance(BBDSegment seg1, BBDSegment seg2){
         return seg1.distanceSquaredToSegment(seg2);
     }
 
-    public static double distance(BBDPoint point1, BBDPoint point2){
+    public static float distance(BBDPoint point1, BBDPoint point2){
         return point1.distanceSquaredToPoint(point2);
     }
 
-    public static double distance(BBDPolygon poly1, BBDPolygon poly2){
+    public static float distance(BBDPolygon poly1, BBDPolygon poly2){
         return poly1.distanceSquaredToPolygon(poly2);
     }
 

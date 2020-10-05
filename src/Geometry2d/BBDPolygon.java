@@ -44,12 +44,12 @@ public class BBDPolygon implements BBDGeometry{
      * The horizontal dimension of this polygon
      * @return max width of the polygon
      */
-    public double width(){
-        double maxX = Double.NEGATIVE_INFINITY;
-        double minX = Double.POSITIVE_INFINITY;
+    public float width(){
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
 
         for (BBDPoint point : points){
-            double x = point.getXLoc();
+            float x = point.getXLoc();
             if(x < minX){minX = x;}
             if(x > maxX){maxX = x;}
         }
@@ -60,12 +60,12 @@ public class BBDPolygon implements BBDGeometry{
      * The horizontal dimension of this polygon
      * @return max height of the polygon
      */
-    public double height(){
-        double maxY = Double.NEGATIVE_INFINITY;
-        double minY = Double.POSITIVE_INFINITY;
+    public float height(){
+        float maxY = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
 
         for (BBDPoint point : points){
-            double y = point.getYLoc();
+            float y = point.getYLoc();
             if(y < minY){minY = y;}
             if(y > maxY){maxY = y;}
 
@@ -82,7 +82,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param dy distance on y axis
      */
     @Override
-    public void translate(double dx, double dy) {
+    public void translate(float dx, float dy) {
         for (BBDPoint point: this.points){
             point.translate(dx, dy);
         }
@@ -93,7 +93,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param scaleFactor factor to scale by
      */
     @Override
-    public void scale(double scaleFactor) {
+    public void scale(float scaleFactor) {
         BBDPoint center = this.center();
         for (BBDPoint point: this.points){
             point.scaleFromPoint(center, scaleFactor);
@@ -106,7 +106,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param scaleFactor factor to scale by
      */
     @Override
-    public void scaleFromPoint(BBDPoint centerOfScale, double scaleFactor) {
+    public void scaleFromPoint(BBDPoint centerOfScale, float scaleFactor) {
         for (BBDPoint point: this.points){
             point.scaleFromPoint(centerOfScale, scaleFactor);
         }
@@ -118,7 +118,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param radians how much to rotate
      */
     @Override
-    public void rotate(double radians) {
+    public void rotate(float radians) {
         this.rotateAroundPoint(this.center(), radians);
     }
 
@@ -129,7 +129,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param radians how much to rotate
      */
     @Override
-    public void rotateAroundPoint(BBDPoint centerOfRotation, double radians) {
+    public void rotateAroundPoint(BBDPoint centerOfRotation, float radians) {
         for (BBDPoint point: points){
             point.rotateAroundPoint(centerOfRotation, radians);
         }
@@ -143,14 +143,14 @@ public class BBDPolygon implements BBDGeometry{
      */
     @Override
     public BBDPoint center() {
-        double maxX = Double.NEGATIVE_INFINITY;
-        double maxY = Double.NEGATIVE_INFINITY;
-        double minX = Double.POSITIVE_INFINITY;
-        double minY = Double.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
 
         for (BBDPoint point : points){
-            double x = point.getXLoc();
-            double y = point.getYLoc();
+            float x = point.getXLoc();
+            float y = point.getYLoc();
             if(x < minX){minX = x;}
             if(x > maxX){maxX = x;}
             if(y < minY){minY = y;}
@@ -166,8 +166,8 @@ public class BBDPolygon implements BBDGeometry{
      * @return the average of all the points
      */
     public BBDPoint centerAverage(){
-        double aggX = 0;
-        double aggY = 0;
+        float aggX = 0;
+        float aggY = 0;
 
         for (BBDPoint point : points){
             aggX += point.getXLoc();
@@ -317,8 +317,8 @@ public class BBDPolygon implements BBDGeometry{
      * @param otherPolygon other polygon to measure distance to
      * @return distance to the other polygon
      */
-    public double distanceSquaredToPolygon(BBDPolygon otherPolygon){
-        double minDist = Double.MAX_VALUE;
+    public float distanceSquaredToPolygon(BBDPolygon otherPolygon){
+        float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
             for (BBDSegment otherSegment: otherPolygon.segments){
@@ -335,8 +335,8 @@ public class BBDPolygon implements BBDGeometry{
      * @param otherSegment other segment to measure distance to
      * @return distance to the other segment
      */
-    public double distanceSquaredToSegment (BBDSegment otherSegment){
-        double minDist = Double.MAX_VALUE;
+    public float distanceSquaredToSegment (BBDSegment otherSegment){
+        float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
             if (thisSegment.distanceSquaredToSegment(otherSegment) < minDist){
@@ -351,8 +351,8 @@ public class BBDPolygon implements BBDGeometry{
      * @param otherPoint other point to measure distance to
      * @return distance to the other point
      */
-    public double distanceSquaredToPoint (BBDPoint otherPoint){
-        double minDist = Double.MAX_VALUE;
+    public float distanceSquaredToPoint (BBDPoint otherPoint){
+        float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
             if (thisSegment.distanceSquaredToPoint(otherPoint) < minDist){
@@ -366,8 +366,8 @@ public class BBDPolygon implements BBDGeometry{
      * Calculate the area of this polygon
      * @return area
      */
-    public double area(){
-        double accumulatedTotal = 0;
+    public float area(){
+        float accumulatedTotal = 0;
         ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
         
         while(remainingPoints.size() >= 3){

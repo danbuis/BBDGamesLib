@@ -13,7 +13,7 @@ public class TestBBDPoint {
      */
     @Test
     public void testBasics() {
-        BBDPoint testPoint = new BBDPoint(1.0, 3.0);
+        BBDPoint testPoint = new BBDPoint(1.0f, 3.0f);
         assertEquals(1.0, testPoint.getXLoc());
         assertEquals (3.0, testPoint.getYLoc());
 
@@ -72,7 +72,7 @@ public class TestBBDPoint {
         testPoint.scaleFromPoint(new BBDPoint(0,0), 3);
         assertEquals(3, testPoint.getXLoc());
         assertEquals(3, testPoint.getYLoc());
-        testPoint.scaleFromPoint(new BBDPoint(0,0), 0.1);
+        testPoint.scaleFromPoint(new BBDPoint(0,0), 0.1f);
         assertEquals(0.3, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0.3, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
@@ -95,16 +95,16 @@ public class TestBBDPoint {
     @Test
     public void testRotateAroundPoint(){
         BBDPoint testPoint = new BBDPoint(1,0);
-        testPoint.rotateAroundPoint(new BBDPoint(0,0), Math.PI/2);
+        testPoint.rotateAroundPoint(new BBDPoint(0,0), (float) (Math.PI/2));
         assertEquals(0, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(1, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testPoint = new BBDPoint(1,0);
-        testPoint.rotateAroundPoint(new BBDPoint(0,0), Math.PI*6);
+        testPoint.rotateAroundPoint(new BBDPoint(0,0), (float) (Math.PI*6));
         assertEquals(1, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
-        testPoint.rotateAroundPoint(new BBDPoint(-1,1), Math.PI/-2);
+        testPoint.rotateAroundPoint(new BBDPoint(-1,1), (float) (Math.PI/-2));
         System.out.println(testPoint);
         assertEquals(-2, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-1, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -134,10 +134,10 @@ public class TestBBDPoint {
         BBDPoint point1 = new BBDPoint(1,0);
         BBDPoint point2 = new BBDPoint(-1,0);
         BBDPoint point3 = new BBDPoint(0,1);
-        assertEquals(Math.PI, point1.angleToOtherPoint(point2));
-        assertEquals(0, point2.angleToOtherPoint(point1));
-        assertEquals(Math.PI/4, point2.angleToOtherPoint(point3));
-        assertEquals(Math.PI/-4, point3.angleToOtherPoint(point1));
+        assertEquals(Math.PI, point1.angleToOtherPoint(point2), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, point2.angleToOtherPoint(point1), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(Math.PI/4, point2.angleToOtherPoint(point3), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(Math.PI/-4, point3.angleToOtherPoint(point1), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
     @Test
@@ -150,7 +150,7 @@ public class TestBBDPoint {
         BBDPoint test1 = new BBDPoint(original);
 
         //make sure that validate is called...
-        Exception exception = assertThrows(CoordinateOverflowException.class, () -> test1.translate(Double.MAX_VALUE, 1));
+        Exception exception = assertThrows(CoordinateOverflowException.class, () -> test1.translate(Float.MAX_VALUE, 1));
         String expectedMessage = "has reached the bounds";
         assertTrue(exception.getMessage().contains(expectedMessage));
 

@@ -86,17 +86,17 @@ public class TestBBDSegment {
     @Test
     public void testRotate(){
         BBDSegment testSegment = this.buildVertical();
-        testSegment.rotate(Math.PI/2);
+        testSegment.rotate((float) (Math.PI/2));
         BBDPoint[] points = testSegment.getPoints();
-        assertEquals(new BBDPoint(1.5, 0.5), points[0]);
-        assertEquals(new BBDPoint(0.5, 0.5), points[1]);
+        assertEquals(new BBDPoint(1.5f, 0.5f), points[0]);
+        assertEquals(new BBDPoint(0.5f, 0.5f), points[1]);
     }
 
     @Test
     public void testRotateAroundPoint(){
         BBDSegment testSegment = this.buildVertical();
         BBDPoint[] points = testSegment.getPoints();
-        testSegment.rotateAroundPoint(points[0],Math.PI/2);
+        testSegment.rotateAroundPoint(points[0], (float) (Math.PI/2));
         assertEquals(new BBDPoint(1, 0), points[0]);
         assertEquals(new BBDPoint(0, 0), points[1]);
     }
@@ -105,7 +105,7 @@ public class TestBBDSegment {
     public void testCenter(){
         BBDSegment testSegment = this.buildVertical();
         BBDPoint center = testSegment.center();
-        assertEquals(new BBDPoint(1, 0.5), center);
+        assertEquals(new BBDPoint(1, 0.5f), center);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class TestBBDSegment {
         assertEquals(Math.PI/-4, angled2.slopeInRadians(),BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //test that slope is direction agnostic
-        angled2.rotate(Math.PI);
+        angled2.rotate((float) Math.PI);
         assertEquals(Math.PI/-4, angled2.slopeInRadians(),BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
@@ -157,7 +157,7 @@ public class TestBBDSegment {
         assertEquals(-45, angled2.slopeInDegrees(),BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //test that slope is direction agnostic
-        angled2.rotate(Math.PI);
+        angled2.rotate((float) Math.PI);
         assertEquals(-45, angled2.slopeInDegrees(),BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
@@ -182,8 +182,8 @@ public class TestBBDSegment {
         BBDSegment parallel = new BBDSegment(new BBDPoint(0,2), new BBDPoint(2,0));
 
         try{
-            assertEquals(new BBDPoint(0.5, 0.5), test1.interceptPoint(test2));
-            assertEquals(new BBDPoint(0.5, 0.5), test1.interceptPoint(test3));
+            assertEquals(new BBDPoint(0.5f, 0.5f), test1.interceptPoint(test2));
+            assertEquals(new BBDPoint(0.5f, 0.5f), test1.interceptPoint(test3));
         } catch(ParallelLinesException e){
             System.out.println("You probably shouldn't be getting an exception here");
             e.printStackTrace();
@@ -203,7 +203,7 @@ public class TestBBDSegment {
         BBDSegment test1 = new BBDSegment(new BBDPoint(0,1), new BBDPoint(1,0));
         BBDSegment test2 = new BBDSegment(new BBDPoint(0,0), new BBDPoint(1,1));
         BBDSegment test3 = new BBDSegment(new BBDPoint(4,4), new BBDPoint(8,8));
-        BBDSegment test4 = new BBDSegment(new BBDPoint(0.5, 0.5), new BBDPoint(0.6, 4));
+        BBDSegment test4 = new BBDSegment(new BBDPoint(0.5f, 0.5f), new BBDPoint(0.6f, 4));
 
         assertTrue(test1.intersects(test2));
         //check reverse
@@ -222,11 +222,11 @@ public class TestBBDSegment {
         assertEquals(0, testSeg.distanceSquaredToPoint(point1), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
-        BBDPoint point1a = new BBDPoint(1, 0.6);
+        BBDPoint point1a = new BBDPoint(1, 0.6f);
         assertEquals(0, testSeg.distanceSquaredToPoint(point1a), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
-        BBDPoint point2 = new BBDPoint(2, 0.5);
+        BBDPoint point2 = new BBDPoint(2, 0.5f);
         assertEquals(1, testSeg.distanceSquaredToPoint(point2), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
