@@ -362,14 +362,10 @@ public class BBDPolygon implements BBDGeometry{
         return minDist;
     }
 
-    /**
-     * Calculate the area of this polygon
-     * @return area
-     */
-    public float area(){
-        float accumulatedTotal = 0;
+    public BBDPolygon[] decomposeIntoTriangles(boolean ensureTrianglesClockwise){
         ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
-        
+        ArrayList<BBDPolygon> triangles = new ArrayList<>();
+
         while(remainingPoints.size() >= 3){
             BBDPolygon temp = new BBDPolygon(remainingPoints.toArray(new BBDPoint[0]));
             //cycle through 3 adjacent vertices until we find a triangle with an interior inside the polygon
@@ -381,16 +377,28 @@ public class BBDPolygon implements BBDGeometry{
                     BBDPoint A = remainingPoints.get(i - 1);
                     BBDPoint B = remainingPoints.get(i);
                     BBDPoint C = remainingPoints.get(i + 1);
-
-                    accumulatedTotal += Math.abs((A.getXLoc()*(B.getYLoc()-C.getYLoc())
-                            + B.getXLoc()*(C.getYLoc()-A.getYLoc())
-                            + C.getXLoc()*(A.getYLoc()-B.getYLoc()))/ 2.0);
+                    triangles.add(new BBDPolygon(new BBDPoint[]{A, B, C}));
                     remainingPoints.remove(i);
                     break;
                 }
             }
         }
+        return triangles.toArray(new BBDPolygon[0]);
+    }
 
+    /**
+     * Calculate the area of this polygon
+     * @return area
+     */
+    public float area(){
+        float accumulatedTotal = 0;
+        BBDPolygon[] triangles = this.decomposeIntoTriangles(false);
+        for(BBDPolygon triangle:triangles){
+            BBDPoint[] points = triangle.getPoints();
+            accumulatedTotal += Math.abs((points[0].getXLoc()*(points[1].getYLoc()-points[2].getYLoc())
+                    + points[1].getXLoc()*(points[2].getYLoc()-points[0].getYLoc())
+                    + points[2].getXLoc()*(points[0].getYLoc()-points[1].getYLoc()))/ 2.0);
+        }
         return accumulatedTotal;
     }
 
