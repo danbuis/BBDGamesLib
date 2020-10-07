@@ -555,17 +555,11 @@ public class BBDPolygon implements BBDGeometry{
 
         int count = this.points.length;
         for (int i = 0; i < count; i++){
-            System.out.println("i : "+ i);
             int index = 0;
-            System.out.println("Other poly: "+otherPolygon.points[index]);
-            System.out.println("Forward indexed : "+forwardList.get(index));
-            System.out.println("Backward indexed : "+backwardList.get(index));
             while(index < count && (otherPolygon.points[index].equals(forwardList.get(index))
                     || otherPolygon.points[index].equals(backwardList.get(index)))) {
                 index++;
             }
-            System.out.println("Index: "+ index);
-            System.out.println("Count: "+ count);
             // if we made it all the way through the polygon's points
             if (index == count){
                 return true;
