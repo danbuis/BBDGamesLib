@@ -13,8 +13,8 @@ public class BBDPolygon implements BBDGeometry{
 
     // Pieces that define the polygon.
     // Users should not be able to modify these directly.
-    private BBDPoint[] points;
-    private BBDSegment[] segments;
+    private final BBDPoint[] points;
+    private final BBDSegment[] segments;
 
     public BBDPoint[] getPoints(){
         return this.points;
@@ -216,24 +216,12 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * helper function to determine if a segment intersects the polygon.
-     * @param segmentToCheck Segment not part of polygon to check for intersection
-     * @return boolean stating if this segment intersects the polygon
+     * Create a list of intersection points for a segment and this polygon.
+     * Can also include the end points of the segment if they are on the polygon perimeter.
+     * @param segmentToCheck  test segment
+     * @return list of intersection points
      */
-    public boolean checkSegmentIntersectPolygon(BBDSegment segmentToCheck){
-        BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck);
-
-        return (intersectionList.length != 0);
-    }
-
-    /**
-     * Function to check if a point is inside the polygon.
-     *
-     * @param pointToCheck Point that is not part of the polygon to check
-     * @return boolean stating if the point is inside the polygon.
-     */
-    public boolean checkPointInside(BBDPoint pointToCheck){
-        BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
+    public BBDPoint[] segmentIntersectPolygonPoints(BBDSegment segmentToCheck){
         BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck);
 
         // find unique intersection points
@@ -255,9 +243,32 @@ public class BBDPolygon implements BBDGeometry{
                 intersectionPoints.add(intersection);
             }
         }
+        return intersectionPoints.toArray(new BBDPoint[0]);
+    }
+
+    /**
+     * helper function to determine if a segment intersects the polygon.
+     * @param segmentToCheck Segment not part of polygon to check for intersection
+     * @return boolean stating if this segment intersects the polygon
+     */
+    public boolean checkSegmentIntersectPolygon(BBDSegment segmentToCheck){
+        BBDPoint[] intersectionList = segmentIntersectPolygonPoints(segmentToCheck);
+
+        return (intersectionList.length != 0);
+    }
+
+    /**
+     * Function to check if a point is inside the polygon.
+     *
+     * @param pointToCheck Point that is not part of the polygon to check
+     * @return boolean stating if the point is inside the polygon.
+     */
+    public boolean checkPointInside(BBDPoint pointToCheck){
+        BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
+        BBDPoint[] intersectionPoints = this.segmentIntersectPolygonPoints(segmentToCheck);
 
         //if the segment intersects an odd number of things, than it is inside the polygon.
-        return intersectionPoints.size() % 2 ==1;
+        return intersectionPoints.length % 2 ==1 || this.checkPointOnPerimeter(pointToCheck);
     }
 
     /**
@@ -271,8 +282,29 @@ public class BBDPolygon implements BBDGeometry{
                 return true;
             }
         }
+        //if they don't intersect traditionally, we need to make sure that one isn't contained
+        //as that would technically count as an intersection.
+        boolean thisContainsOther = this.checkPolygonContainsPolygon(otherPolygon);
+        boolean otherContainsThis = otherPolygon.checkPolygonContainsPolygon(this);
+
+        return thisContainsOther || otherContainsThis;
+    }
+
+
+    /**
+     * Check if a segment touches a polygon.  Touching is defines as just touching the edge and not going into the
+     * interior at all.  All touches would also be intersections, but an intersection can include the interior.
+     * @param segment the segment that might be touching the polygon
+     * @return is the segment touching the polygon
+     */
+    public boolean checkSegmentTouchesPolygon(BBDSegment segment){
+        // find points of intersection, which include endpoints
+        // arrange in order
+        // check if one or both endpoints is inside & !perimeter
+        // check inside & !perimeter for midpoint of subsegments
         return false;
     }
+
 
     /**
      * Test if this polygon touches another but don't overlap.
@@ -280,22 +312,28 @@ public class BBDPolygon implements BBDGeometry{
      * @return boolean stating if these polygons touch
      */
     public boolean checkPolygonTouchesPolygon(BBDPolygon otherPolygon){
+        int pointsOnPerimeter = 0;
+        int pointsInside = 0;
+
         for(BBDPoint otherPoint : otherPolygon.points){
             if (this.checkPointOnPerimeter(otherPoint)){
-                System.out.print(this.extendedToString());
-                System.out.println(otherPoint);
-                return true;
+                pointsOnPerimeter++;
+            }
+            if (this.checkPointInside(otherPoint)){
+                pointsInside++;
             }
         }
 
-        for(BBDPoint otherPoint : this.points){
-            if (otherPolygon.checkPointOnPerimeter(otherPoint)){
-                System.out.print(otherPolygon.extendedToString());
-                System.out.println(otherPoint);
-                return true;
+        for(BBDPoint thisPoint : this.points){
+            if (otherPolygon.checkPointOnPerimeter(thisPoint)){
+                pointsOnPerimeter++;
+            }
+            if (otherPolygon.checkPointInside(thisPoint)){
+                pointsInside++;
             }
         }
-        return false;
+
+        return (pointsOnPerimeter == pointsInside) && (pointsOnPerimeter != 0);
     }
 
     /**
@@ -305,7 +343,8 @@ public class BBDPolygon implements BBDGeometry{
      */
     public boolean checkPolygonContainsPolygon(BBDPolygon otherPolygon){
         for (BBDPoint otherPoint: otherPolygon.points){
-            if (! this.checkPointInside(otherPoint)){
+            if (!this.checkPointInside(otherPoint)){
+                System.out.println("This point is not contained in the polygon: "+otherPoint);
                 return false;
             }
         }
@@ -362,6 +401,12 @@ public class BBDPolygon implements BBDGeometry{
         return minDist;
     }
 
+    /**
+     * Convert the polygon to an array of triangles.  Each triangle is guaranteed to be a
+     * part of the overall polygon.
+     * @param ensureTrianglesClockwise do you want the triangles to have a specific directionality
+     * @return array of BBDPolygon triangles
+     */
     public BBDPolygon[] decomposeIntoTriangles(boolean ensureTrianglesClockwise){
         ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
         ArrayList<BBDPolygon> triangles = new ArrayList<>();
@@ -449,7 +494,6 @@ public class BBDPolygon implements BBDGeometry{
             Collections.rotate(backwardList, 1);
             i++;
         }
-
         return false;
     }
 }

@@ -188,8 +188,6 @@ public class TestBBDSegment {
             System.out.println("You probably shouldn't be getting an exception here");
             e.printStackTrace();
         }
-
-
         Exception exception = assertThrows(ParallelLinesException.class, () -> test1.interceptPoint(parallel));
 
         String expectedMessage = "Can not calculate an intercept point between 2 parallel lines";
@@ -212,6 +210,8 @@ public class TestBBDSegment {
         assertFalse(test1.intersects(test3));
         //check if end point of one is the intersection
         assertTrue(test4.intersects(test1));
+
+        assertTrue(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f)).intersects(new BBDSegment(new BBDPoint(1,1), new BBDPoint(1,-1))));
     }
 
     @Test

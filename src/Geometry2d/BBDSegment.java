@@ -168,8 +168,14 @@ public class BBDSegment implements BBDGeometry{
         // if delta of slopes is effectively 0, then they are the same
         // if both slopes are basically vertical, then they are the same, but they might be +- of vert
         // depending on floating point drift
-        boolean sameSlope =  ((Math.abs(seg1.slopeInDegrees()-seg2.slopeInDegrees())<= BBDGeometryUtils.ALLOWABLE_DELTA)
-                || ((1.57079-Math.abs(seg1.slopeInRadians()) <= 0.001) && (1.57079-Math.abs(seg2.slopeInRadians()) <= 0.001)));
+        float seg1deg = seg1.slopeInDegrees();
+        float seg2deg = seg2.slopeInDegrees();
+        float seg1rad = seg1.slopeInRadians();
+        float seg2rad = seg2.slopeInRadians();
+        float degreeDif = Math.abs(seg1deg - seg2deg);
+        boolean condition1 = (degreeDif<= BBDGeometryUtils.ALLOWABLE_DELTA_COARSE);
+        boolean sameSlope =  (condition1
+                || ((1.57079-Math.abs(seg1rad) <= 0.001) && (1.57079-Math.abs(seg2rad) <= 0.001)));
 
         //need to check end points first because otherwise
         // dx is 0, leading to one slope being Infinity
@@ -309,7 +315,9 @@ public class BBDSegment implements BBDGeometry{
             return (this.pointOnSegment(otherSegment.startPoint) || this.pointOnSegment(otherSegment.endPoint)
                     || otherSegment.pointOnSegment(this.startPoint) || otherSegment.pointOnSegment(this.endPoint));
         }
-        return (this.pointOnSegment(interceptPoint) && otherSegment.pointOnSegment(interceptPoint));
+        boolean bool1 = this.pointOnSegment(interceptPoint);
+        boolean bool2 = otherSegment.pointOnSegment(interceptPoint);
+        return (bool1 && bool2);
     }
 
     /**

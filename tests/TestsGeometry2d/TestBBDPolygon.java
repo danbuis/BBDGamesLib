@@ -159,6 +159,16 @@ public class TestBBDPolygon {
         //check a line that is touching a vertex
         BBDSegment colinear = new BBDSegment(new BBDPoint(-1,2), new BBDPoint(2,-1));
         assertEquals(3, diamond.segmentIntersectPolygonList(colinear).length);
+
+        //a block of tests to help pinpoint an issue elsewhere
+        BBDPolygon square = this.buildSquare();
+        square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f)));
+        System.out.println(square.extendedToString());
+        assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, 0.5f), new BBDPoint(12, 0.5f))).length);
+        assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f))).length);
+        assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(-0.5f, -0.5f), new BBDPoint(12, -0.5f))).length);
+        assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(-0.5f, 0.5f), new BBDPoint(12, 0.5f))).length);
+
     }
 
     @Test
@@ -175,6 +185,13 @@ public class TestBBDPolygon {
         assertFalse(diamond.checkPointInside(outside));
         assertTrue(diamond.checkPointInside(onVertex));
         assertTrue(diamond.checkPointInside(onEdge));
+
+        BBDPolygon square = this.buildSquare();
+        System.out.println(square.extendedToString());
+        assertTrue(square.checkPointInside(new BBDPoint(0.5f, 0.5f)));
+        assertTrue(square.checkPointInside(new BBDPoint(0.5f, -0.5f)));
+        assertTrue(square.checkPointInside(new BBDPoint(-0.5f, -0.5f)));
+        assertTrue(square.checkPointInside(new BBDPoint(-0.5f, 0.5f)));
     }
 
     @Test
@@ -206,63 +223,132 @@ public class TestBBDPolygon {
     }
 
     @Test
-    public void testPolygonIntersectsPolygon(){
-        //test clearly overlapping
-        BBDPolygon poly1 = this.buildDiamond();
-        BBDPolygon poly2 = this.buildSquare();
-        assertTrue(poly1.checkPolygonIntersectsPolygon(poly2));
-        assertTrue(poly2.checkPolygonIntersectsPolygon(poly1));
+    public void testPolygonTouchesPolygon(){
+        //set up some squares
+        BBDPolygon controlPolygon = this.buildSquare();
+        BBDPolygon copy = this.buildSquare();
+        BBDPolygon overlapping = this.buildSquare();
+        BBDPolygon adjacent = this.buildSquare();
+        BBDPolygon insideEdge = this.buildSquare();
+        BBDPolygon shareVertex = this.buildSquare();
+        BBDPolygon contains = this.buildSquare();
+        BBDPolygon separate = this.buildSquare();
 
-        //test not overlapping
-        poly2.translate(10,10);
-        assertFalse(poly2.checkPolygonIntersectsPolygon(poly1));
-        assertFalse(poly1.checkPolygonIntersectsPolygon(poly2));
+        //modify most of them to create several types of scenarios
+        overlapping.translate(0.2f, 0.2f);
+        adjacent.translate(0.5f, 2);
+        insideEdge.scaleFromPoint(controlPolygon.getPoints()[0], 0.5f);
+        shareVertex.translate(2,2);
+        contains.scale(0.5f);
+        separate.translate(3,3);
 
-        //test touching
-        BBDPolygon poly3 = this.buildSquare();
-        BBDPolygon poly4 = this.buildSquare();
-        poly4.translate(2,0);
-        //fully share a segment
-        assertTrue(poly3.checkPolygonIntersectsPolygon(poly4));
-        assertTrue(poly4.checkPolygonIntersectsPolygon(poly3));
-        poly4.translate(0,1);
-        //half shared seg
-        assertTrue(poly3.checkPolygonIntersectsPolygon(poly4));
-        assertTrue(poly4.checkPolygonIntersectsPolygon(poly3));
-        poly4.translate(0,1);
-        //shared vert
-        assertTrue(poly3.checkPolygonIntersectsPolygon(poly4));
-        assertTrue(poly4.checkPolygonIntersectsPolygon(poly3));
+        //test each one with the control, and vice versa just to make sure
+        assertTrue(controlPolygon.checkPolygonTouchesPolygon(copy));
+        assertTrue(copy.checkPolygonTouchesPolygon(controlPolygon));
+
+        assertFalse(controlPolygon.checkPolygonTouchesPolygon(overlapping));
+        assertFalse(overlapping.checkPolygonTouchesPolygon(controlPolygon));
+
+        assertTrue(controlPolygon.checkPolygonTouchesPolygon(adjacent));
+        assertTrue(adjacent.checkPolygonTouchesPolygon(controlPolygon));
+
+        assertFalse(controlPolygon.checkPolygonTouchesPolygon(insideEdge));
+        assertFalse(insideEdge.checkPolygonTouchesPolygon(controlPolygon));
+
+        assertTrue(controlPolygon.checkPolygonTouchesPolygon(shareVertex));
+        assertTrue(shareVertex.checkPolygonTouchesPolygon(controlPolygon));
+
+        assertFalse(controlPolygon.checkPolygonTouchesPolygon(contains));
+        assertFalse(contains.checkPolygonTouchesPolygon(controlPolygon));
+
+        assertFalse(controlPolygon.checkPolygonTouchesPolygon(separate));
+        assertFalse(separate.checkPolygonTouchesPolygon(controlPolygon));
     }
 
     @Test
-    public void testPolygonTouchesPolygon(){
-        //test clearly overlapping
-        BBDPolygon poly1 = this.buildDiamond();
-        poly1.scale(1.2f);
-        BBDPolygon poly2 = this.buildSquare();
-        assertFalse(poly1.checkPolygonTouchesPolygon(poly2));
-        assertFalse(poly2.checkPolygonTouchesPolygon(poly1));
+    public void testPolygonIntersectingPolygon(){
+        //set up some squares
+        BBDPolygon controlPolygon = this.buildSquare();
+        BBDPolygon copy = this.buildSquare();
+        BBDPolygon overlapping = this.buildSquare();
+        BBDPolygon adjacent = this.buildSquare();
+        BBDPolygon insideEdge = this.buildSquare();
+        BBDPolygon shareVertex = this.buildSquare();
+        BBDPolygon contains = this.buildSquare();
+        BBDPolygon separate = this.buildSquare();
 
-        //test not overlapping
-        poly2.translate(10,10);
-        assertFalse(poly2.checkPolygonTouchesPolygon(poly1));
-        assertFalse(poly1.checkPolygonTouchesPolygon(poly2));
+        //modify most of them to create several types of scenarios
+        overlapping.translate(0.2f, 0.2f);
+        adjacent.translate(0.5f, 2);
+        insideEdge.scaleFromPoint(controlPolygon.getPoints()[0], 0.5f);
+        shareVertex.translate(2,2);
+        contains.scale(0.5f);
+        separate.translate(3,3);
 
-        //test touching
-        BBDPolygon poly3 = this.buildSquare();
-        BBDPolygon poly4 = this.buildSquare();
-        poly4.translate(2,0);
-        //fully share a segment
-        assertTrue(poly3.checkPolygonTouchesPolygon(poly4));
-        assertTrue(poly4.checkPolygonTouchesPolygon(poly3));
-        poly4.translate(0,1);
-        //half shared seg
-        assertTrue(poly3.checkPolygonTouchesPolygon(poly4));
-        assertTrue(poly4.checkPolygonTouchesPolygon(poly3));
-        poly4.translate(0,1);
-        //shared vert
-        assertTrue(poly3.checkPolygonTouchesPolygon(poly4));
-        assertTrue(poly4.checkPolygonTouchesPolygon(poly3));
+        //test each one with the control, and vice versa just to make sure
+        assertTrue(controlPolygon.checkPolygonIntersectsPolygon(copy));
+        assertTrue(copy.checkPolygonIntersectsPolygon(controlPolygon));
+
+        assertTrue(controlPolygon.checkPolygonIntersectsPolygon(overlapping));
+        assertTrue(overlapping.checkPolygonIntersectsPolygon(controlPolygon));
+
+        assertTrue(controlPolygon.checkPolygonIntersectsPolygon(adjacent));
+        assertTrue(adjacent.checkPolygonIntersectsPolygon(controlPolygon));
+
+        assertTrue(controlPolygon.checkPolygonIntersectsPolygon(insideEdge));
+        assertTrue(insideEdge.checkPolygonIntersectsPolygon(controlPolygon));
+
+        assertTrue(controlPolygon.checkPolygonIntersectsPolygon(shareVertex));
+        assertTrue(shareVertex.checkPolygonIntersectsPolygon(controlPolygon));
+
+        assertTrue(controlPolygon.checkPolygonIntersectsPolygon(contains));
+        assertTrue(contains.checkPolygonIntersectsPolygon(controlPolygon));
+
+        assertFalse(controlPolygon.checkPolygonIntersectsPolygon(separate));
+        assertFalse(separate.checkPolygonIntersectsPolygon(controlPolygon));
+    }
+
+    @Test
+    public void testPolygonContainsPolygon(){
+        //set up some squares
+        BBDPolygon controlPolygon = this.buildSquare();
+        BBDPolygon copy = this.buildSquare();
+        BBDPolygon overlapping = this.buildSquare();
+        BBDPolygon adjacent = this.buildSquare();
+        BBDPolygon insideEdge = this.buildSquare();
+        BBDPolygon shareVertex = this.buildSquare();
+        BBDPolygon contains = this.buildSquare();
+        BBDPolygon separate = this.buildSquare();
+
+        //modify most of them to create several types of scenarios
+        overlapping.translate(0.2f, 0.2f);
+        adjacent.translate(0.5f, 2);
+        insideEdge.scaleFromPoint(controlPolygon.getPoints()[0], 0.5f);
+        shareVertex.translate(2,2);
+        contains.scale(0.5f);
+        separate.translate(3,3);
+
+        //test each one with the control, and vice versa just to make sure
+        //assertTrue(controlPolygon.checkPolygonContainsPolygon(copy));
+        //assertTrue(copy.checkPolygonContainsPolygon(controlPolygon));
+
+        //assertFalse(controlPolygon.checkPolygonContainsPolygon(overlapping));
+        //assertFalse(overlapping.checkPolygonContainsPolygon(controlPolygon));
+
+        //assertFalse(controlPolygon.checkPolygonContainsPolygon(adjacent));
+        //assertFalse(adjacent.checkPolygonContainsPolygon(controlPolygon));
+
+        //assertTrue(controlPolygon.checkPolygonContainsPolygon(insideEdge));
+        //assertFalse(insideEdge.checkPolygonContainsPolygon(controlPolygon));
+
+        //assertFalse(controlPolygon.checkPolygonContainsPolygon(shareVertex));
+        //assertFalse(shareVertex.checkPolygonContainsPolygon(controlPolygon));
+
+        boolean test = controlPolygon.checkPolygonContainsPolygon(contains);
+        assertTrue(test);
+        assertFalse(contains.checkPolygonContainsPolygon(controlPolygon));
+
+        assertFalse(controlPolygon.checkPolygonContainsPolygon(separate));
+        assertFalse(separate.checkPolygonContainsPolygon(controlPolygon));
     }
 }
