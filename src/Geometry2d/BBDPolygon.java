@@ -457,11 +457,16 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance squared to another point
+     * Determine the distance squared to another point.  If the point is contained in
+     * or otherwise in the polygon, the distance will be 0
      * @param otherPoint other point to measure distance to
      * @return distance to the other point
      */
     public float distanceSquaredToPoint (BBDPoint otherPoint){
+        if(this.checkPointInside(otherPoint)){
+            return 0;
+        }
+
         float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){

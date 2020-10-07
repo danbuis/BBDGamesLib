@@ -471,4 +471,15 @@ public class TestBBDPolygon {
         assertEquals(0, square.distanceSquaredToSegment(crosses), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(1, square.distanceSquaredToSegment(separate1), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
+
+    @Test
+    public void testDistanceToPoint(){
+        BBDPolygon square = this.buildSquare();
+
+        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(0,0)), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(1,1)), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(0,1)), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(18, square.distanceSquaredToPoint(new BBDPoint(4,4)), BBDGeometryUtils.ALLOWABLE_DELTA);
+    }
+
 }
