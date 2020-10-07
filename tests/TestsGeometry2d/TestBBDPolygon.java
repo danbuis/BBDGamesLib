@@ -5,6 +5,11 @@ import Geometry2d.BBDPoint;
 import Geometry2d.BBDPolygon;
 import Geometry2d.BBDSegment;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -480,6 +485,29 @@ public class TestBBDPolygon {
         assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(1,1)), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(0,1)), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(18, square.distanceSquaredToPoint(new BBDPoint(4,4)), BBDGeometryUtils.ALLOWABLE_DELTA);
+    }
+
+    @Test
+    public void testEquals(){
+        BBDPolygon square1 = this.buildSquare();
+        BBDPolygon square2 = this.buildSquare();
+        BBDPolygon square3 = this.buildSquare();
+        BBDPolygon square4 = this.buildSquare();
+        square3.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
+        square4.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+
+        assertTrue(square1.equals(square1));
+        assertTrue(square1.equals(square2));
+        assertTrue(square3.equals(square4));
+
+        assertFalse(this.buildDiamond().equals(square1));
+
+        ArrayList<BBDPoint> fiveLong = new ArrayList<BBDPoint>();
+        Collections.addAll(fiveLong, square1.getPoints());
+        fiveLong.add(new BBDPoint(0,3));
+        BBDPolygon penta = new BBDPolygon(fiveLong.toArray(new BBDPoint[0]));
+
+        assertFalse(penta.equals(square1));
     }
 
 }

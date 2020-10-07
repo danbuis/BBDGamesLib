@@ -218,9 +218,6 @@ public class BBDPolygon implements BBDGeometry{
         angle1 += 2 * Math.PI;
         angle2 += 2 * Math.PI;
 
-        System.out.println("Angle 1: "+Math.toDegrees(angle1));
-        System.out.println("Angle 2: "+Math.toDegrees(angle2));
-
         float angleDiff1 = angle2 - angle1;
         float angleDiff2 = angle1 - angle2;
 
@@ -537,6 +534,7 @@ public class BBDPolygon implements BBDGeometry{
 
     @Override
     public boolean equals(Object other){
+        System.out.println("Starting equals");
         if (this == other){
             return true;
         }
@@ -556,14 +554,20 @@ public class BBDPolygon implements BBDGeometry{
         Collections.reverse(backwardList);
 
         int count = this.points.length;
-        for (int i = 0; i< count; i++){
+        for (int i = 0; i < count; i++){
+            System.out.println("i : "+ i);
             int index = 0;
-            while(otherPolygon.points[index].equals(forwardList.get(index))
-                    || otherPolygon.points[index].equals(backwardList.get(index))) {
+            System.out.println("Other poly: "+otherPolygon.points[index]);
+            System.out.println("Forward indexed : "+forwardList.get(index));
+            System.out.println("Backward indexed : "+backwardList.get(index));
+            while(index < count && (otherPolygon.points[index].equals(forwardList.get(index))
+                    || otherPolygon.points[index].equals(backwardList.get(index)))) {
                 index++;
             }
+            System.out.println("Index: "+ index);
+            System.out.println("Count: "+ count);
             // if we made it all the way through the polygon's points
-            if (index == count-1){
+            if (index == count){
                 return true;
             }
             Collections.rotate(forwardList, 1);
