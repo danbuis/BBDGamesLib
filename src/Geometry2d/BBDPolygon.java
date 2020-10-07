@@ -399,7 +399,6 @@ public class BBDPolygon implements BBDGeometry{
     public boolean checkPolygonContainsPolygon(BBDPolygon otherPolygon){
         for (BBDPoint otherPoint: otherPolygon.points){
             if (!this.checkPointInside(otherPoint)){
-                System.out.println("This point is not contained in the polygon: "+otherPoint);
                 return false;
             }
         }
@@ -407,11 +406,16 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance squared to another polygon
+     * Determine the distance squared to another polygon.  If a polygon is overlapping
+     * then the distance will be 0.
      * @param otherPolygon other polygon to measure distance to
      * @return distance to the other polygon
      */
     public float distanceSquaredToPolygon(BBDPolygon otherPolygon){
+        if (this.checkPolygonIntersectsPolygon(otherPolygon)){
+            return 0;
+        }
+
         float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){

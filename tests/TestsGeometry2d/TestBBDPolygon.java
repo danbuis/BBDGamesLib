@@ -431,4 +431,27 @@ public class TestBBDPolygon {
         polygon.enforceDirectionality(45);
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
     }
+
+    @Test
+    public void testDistanceToPolygon(){
+        //set up some squares
+        BBDPolygon controlPolygon = this.buildSquare();
+        BBDPolygon copy = this.buildSquare();
+        BBDPolygon overlapping = this.buildSquare();
+        BBDPolygon adjacent = this.buildSquare();
+        BBDPolygon contains = this.buildSquare();
+        BBDPolygon separate = this.buildSquare();
+
+        //modify most of them to create several types of scenarios
+        overlapping.translate(0.2f, 0.2f);
+        adjacent.translate(0.5f, 2);
+        contains.scale(0.5f);
+        separate.translate(3,3);
+
+        assertEquals(0, controlPolygon.distanceSquaredToPolygon(copy));
+        assertEquals(0, controlPolygon.distanceSquaredToPolygon(overlapping));
+        assertEquals(0, controlPolygon.distanceSquaredToPolygon(adjacent));
+        assertEquals(0, controlPolygon.distanceSquaredToPolygon(contains));
+        assertEquals(2, controlPolygon.distanceSquaredToPolygon(separate));
+    }
 }
