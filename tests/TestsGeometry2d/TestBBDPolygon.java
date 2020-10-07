@@ -454,4 +454,21 @@ public class TestBBDPolygon {
         assertEquals(0, controlPolygon.distanceSquaredToPolygon(contains));
         assertEquals(2, controlPolygon.distanceSquaredToPolygon(separate));
     }
+
+    @Test
+    public void testDistanceToSegment(){
+        BBDPolygon square = this.buildSquare();
+
+        BBDSegment adjacentShorter = new BBDSegment(new BBDPoint(0,1), new BBDPoint(0.5f, 1));
+        BBDSegment adjacentLonger = new BBDSegment(new BBDPoint(-4,1), new BBDPoint(4,1));
+        BBDSegment contains = new BBDSegment(new BBDPoint(0.5f, 0.5f), new BBDPoint(0.5f, 0));
+        BBDSegment crosses = new BBDSegment(new BBDPoint(-4,0), new BBDPoint(4,0));
+        BBDSegment separate1 = new BBDSegment(new BBDPoint(-4,2), new BBDPoint(4,2));
+
+        assertEquals(0, square.distanceSquaredToSegment(adjacentShorter), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToSegment(adjacentLonger), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToSegment(contains), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToSegment(crosses), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, square.distanceSquaredToSegment(separate1), BBDGeometryUtils.ALLOWABLE_DELTA);
+    }
 }

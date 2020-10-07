@@ -429,11 +429,23 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance squared to another segment
+     * Determine the distance squared to another segment.  If the segment intersects, is contained by, or
+     * any other way overlaps the polygon, the distance will be 0.
      * @param otherSegment other segment to measure distance to
      * @return distance to the other segment
      */
     public float distanceSquaredToSegment (BBDSegment otherSegment){
+        //check if all or part is inside or touching.
+        BBDPoint[] points = otherSegment.getPoints();
+        if(this.checkPointInside(points[0]) || this.checkPointInside(points[1])){
+            return 0;
+        }
+
+        //check for points of intersection
+        if(this.segmentIntersectPolygonPoints(otherSegment).length != 0){
+            return 0;
+        }
+
         float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
