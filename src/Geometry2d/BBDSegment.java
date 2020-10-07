@@ -26,11 +26,11 @@ public class BBDSegment implements BBDGeometry{
      * @param angle angle in degrees to the next point
      * @param distance distance to the next point
      */
-    public BBDSegment(BBDPoint startPoint, double angle, double distance){
-        double radians = Math.PI/180 * angle;
+    public BBDSegment(BBDPoint startPoint, float angle, float distance){
+        float radians = (float) (Math.PI/180 * angle);
         this.startPoint = startPoint;
-        this.endPoint = new BBDPoint(startPoint.getXLoc()+Math.cos(radians)*distance,
-                                     startPoint.getYLoc()+Math.sin(radians)*distance);
+        this.endPoint = new BBDPoint(startPoint.getXLoc()+(float)Math.cos(radians)*distance,
+                startPoint.getYLoc()+(float)Math.sin(radians)*distance);
     }
 
     public BBDSegment(BBDSegment toCopy){
@@ -50,7 +50,7 @@ public class BBDSegment implements BBDGeometry{
      * Translate the segment a specified amount in both cardinal directions
      */
     @Override
-    public void translate(double dx, double dy) {
+    public void translate(float dx, float dy) {
         for(BBDPoint point: this.getPoints()){
             point.translate(dx, dy);
         }
@@ -60,7 +60,7 @@ public class BBDSegment implements BBDGeometry{
      * Scale the segment by a given amount
      */
     @Override
-    public void scale(double scaleFactor) {
+    public void scale(float scaleFactor) {
         this.scaleFromPoint(this.center(), scaleFactor);
     }
 
@@ -69,7 +69,7 @@ public class BBDSegment implements BBDGeometry{
      * Scale the segment by a given amount centered on a given location
      */
     @Override
-    public void scaleFromPoint(BBDPoint centerOfScale, double scaleFactor) {
+    public void scaleFromPoint(BBDPoint centerOfScale, float scaleFactor) {
         for(BBDPoint point: this.getPoints()){
             point.scaleFromPoint(centerOfScale, scaleFactor);
         }
@@ -80,7 +80,7 @@ public class BBDSegment implements BBDGeometry{
      * and negative radians are counter-clockwise
      */
     @Override
-    public void rotate(double radians) {
+    public void rotate(float radians) {
         this.rotateAroundPoint(this.center(), radians);
     }
 
@@ -89,7 +89,7 @@ public class BBDSegment implements BBDGeometry{
      * and negative radians are counter-clockwise
      */
     @Override
-    public void rotateAroundPoint(BBDPoint centerOfRotation, double radians) {
+    public void rotateAroundPoint(BBDPoint centerOfRotation, float radians) {
         for (BBDPoint point: this.getPoints()){
             point.rotateAroundPoint(centerOfRotation, radians);
         }
@@ -117,12 +117,12 @@ public class BBDSegment implements BBDGeometry{
      * Calculate slope as rise over run
      * @return a ratio representing the slope
      */
-    public double slopeInRatio(){
-        double dx = startPoint.getXLoc() - endPoint.getXLoc();
-        double dy = startPoint.getYLoc() - endPoint.getYLoc();
+    public float slopeInRatio(){
+        float dx = startPoint.getXLoc() - endPoint.getXLoc();
+        float dy = startPoint.getYLoc() - endPoint.getYLoc();
 
         if (dx == 0){
-            return Double.POSITIVE_INFINITY;
+            return Float.POSITIVE_INFINITY;
         }
         return dy/dx;
     }
@@ -134,8 +134,8 @@ public class BBDSegment implements BBDGeometry{
      * is the end
      * @return slope of the line as dy/dx
      */
-    public double slopeInRadians(){
-        return Math.atan(slopeInRatio());
+    public float slopeInRadians(){
+        return (float)Math.atan(slopeInRatio());
     }
 
     /**
@@ -143,8 +143,8 @@ public class BBDSegment implements BBDGeometry{
      * which side is the start and which is the end.
      * @return the slope of the line in degrees
      */
-    public double slopeInDegrees(){
-        return 180 / Math.PI * slopeInRadians();
+    public float slopeInDegrees(){
+        return (float) (180 / Math.PI * slopeInRadians());
     }
 
     /**
@@ -168,8 +168,14 @@ public class BBDSegment implements BBDGeometry{
         // if delta of slopes is effectively 0, then they are the same
         // if both slopes are basically vertical, then they are the same, but they might be +- of vert
         // depending on floating point drift
-        boolean sameSlope =  ((Math.abs(seg1.slopeInDegrees()-seg2.slopeInDegrees())<= BBDGeometryUtils.ALLOWABLE_DELTA)
-                || ((1.57079-Math.abs(seg1.slopeInRadians()) <= 0.001) && (1.57079-Math.abs(seg2.slopeInRadians()) <= 0.001)));
+        float seg1deg = seg1.slopeInDegrees();
+        float seg2deg = seg2.slopeInDegrees();
+        float seg1rad = seg1.slopeInRadians();
+        float seg2rad = seg2.slopeInRadians();
+        float degreeDif = Math.abs(seg1deg - seg2deg);
+        boolean condition1 = (degreeDif<= BBDGeometryUtils.ALLOWABLE_DELTA_COARSE);
+        boolean sameSlope =  (condition1
+                || ((1.57079-Math.abs(seg1rad) <= 0.001) && (1.57079-Math.abs(seg2rad) <= 0.001)));
 
         //need to check end points first because otherwise
         // dx is 0, leading to one slope being Infinity
@@ -177,7 +183,7 @@ public class BBDSegment implements BBDGeometry{
             return false;
         }
 
-        double maxX, minX, maxY, minY;
+        float maxX, minX, maxY, minY;
         if (startPoint.getXLoc()>endPoint.getXLoc()){
             maxX = startPoint.getXLoc();
             minX = endPoint.getXLoc();
@@ -217,7 +223,7 @@ public class BBDSegment implements BBDGeometry{
      * @param minY min Y value
      * @return is the point within the bounds
      */
-    private boolean withinSegmentBounds(BBDPoint point, double maxX, double minX, double maxY, double minY){
+    private boolean withinSegmentBounds(BBDPoint point, float maxX, float minX, float maxY, float minY){
         return (maxX >= point.getXLoc())
                 && (point.getXLoc() >= minX)
                 && (maxY >= point.getYLoc())
@@ -254,10 +260,10 @@ public class BBDSegment implements BBDGeometry{
         if(needToRotateToAvoidVerticalLines){
             BBDPoint origin = new BBDPoint(0,0);
 
-            double thisDegrees = thisCopy.slopeInDegrees();
-            double otherDegrees = otherCopy.slopeInDegrees();
-            double angleDiff = thisDegrees - otherDegrees;
-            double angleToRotate = angleDiff/2;
+            float thisDegrees = thisCopy.slopeInDegrees();
+            float otherDegrees = otherCopy.slopeInDegrees();
+            float angleDiff = thisDegrees - otherDegrees;
+            float angleToRotate = angleDiff/2;
 
             thisCopy.rotateAroundPoint(origin, angleToRotate);
             otherCopy.rotateAroundPoint(origin, angleToRotate);
@@ -279,16 +285,16 @@ public class BBDSegment implements BBDGeometry{
      * @return the point of intercept for these segments
      */
     private BBDPoint calculateIntercept(BBDSegment thisCopy, BBDSegment otherCopy){
-        double thisSlope = thisCopy.slopeInRatio();
-        double otherSlope = otherCopy.slopeInRatio();
+        float thisSlope = thisCopy.slopeInRatio();
+        float otherSlope = otherCopy.slopeInRatio();
 
-        double xLoc = (thisSlope * thisCopy.startPoint.getXLoc()
+        float xLoc = (thisSlope * thisCopy.startPoint.getXLoc()
                 - otherSlope * otherCopy.startPoint.getXLoc()
                 + otherCopy.startPoint.getYLoc()
                 - thisCopy.startPoint.getYLoc())
                 / (thisSlope-otherSlope);
 
-        double yLoc = thisSlope * (xLoc - thisCopy.startPoint.getXLoc()) + thisCopy.startPoint.getYLoc();
+        float yLoc = thisSlope * (xLoc - thisCopy.startPoint.getXLoc()) + thisCopy.startPoint.getYLoc();
 
         return new BBDPoint(xLoc, yLoc);
     }
@@ -309,7 +315,9 @@ public class BBDSegment implements BBDGeometry{
             return (this.pointOnSegment(otherSegment.startPoint) || this.pointOnSegment(otherSegment.endPoint)
                     || otherSegment.pointOnSegment(this.startPoint) || otherSegment.pointOnSegment(this.endPoint));
         }
-        return (this.pointOnSegment(interceptPoint) && otherSegment.pointOnSegment(interceptPoint));
+        boolean bool1 = this.pointOnSegment(interceptPoint);
+        boolean bool2 = otherSegment.pointOnSegment(interceptPoint);
+        return (bool1 && bool2);
     }
 
     /**
@@ -329,17 +337,17 @@ public class BBDSegment implements BBDGeometry{
      * @param otherSegment the other segment to measure to
      * @return the distance between the segments
      */
-    public double distanceSquaredToSegment(BBDSegment otherSegment){
-        double minDist = Double.MAX_VALUE;
+    public float distanceSquaredToSegment(BBDSegment otherSegment){
+        float minDist = Float.MAX_VALUE;
 
         for (BBDPoint thisPoint: this.getPoints()){
-            double distance = otherSegment.distanceSquaredToPoint(thisPoint);
+            float distance = otherSegment.distanceSquaredToPoint(thisPoint);
             if(distance < minDist){
                 minDist = distance;
             }
         }
         for (BBDPoint otherPoint: otherSegment.getPoints()){
-            double distance = this.distanceSquaredToPoint(otherPoint);
+            float distance = this.distanceSquaredToPoint(otherPoint);
             if(distance < minDist){
                 minDist = distance;
             }
@@ -352,7 +360,7 @@ public class BBDSegment implements BBDGeometry{
      * @param otherPoint the point to check against
      * @return the distance to the other point
      */
-    public double distanceSquaredToPoint(BBDPoint otherPoint){
+    public float distanceSquaredToPoint(BBDPoint otherPoint){
         BBDSegment perpendicularSegment = new BBDSegment(otherPoint, this.slopeInDegrees()+90, 1);
         BBDPoint interceptPoint = null;
         try{
@@ -366,8 +374,8 @@ public class BBDSegment implements BBDGeometry{
             return interceptPoint.distanceSquaredToPoint(otherPoint);
         }
 
-        double startDist = this.startPoint.distanceSquaredToPoint(otherPoint);
-        double endDist = this.endPoint.distanceSquaredToPoint(otherPoint);
+        float startDist = this.startPoint.distanceSquaredToPoint(otherPoint);
+        float endDist = this.endPoint.distanceSquaredToPoint(otherPoint);
 
         return Math.min(startDist, endDist);
     }
@@ -376,7 +384,7 @@ public class BBDSegment implements BBDGeometry{
      * Return the length squared of the segment.  Using squared distance to be consistent with the other distance items.
      * @return the length squared of the segment
      */
-    public double lengthSquared(){
+    public float lengthSquared(){
         return this.startPoint.distanceSquaredToPoint(this.endPoint);
     }
 

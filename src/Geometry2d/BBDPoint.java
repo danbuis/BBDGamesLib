@@ -10,10 +10,10 @@ public class BBDPoint implements BBDGeometry{
      */
 
     //cartesian coordinates
-    private double xLoc;
-    private double yLoc;
+    private float xLoc;
+    private float yLoc;
 
-    public BBDPoint(double x, double y){
+    public BBDPoint(float x, float y){
         this.xLoc = x;
         this.yLoc = y;
     }
@@ -23,11 +23,11 @@ public class BBDPoint implements BBDGeometry{
         this.yLoc = toCopy.yLoc;
     }
 
-    public double getXLoc(){
+    public float getXLoc(){
         return this.xLoc;
     }
 
-    public double getYLoc(){
+    public float getYLoc(){
         return this.yLoc;
     }
 
@@ -37,7 +37,7 @@ public class BBDPoint implements BBDGeometry{
      * @param dy distance to translate on the y-axis
      */
     @Override
-    public void translate(double dx, double dy) {
+    public void translate(float dx, float dy) {
         this.xLoc += dx;
         this.yLoc += dy;
 
@@ -49,7 +49,7 @@ public class BBDPoint implements BBDGeometry{
      * @param scaleFactor factor to scale geometry
      */
     @Override
-        public void scale(double scaleFactor) {
+        public void scale(float scaleFactor) {
         System.out.println("***WARNING*** Scaling a point without defining another point to scale from is meaningless");
     }
 
@@ -59,9 +59,9 @@ public class BBDPoint implements BBDGeometry{
      * @param scaleFactor factor to scale geometry
      */
     @Override
-    public void scaleFromPoint(BBDPoint centerOfScale, double scaleFactor) {
-        double dx = this.xLoc - centerOfScale.xLoc;
-        double dy = this.yLoc - centerOfScale.yLoc;
+    public void scaleFromPoint(BBDPoint centerOfScale, float scaleFactor) {
+        float dx = this.xLoc - centerOfScale.xLoc;
+        float dy = this.yLoc - centerOfScale.yLoc;
 
         this.xLoc = centerOfScale.getXLoc() + scaleFactor*dx;
         this.yLoc = centerOfScale.getYLoc() + scaleFactor*dy;
@@ -74,7 +74,7 @@ public class BBDPoint implements BBDGeometry{
      * @param radians how far to rotate
      */
     @Override
-    public void rotate(double radians) {
+    public void rotate(float radians) {
         System.out.println("***WARNING*** Rotating a point without defining another point to rotate around is meaningless");
     }
 
@@ -84,15 +84,15 @@ public class BBDPoint implements BBDGeometry{
      * @param radians how far to rotate
      */
     @Override
-    public void rotateAroundPoint(BBDPoint centerOfRotation, double radians) {
+    public void rotateAroundPoint(BBDPoint centerOfRotation, float radians) {
         //get some polar coordinates
-        double angleFromCenterToOrig = centerOfRotation.angleToOtherPoint(this);
-        double distanceToCenter = Math.sqrt(distanceSquaredToPoint(centerOfRotation));
+        float angleFromCenterToOrig = centerOfRotation.angleToOtherPoint(this);
+        float distanceToCenter = (float) Math.sqrt(distanceSquaredToPoint(centerOfRotation));
 
-        double angleFromCenterToNew = angleFromCenterToOrig + radians;
+        float angleFromCenterToNew = angleFromCenterToOrig + radians;
 
-        this.xLoc = centerOfRotation.getXLoc() + Math.cos(angleFromCenterToNew) * distanceToCenter;
-        this.yLoc = centerOfRotation.getYLoc() + Math.sin(angleFromCenterToNew) * distanceToCenter;
+        this.xLoc = (float) (centerOfRotation.getXLoc() + Math.cos(angleFromCenterToNew) * distanceToCenter);
+        this.yLoc = (float) (centerOfRotation.getYLoc() + Math.sin(angleFromCenterToNew) * distanceToCenter);
 
         validateCoordinates();
     }
@@ -113,11 +113,11 @@ public class BBDPoint implements BBDGeometry{
      * @param otherPoint The other point to measure to
      * @return angle to that point in degrees
      */
-    public double angleToOtherPoint(BBDPoint otherPoint){
-        double deltaX = otherPoint.xLoc - this.xLoc;
-        double deltaY = otherPoint.yLoc - this.yLoc;
+    public float angleToOtherPoint(BBDPoint otherPoint){
+        float deltaX = otherPoint.xLoc - this.xLoc;
+        float deltaY = otherPoint.yLoc - this.yLoc;
 
-        return  Math.atan2(deltaY, deltaX);
+        return (float) Math.atan2(deltaY, deltaX);
     }
 
     /**
@@ -125,9 +125,9 @@ public class BBDPoint implements BBDGeometry{
      * @param other the other point
      * @return how far apart this point and the other point are
      */
-    public double distanceSquaredToPoint(BBDPoint other){
-        double deltaX = this.xLoc - other.xLoc;
-        double deltaY = this.yLoc - other.yLoc;
+    public float distanceSquaredToPoint(BBDPoint other){
+        float deltaX = this.xLoc - other.xLoc;
+        float deltaY = this.yLoc - other.yLoc;
 
         return (deltaX*deltaX)+(deltaY*deltaY);
     }
@@ -151,18 +151,18 @@ public class BBDPoint implements BBDGeometry{
 
     private void validateCoordinates(){
         //validate xLoc
-        if(this.xLoc == Double.MAX_VALUE
-                || this.xLoc == Double.POSITIVE_INFINITY
-                || this.xLoc == Double.MIN_VALUE
-                || this.xLoc == Double.NEGATIVE_INFINITY){
+        if(this.xLoc == Float.MAX_VALUE
+                || this.xLoc == Float.POSITIVE_INFINITY
+                || this.xLoc == Float.MIN_VALUE
+                || this.xLoc == Float.NEGATIVE_INFINITY){
             throw new CoordinateOverflowException("X coordinate of a point has reached the bounds provided by the Double type");
         }
 
         //validate yLoc
-        if(this.yLoc == Double.MAX_VALUE
-                || this.yLoc == Double.POSITIVE_INFINITY
-                || this.yLoc == Double.MIN_VALUE
-                || this.yLoc == Double.NEGATIVE_INFINITY){
+        if(this.yLoc == Float.MAX_VALUE
+                || this.yLoc == Float.POSITIVE_INFINITY
+                || this.yLoc == Float.MIN_VALUE
+                || this.yLoc == Float.NEGATIVE_INFINITY){
             throw new CoordinateOverflowException("Y coordinate of a point has reached the bounds provided by the Double type");
         }
     }

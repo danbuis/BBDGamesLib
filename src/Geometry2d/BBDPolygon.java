@@ -4,6 +4,7 @@ import Geometry2d.Exceptions.ParallelLinesException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class BBDPolygon implements BBDGeometry{
 
@@ -14,7 +15,7 @@ public class BBDPolygon implements BBDGeometry{
     // Pieces that define the polygon.
     // Users should not be able to modify these directly.
     private BBDPoint[] points;
-    private BBDSegment[] segments;
+    private final BBDSegment[] segments;
 
     public BBDPoint[] getPoints(){
         return this.points;
@@ -44,12 +45,12 @@ public class BBDPolygon implements BBDGeometry{
      * The horizontal dimension of this polygon
      * @return max width of the polygon
      */
-    public double width(){
-        double maxX = Double.NEGATIVE_INFINITY;
-        double minX = Double.POSITIVE_INFINITY;
+    public float width(){
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
 
         for (BBDPoint point : points){
-            double x = point.getXLoc();
+            float x = point.getXLoc();
             if(x < minX){minX = x;}
             if(x > maxX){maxX = x;}
         }
@@ -60,12 +61,12 @@ public class BBDPolygon implements BBDGeometry{
      * The horizontal dimension of this polygon
      * @return max height of the polygon
      */
-    public double height(){
-        double maxY = Double.NEGATIVE_INFINITY;
-        double minY = Double.POSITIVE_INFINITY;
+    public float height(){
+        float maxY = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
 
         for (BBDPoint point : points){
-            double y = point.getYLoc();
+            float y = point.getYLoc();
             if(y < minY){minY = y;}
             if(y > maxY){maxY = y;}
 
@@ -82,7 +83,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param dy distance on y axis
      */
     @Override
-    public void translate(double dx, double dy) {
+    public void translate(float dx, float dy) {
         for (BBDPoint point: this.points){
             point.translate(dx, dy);
         }
@@ -93,7 +94,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param scaleFactor factor to scale by
      */
     @Override
-    public void scale(double scaleFactor) {
+    public void scale(float scaleFactor) {
         BBDPoint center = this.center();
         for (BBDPoint point: this.points){
             point.scaleFromPoint(center, scaleFactor);
@@ -106,7 +107,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param scaleFactor factor to scale by
      */
     @Override
-    public void scaleFromPoint(BBDPoint centerOfScale, double scaleFactor) {
+    public void scaleFromPoint(BBDPoint centerOfScale, float scaleFactor) {
         for (BBDPoint point: this.points){
             point.scaleFromPoint(centerOfScale, scaleFactor);
         }
@@ -118,7 +119,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param radians how much to rotate
      */
     @Override
-    public void rotate(double radians) {
+    public void rotate(float radians) {
         this.rotateAroundPoint(this.center(), radians);
     }
 
@@ -129,7 +130,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param radians how much to rotate
      */
     @Override
-    public void rotateAroundPoint(BBDPoint centerOfRotation, double radians) {
+    public void rotateAroundPoint(BBDPoint centerOfRotation, float radians) {
         for (BBDPoint point: points){
             point.rotateAroundPoint(centerOfRotation, radians);
         }
@@ -143,14 +144,14 @@ public class BBDPolygon implements BBDGeometry{
      */
     @Override
     public BBDPoint center() {
-        double maxX = Double.NEGATIVE_INFINITY;
-        double maxY = Double.NEGATIVE_INFINITY;
-        double minX = Double.POSITIVE_INFINITY;
-        double minY = Double.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
 
         for (BBDPoint point : points){
-            double x = point.getXLoc();
-            double y = point.getYLoc();
+            float x = point.getXLoc();
+            float y = point.getYLoc();
             if(x < minX){minX = x;}
             if(x > maxX){maxX = x;}
             if(y < minY){minY = y;}
@@ -166,8 +167,8 @@ public class BBDPolygon implements BBDGeometry{
      * @return the average of all the points
      */
     public BBDPoint centerAverage(){
-        double aggX = 0;
-        double aggY = 0;
+        float aggX = 0;
+        float aggY = 0;
 
         for (BBDPoint point : points){
             aggX += point.getXLoc();
@@ -177,6 +178,57 @@ public class BBDPolygon implements BBDGeometry{
         int size = this.points.length;
 
         return new BBDPoint(aggX/size, aggY / size);
+    }
+
+    /**
+     * Ensure that this polygon's vertices go in a specific direction.
+     * @param direction desired direction, should be a relevant constant from BBDGeometryUtils.
+     */
+    public void enforceDirectionality(int direction){
+        int currentDirection = this.determineDirectionality();
+
+        if (currentDirection != direction && (direction == 0 || direction == 1)){
+            List<BBDPoint> newList = Arrays.asList(this.points);
+            Collections.reverse(newList);
+            this.points = newList.toArray(new BBDPoint[0]);
+        }
+    }
+
+    /**
+     * Determine if the vertices of the polygon are ordered clockwise or counterclockwise
+     * @return an integer from BBDGeometryUtils designating in what direction the vertices are.
+     */
+    public int determineDirectionality(){
+        BBDPolygon[] triangles = this.decomposeIntoTriangles(null);
+        //the first triangle is likely to be the cleanest one that doesn't skip points
+        return this.determineDirectionality(triangles[0]);
+    }
+
+    /**
+     * An internal method to determine the directionality of a polygon.
+     * @param triangle A triangle.  It is assumed that this triangle is NOT 3 colinear points.
+     * @return an integer from BBDGeometryUtils designating in what direction the vertices are.
+     */
+    private int determineDirectionality(BBDPolygon triangle){
+        BBDPoint averageCenter = triangle.centerAverage();
+
+        float angle1 = averageCenter.angleToOtherPoint(triangle.points[0]);
+        float angle2 = averageCenter.angleToOtherPoint(triangle.points[1]);
+
+        angle1 += 2 * Math.PI;
+        angle2 += 2 * Math.PI;
+
+        float angleDiff1 = angle2 - angle1;
+        float angleDiff2 = angle1 - angle2;
+
+        if(angle1 > angle2){
+            if(angleDiff2 > Math.PI) return BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON;
+            else return BBDGeometryUtils.CLOCKWISE_POLYGON;
+        } else{
+            if (angleDiff1 > Math.PI) return BBDGeometryUtils.CLOCKWISE_POLYGON;
+            else return BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON;
+        }
+
     }
 
     /**
@@ -216,24 +268,12 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * helper function to determine if a segment intersects the polygon.
-     * @param segmentToCheck Segment not part of polygon to check for intersection
-     * @return boolean stating if this segment intersects the polygon
+     * Create a list of intersection points for a segment and this polygon.
+     * Can also include the end points of the segment if they are on the polygon perimeter.
+     * @param segmentToCheck  test segment
+     * @return list of intersection points
      */
-    public boolean checkSegmentIntersectPolygon(BBDSegment segmentToCheck){
-        BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck);
-
-        return (intersectionList.length != 0);
-    }
-
-    /**
-     * Function to check if a point is inside the polygon.
-     *
-     * @param pointToCheck Point that is not part of the polygon to check
-     * @return boolean stating if the point is inside the polygon.
-     */
-    public boolean checkPointInside(BBDPoint pointToCheck){
-        BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
+    public BBDPoint[] segmentIntersectPolygonPoints(BBDSegment segmentToCheck){
         BBDSegment[] intersectionList = segmentIntersectPolygonList(segmentToCheck);
 
         // find unique intersection points
@@ -255,9 +295,32 @@ public class BBDPolygon implements BBDGeometry{
                 intersectionPoints.add(intersection);
             }
         }
+        return intersectionPoints.toArray(new BBDPoint[0]);
+    }
+
+    /**
+     * helper function to determine if a segment intersects the polygon.
+     * @param segmentToCheck Segment not part of polygon to check for intersection
+     * @return boolean stating if this segment intersects the polygon
+     */
+    public boolean checkSegmentIntersectPolygon(BBDSegment segmentToCheck){
+        BBDPoint[] intersectionList = segmentIntersectPolygonPoints(segmentToCheck);
+
+        return (intersectionList.length != 0);
+    }
+
+    /**
+     * Function to check if a point is inside the polygon.
+     *
+     * @param pointToCheck Point that is not part of the polygon to check
+     * @return boolean stating if the point is inside the polygon.
+     */
+    public boolean checkPointInside(BBDPoint pointToCheck){
+        BBDSegment segmentToCheck = new BBDSegment(pointToCheck, 0, this.width()+10);
+        BBDPoint[] intersectionPoints = this.segmentIntersectPolygonPoints(segmentToCheck);
 
         //if the segment intersects an odd number of things, than it is inside the polygon.
-        return intersectionPoints.size() % 2 ==1;
+        return intersectionPoints.length % 2 ==1 || this.checkPointOnPerimeter(pointToCheck);
     }
 
     /**
@@ -271,8 +334,29 @@ public class BBDPolygon implements BBDGeometry{
                 return true;
             }
         }
+        //if they don't intersect traditionally, we need to make sure that one isn't contained
+        //as that would technically count as an intersection.
+        boolean thisContainsOther = this.checkPolygonContainsPolygon(otherPolygon);
+        boolean otherContainsThis = otherPolygon.checkPolygonContainsPolygon(this);
+
+        return thisContainsOther || otherContainsThis;
+    }
+
+
+    /**
+     * Check if a segment touches a polygon.  Touching is defines as just touching the edge and not going into the
+     * interior at all.  All touches would also be intersections, but an intersection can include the interior.
+     * @param segment the segment that might be touching the polygon
+     * @return is the segment touching the polygon
+     */
+    public boolean checkSegmentTouchesPolygon(BBDSegment segment){
+        // find points of intersection, which include endpoints
+        // arrange in order
+        // check if one or both endpoints is inside & !perimeter
+        // check inside & !perimeter for midpoint of subsegments
         return false;
     }
+
 
     /**
      * Test if this polygon touches another but don't overlap.
@@ -280,22 +364,28 @@ public class BBDPolygon implements BBDGeometry{
      * @return boolean stating if these polygons touch
      */
     public boolean checkPolygonTouchesPolygon(BBDPolygon otherPolygon){
+        int pointsOnPerimeter = 0;
+        int pointsInside = 0;
+
         for(BBDPoint otherPoint : otherPolygon.points){
             if (this.checkPointOnPerimeter(otherPoint)){
-                System.out.print(this.extendedToString());
-                System.out.println(otherPoint);
-                return true;
+                pointsOnPerimeter++;
+            }
+            if (this.checkPointInside(otherPoint)){
+                pointsInside++;
             }
         }
 
-        for(BBDPoint otherPoint : this.points){
-            if (otherPolygon.checkPointOnPerimeter(otherPoint)){
-                System.out.print(otherPolygon.extendedToString());
-                System.out.println(otherPoint);
-                return true;
+        for(BBDPoint thisPoint : this.points){
+            if (otherPolygon.checkPointOnPerimeter(thisPoint)){
+                pointsOnPerimeter++;
+            }
+            if (otherPolygon.checkPointInside(thisPoint)){
+                pointsInside++;
             }
         }
-        return false;
+
+        return (pointsOnPerimeter == pointsInside) && (pointsOnPerimeter != 0);
     }
 
     /**
@@ -305,7 +395,7 @@ public class BBDPolygon implements BBDGeometry{
      */
     public boolean checkPolygonContainsPolygon(BBDPolygon otherPolygon){
         for (BBDPoint otherPoint: otherPolygon.points){
-            if (! this.checkPointInside(otherPoint)){
+            if (!this.checkPointInside(otherPoint)){
                 return false;
             }
         }
@@ -313,12 +403,17 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance squared to another polygon
+     * Determine the distance squared to another polygon.  If a polygon is overlapping
+     * then the distance will be 0.
      * @param otherPolygon other polygon to measure distance to
      * @return distance to the other polygon
      */
-    public double distanceSquaredToPolygon(BBDPolygon otherPolygon){
-        double minDist = Double.MAX_VALUE;
+    public float distanceSquaredToPolygon(BBDPolygon otherPolygon){
+        if (this.checkPolygonIntersectsPolygon(otherPolygon)){
+            return 0;
+        }
+
+        float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
             for (BBDSegment otherSegment: otherPolygon.segments){
@@ -331,12 +426,24 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance squared to another segment
+     * Determine the distance squared to another segment.  If the segment intersects, is contained by, or
+     * any other way overlaps the polygon, the distance will be 0.
      * @param otherSegment other segment to measure distance to
      * @return distance to the other segment
      */
-    public double distanceSquaredToSegment (BBDSegment otherSegment){
-        double minDist = Double.MAX_VALUE;
+    public float distanceSquaredToSegment (BBDSegment otherSegment){
+        //check if all or part is inside or touching.
+        BBDPoint[] points = otherSegment.getPoints();
+        if(this.checkPointInside(points[0]) || this.checkPointInside(points[1])){
+            return 0;
+        }
+
+        //check for points of intersection
+        if(this.segmentIntersectPolygonPoints(otherSegment).length != 0){
+            return 0;
+        }
+
+        float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
             if (thisSegment.distanceSquaredToSegment(otherSegment) < minDist){
@@ -347,12 +454,17 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Determine the distance squared to another point
+     * Determine the distance squared to another point.  If the point is contained in
+     * or otherwise in the polygon, the distance will be 0
      * @param otherPoint other point to measure distance to
      * @return distance to the other point
      */
-    public double distanceSquaredToPoint (BBDPoint otherPoint){
-        double minDist = Double.MAX_VALUE;
+    public float distanceSquaredToPoint (BBDPoint otherPoint){
+        if(this.checkPointInside(otherPoint)){
+            return 0;
+        }
+
+        float minDist = Float.MAX_VALUE;
 
         for (BBDSegment thisSegment: this.segments){
             if (thisSegment.distanceSquaredToPoint(otherPoint) < minDist){
@@ -363,13 +475,15 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * Calculate the area of this polygon
-     * @return area
+     * Convert the polygon to an array of triangles.  Each triangle is guaranteed to be a
+     * part of the overall polygon.
+     * @param triangleDirectionality do you want the triangles to have a specific directionality
+     * @return array of BBDPolygon triangles
      */
-    public double area(){
-        double accumulatedTotal = 0;
+    public BBDPolygon[] decomposeIntoTriangles(Integer triangleDirectionality){
         ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
-        
+        ArrayList<BBDPolygon> triangles = new ArrayList<>();
+
         while(remainingPoints.size() >= 3){
             BBDPolygon temp = new BBDPolygon(remainingPoints.toArray(new BBDPoint[0]));
             //cycle through 3 adjacent vertices until we find a triangle with an interior inside the polygon
@@ -377,20 +491,32 @@ public class BBDPolygon implements BBDGeometry{
             for(int i=1; i< remainingPoints.size()-1; i++){
                 test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
                 BBDPoint center = test.centerAverage();
-                if(temp.checkPointOnPerimeter(center) || temp.checkPointInside(center)){
-                    BBDPoint A = remainingPoints.get(i - 1);
-                    BBDPoint B = remainingPoints.get(i);
-                    BBDPoint C = remainingPoints.get(i + 1);
-
-                    accumulatedTotal += Math.abs((A.getXLoc()*(B.getYLoc()-C.getYLoc())
-                            + B.getXLoc()*(C.getYLoc()-A.getYLoc())
-                            + C.getXLoc()*(A.getYLoc()-B.getYLoc()))/ 2.0);
+                if(temp.checkPointInside(center)){
+                    if(triangleDirectionality != null){
+                        test.enforceDirectionality(triangleDirectionality);
+                    }
+                    triangles.add(test);
                     remainingPoints.remove(i);
                     break;
                 }
             }
         }
+        return triangles.toArray(new BBDPolygon[0]);
+    }
 
+    /**
+     * Calculate the area of this polygon
+     * @return area
+     */
+    public float area(){
+        float accumulatedTotal = 0;
+        BBDPolygon[] triangles = this.decomposeIntoTriangles(null);
+        for(BBDPolygon triangle:triangles){
+            BBDPoint[] points = triangle.getPoints();
+            accumulatedTotal += Math.abs((points[0].getXLoc()*(points[1].getYLoc()-points[2].getYLoc())
+                    + points[1].getXLoc()*(points[2].getYLoc()-points[0].getYLoc())
+                    + points[2].getXLoc()*(points[0].getYLoc()-points[1].getYLoc()))/ 2.0);
+        }
         return accumulatedTotal;
     }
 
@@ -408,6 +534,7 @@ public class BBDPolygon implements BBDGeometry{
 
     @Override
     public boolean equals(Object other){
+        System.out.println("Starting equals");
         if (this == other){
             return true;
         }
@@ -427,21 +554,20 @@ public class BBDPolygon implements BBDGeometry{
         Collections.reverse(backwardList);
 
         int count = this.points.length;
-        for (int i = 0; i< count; i++){
+        for (int i = 0; i < count; i++){
             int index = 0;
-            while(otherPolygon.points[index].equals(forwardList.get(index))
-                    || otherPolygon.points[index].equals(backwardList.get(index))) {
+            while(index < count && (otherPolygon.points[index].equals(forwardList.get(index))
+                    || otherPolygon.points[index].equals(backwardList.get(index)))) {
                 index++;
             }
             // if we made it all the way through the polygon's points
-            if (index == count-1){
+            if (index == count){
                 return true;
             }
             Collections.rotate(forwardList, 1);
             Collections.rotate(backwardList, 1);
             i++;
         }
-
         return false;
     }
 }
