@@ -4,6 +4,7 @@ import Geometry2d.Exceptions.ParallelLinesException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class BBDPolygon implements BBDGeometry{
 
@@ -13,7 +14,7 @@ public class BBDPolygon implements BBDGeometry{
 
     // Pieces that define the polygon.
     // Users should not be able to modify these directly.
-    private final BBDPoint[] points;
+    private BBDPoint[] points;
     private final BBDSegment[] segments;
 
     public BBDPoint[] getPoints(){
@@ -177,6 +178,60 @@ public class BBDPolygon implements BBDGeometry{
         int size = this.points.length;
 
         return new BBDPoint(aggX/size, aggY / size);
+    }
+
+    /**
+     * Ensure that this polygon's vertices go in a specific direction.
+     * @param direction desired direction, should be a relevant constant from BBDGeometryUtils.
+     */
+    public void enforceDirectionality(int direction){
+        int currentDirection = this.determineDirectionality();
+
+        if (currentDirection != direction && (direction == 0 || direction == 1)){
+            List<BBDPoint> newList = Arrays.asList(this.points);
+            Collections.reverse(newList);
+            this.points = newList.toArray(new BBDPoint[0]);
+        }
+    }
+
+    /**
+     * Determine if the vertices of the polygon are ordered clockwise or counterclockwise
+     * @return an integer from BBDGeometryUtils designating in what direction the vertices are.
+     */
+    public int determineDirectionality(){
+        BBDPolygon[] triangles = this.decomposeIntoTriangles(null);
+        //the first triangle is likely to be the cleanest one that doesn't skip points
+        return this.determineDirectionality(triangles[0]);
+    }
+
+    /**
+     * An internal method to determine the directionality of a polygon.
+     * @param triangle A triangle.  It is assumed that this triangle is NOT 3 colinear points.
+     * @return an integer from BBDGeometryUtils designating in what direction the vertices are.
+     */
+    private int determineDirectionality(BBDPolygon triangle){
+        BBDPoint averageCenter = triangle.centerAverage();
+
+        float angle1 = averageCenter.angleToOtherPoint(triangle.points[0]);
+        float angle2 = averageCenter.angleToOtherPoint(triangle.points[1]);
+
+        angle1 += 2 * Math.PI;
+        angle2 += 2 * Math.PI;
+
+        System.out.println("Angle 1: "+Math.toDegrees(angle1));
+        System.out.println("Angle 2: "+Math.toDegrees(angle2));
+
+        float angleDiff1 = angle2 - angle1;
+        float angleDiff2 = angle1 - angle2;
+
+        if(angle1 > angle2){
+            if(angleDiff2 > Math.PI) return BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON;
+            else return BBDGeometryUtils.CLOCKWISE_POLYGON;
+        } else{
+            if (angleDiff1 > Math.PI) return BBDGeometryUtils.CLOCKWISE_POLYGON;
+            else return BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON;
+        }
+
     }
 
     /**
@@ -404,10 +459,10 @@ public class BBDPolygon implements BBDGeometry{
     /**
      * Convert the polygon to an array of triangles.  Each triangle is guaranteed to be a
      * part of the overall polygon.
-     * @param ensureTrianglesClockwise do you want the triangles to have a specific directionality
+     * @param triangleDirectionality do you want the triangles to have a specific directionality
      * @return array of BBDPolygon triangles
      */
-    public BBDPolygon[] decomposeIntoTriangles(boolean ensureTrianglesClockwise){
+    public BBDPolygon[] decomposeIntoTriangles(Integer triangleDirectionality){
         ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
         ArrayList<BBDPolygon> triangles = new ArrayList<>();
 
@@ -437,7 +492,7 @@ public class BBDPolygon implements BBDGeometry{
      */
     public float area(){
         float accumulatedTotal = 0;
-        BBDPolygon[] triangles = this.decomposeIntoTriangles(false);
+        BBDPolygon[] triangles = this.decomposeIntoTriangles(null);
         for(BBDPolygon triangle:triangles){
             BBDPoint[] points = triangle.getPoints();
             accumulatedTotal += Math.abs((points[0].getXLoc()*(points[1].getYLoc()-points[2].getYLoc())

@@ -329,26 +329,101 @@ public class TestBBDPolygon {
         separate.translate(3,3);
 
         //test each one with the control, and vice versa just to make sure
-        //assertTrue(controlPolygon.checkPolygonContainsPolygon(copy));
-        //assertTrue(copy.checkPolygonContainsPolygon(controlPolygon));
+        assertTrue(controlPolygon.checkPolygonContainsPolygon(copy));
+        assertTrue(copy.checkPolygonContainsPolygon(controlPolygon));
 
-        //assertFalse(controlPolygon.checkPolygonContainsPolygon(overlapping));
-        //assertFalse(overlapping.checkPolygonContainsPolygon(controlPolygon));
+        assertFalse(controlPolygon.checkPolygonContainsPolygon(overlapping));
+        assertFalse(overlapping.checkPolygonContainsPolygon(controlPolygon));
 
-        //assertFalse(controlPolygon.checkPolygonContainsPolygon(adjacent));
-        //assertFalse(adjacent.checkPolygonContainsPolygon(controlPolygon));
+        assertFalse(controlPolygon.checkPolygonContainsPolygon(adjacent));
+        assertFalse(adjacent.checkPolygonContainsPolygon(controlPolygon));
 
-        //assertTrue(controlPolygon.checkPolygonContainsPolygon(insideEdge));
-        //assertFalse(insideEdge.checkPolygonContainsPolygon(controlPolygon));
+        assertTrue(controlPolygon.checkPolygonContainsPolygon(insideEdge));
+        assertFalse(insideEdge.checkPolygonContainsPolygon(controlPolygon));
 
-        //assertFalse(controlPolygon.checkPolygonContainsPolygon(shareVertex));
-        //assertFalse(shareVertex.checkPolygonContainsPolygon(controlPolygon));
+        assertFalse(controlPolygon.checkPolygonContainsPolygon(shareVertex));
+        assertFalse(shareVertex.checkPolygonContainsPolygon(controlPolygon));
 
-        boolean test = controlPolygon.checkPolygonContainsPolygon(contains);
-        assertTrue(test);
+        assertTrue(controlPolygon.checkPolygonContainsPolygon(contains));
         assertFalse(contains.checkPolygonContainsPolygon(controlPolygon));
 
         assertFalse(controlPolygon.checkPolygonContainsPolygon(separate));
         assertFalse(separate.checkPolygonContainsPolygon(controlPolygon));
+    }
+
+    @Test
+    public void testDetermineDirectionalityFairlyEvenTri(){
+        BBDPoint point1 = new BBDPoint(1, 1);
+        BBDPoint point2 = new BBDPoint(1, -1);
+        BBDPoint point3 = new BBDPoint(-1, 0.2f);
+
+        BBDPolygon cw1 = new BBDPolygon(new BBDPoint[]{point1, point2, point3});
+        BBDPolygon cw2 = new BBDPolygon(new BBDPoint[]{point2, point3, point1});
+        BBDPolygon cw3 = new BBDPolygon(new BBDPoint[]{point3, point1, point2});
+
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw1.determineDirectionality());
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw2.determineDirectionality());
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw3.determineDirectionality());
+
+        BBDPolygon ccw1 = new BBDPolygon(new BBDPoint[]{point3, point2, point1});
+        BBDPolygon ccw2 = new BBDPolygon(new BBDPoint[]{point2, point1, point3});
+        BBDPolygon ccw3 = new BBDPolygon(new BBDPoint[]{point1, point3, point2});
+
+        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw1.determineDirectionality());
+        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw2.determineDirectionality());
+        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw3.determineDirectionality());
+    }
+
+    @Test
+    public void testDetermineDirectionalityFairlyLopsidedTri(){
+        BBDPoint point1 = new BBDPoint(-1, 1);
+        BBDPoint point2 = new BBDPoint(7, -5);
+        BBDPoint point3 = new BBDPoint(6.5f, -5);
+
+        BBDPolygon cw1 = new BBDPolygon(new BBDPoint[]{point1, point2, point3});
+        BBDPolygon cw2 = new BBDPolygon(new BBDPoint[]{point2, point3, point1});
+        BBDPolygon cw3 = new BBDPolygon(new BBDPoint[]{point3, point1, point2});
+
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw1.determineDirectionality());
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw2.determineDirectionality());
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw3.determineDirectionality());
+
+        BBDPolygon ccw1 = new BBDPolygon(new BBDPoint[]{point3, point2, point1});
+        BBDPolygon ccw2 = new BBDPolygon(new BBDPoint[]{point2, point1, point3});
+        BBDPolygon ccw3 = new BBDPolygon(new BBDPoint[]{point1, point3, point2});
+
+        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw1.determineDirectionality());
+        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw2.determineDirectionality());
+        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw3.determineDirectionality());
+    }
+
+    @Test
+    public void testEnforceDirectionality(){
+        BBDPoint point1 = new BBDPoint(1, 1);
+        BBDPoint point2 = new BBDPoint(1, -1);
+        BBDPoint point3 = new BBDPoint(-1, 0.2f);
+
+        BBDPolygon polygon = new BBDPolygon(new BBDPoint[]{point1, point2, point3});
+
+        //test beforehand
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
+
+        //check that it doesn't change anything
+        polygon.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
+
+        //try to change it
+        polygon.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
+        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, polygon.determineDirectionality());
+
+        //try to leave it
+        polygon.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
+        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, polygon.determineDirectionality());
+
+        //change it back
+        polygon.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
+
+
     }
 }
