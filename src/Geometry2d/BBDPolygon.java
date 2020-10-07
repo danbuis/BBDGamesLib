@@ -473,11 +473,11 @@ public class BBDPolygon implements BBDGeometry{
             for(int i=1; i< remainingPoints.size()-1; i++){
                 test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
                 BBDPoint center = test.centerAverage();
-                if(temp.checkPointOnPerimeter(center) || temp.checkPointInside(center)){
-                    BBDPoint A = remainingPoints.get(i - 1);
-                    BBDPoint B = remainingPoints.get(i);
-                    BBDPoint C = remainingPoints.get(i + 1);
-                    triangles.add(new BBDPolygon(new BBDPoint[]{A, B, C}));
+                if(temp.checkPointInside(center)){
+                    if(triangleDirectionality != null){
+                        test.enforceDirectionality(triangleDirectionality);
+                    }
+                    triangles.add(test);
                     remainingPoints.remove(i);
                     break;
                 }
