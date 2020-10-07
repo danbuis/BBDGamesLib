@@ -424,6 +424,11 @@ public class TestBBDPolygon {
         polygon.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
 
+        //try some invalid values
+        polygon.enforceDirectionality(-3);
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
 
+        polygon.enforceDirectionality(45);
+        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
     }
 }
