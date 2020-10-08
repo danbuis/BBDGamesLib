@@ -1,4 +1,4 @@
-package openGL;
+package OpenGL;
 
 import org.lwjgl.system.MemoryUtil;
 
@@ -14,16 +14,38 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+/**
+ * A collection of vertices and ancillary information to enable rendering an object to the screen
+ */
 public class Mesh {
 
+    /**
+     * Vertex array object id.  Created automatically
+     */
     private final int vaoId;
 
+    /**
+     * List of vertex buffer objects.  Created and populatd automatically
+     */
     private final List<Integer> vboIdList;
 
+    /**
+     * Count of vertices for the mesh
+     */
     private final int vertexCount;
 
+    /**
+     * What Texture to apply to the mesh
+     */
     private final Texture texture;
 
+    /**
+     * All purpose constructor to pass in vertex and texture data.
+     * @param positions positions of vertices
+     * @param textCoords texture coordinates of vertices
+     * @param indices list of indices created triangles, triangles need to be clockwise
+     * @param texture Texture object used to create the texture
+     */
     public Mesh(float[] positions, float[] textCoords, int[] indices, Texture texture) {
         FloatBuffer posBuffer = null;
         FloatBuffer textCoordsBuffer = null;
@@ -87,6 +109,9 @@ public class Mesh {
         return vertexCount;
     }
 
+    /**
+     * Actually draw the mesh.
+     */
     public void render() {
         // Activate firs texture bank
         glActiveTexture(GL_TEXTURE0);

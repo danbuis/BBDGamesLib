@@ -2,8 +2,8 @@ package GameEngine;
 
 import Geometry2d.BBDPoint;
 import Geometry2d.BBDPolygon;
-import openGL.Mesh;
-import openGL.ShaderProgram;
+import OpenGL.Mesh;
+import OpenGL.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

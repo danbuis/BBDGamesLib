@@ -1,7 +1,7 @@
 package GameEngine.SampleGame;
 
 import GameEngine.*;
-import openGL.*;
+import OpenGL.*;
 
 public class DummyGame implements GameComponent {
 
@@ -15,7 +15,7 @@ public class DummyGame implements GameComponent {
 
     @Override
     public void init(Window window) throws Exception {
-        renderer.init(window);
+
         // Create the Mesh
         float[] positions = new float[] {
                 // V0
@@ -129,8 +129,8 @@ public class DummyGame implements GameComponent {
         ShaderProgram returnProgram = new ShaderProgram();
 
         //create and attach shaders
-        returnProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vs"));
-        returnProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.fs"));
+        returnProgram.createVertexShader(Utils.loadShaderScript("/shaders/vertex.vs"));
+        returnProgram.createFragmentShader(Utils.loadShaderScript("/shaders/fragment.fs"));
 
         //give the shader program an id
         returnProgram.link();

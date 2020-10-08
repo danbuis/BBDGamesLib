@@ -1,9 +1,9 @@
 package GameEngine.SampleGame;
 
 import GameEngine.GameItem;
-import openGL.Mesh;
-import openGL.Window;
-import openGL.ShaderProgram;
+import OpenGL.Mesh;
+import OpenGL.Window;
+import OpenGL.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

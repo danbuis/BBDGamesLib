@@ -2,8 +2,8 @@ package GameEngine.SampleGame;
 
 import GameEngine.GameItem2d;
 import Geometry2d.BBDPolygon;
-import openGL.Mesh;
-import openGL.ShaderProgram;
+import OpenGL.Mesh;
+import OpenGL.ShaderProgram;
 import org.joml.Matrix4f;
 
 public class DummyRect extends GameItem2d {

@@ -1,4 +1,4 @@
-package openGL;
+package OpenGL;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -8,20 +8,42 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+/**
+ * A class for displaying an openGL window on the screen
+ */
 public class Window {
 
+    /**
+     * Title for the bar a t the top of the screen
+     */
     private final String title;
 
     private int width;
 
     private int height;
 
+    /**
+     * The address in memork for the window.  Probably not used externally.
+     */
     private long windowHandle;
 
+    /**
+     * Has the window been resized
+     */
     private boolean resized;
 
+    /**
+     * is vSync enabled
+     */
     private boolean vSync;
 
+    /**
+     * General constructor
+     * @param title title of the window
+     * @param width width of the window in pixels
+     * @param height height of the window in pixels
+     * @param vSync turn on vsync
+     */
     public Window(String title, int width, int height, boolean vSync) {
         this.title = title;
         this.width = width;
@@ -30,6 +52,10 @@ public class Window {
         this.resized = false;
     }
 
+    /**
+     * Function to initialize a window.  This will set up some default values and get a lot of
+     * boilerplate code taken care of.
+     */
     public void init() {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -95,10 +121,23 @@ public class Window {
         glEnable(GL_DEPTH_TEST);
     }
 
+    /**
+     * Set the color to use to fill in the empty background.  If nothing else is drawn to the screen
+     * then this is the color that will show.
+     * @param r red component
+     * @param g green component
+     * @param b blue component
+     * @param alpha alpha component
+     */
     public void setClearColor(float r, float g, float b, float alpha) {
         glClearColor(r, g, b, alpha);
     }
 
+    /**
+     * method to determine if a given key is pressed.
+     * @param keyCode what key is being checked
+     * @return if the key is pressed
+     */
     public boolean isKeyPressed(int keyCode) {
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }

@@ -1,8 +1,8 @@
 package GameEngine;
 
-import openGL.Mesh;
-import openGL.ShaderProgram;
-import openGL.Window;
+import OpenGL.Mesh;
+import OpenGL.ShaderProgram;
+import OpenGL.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

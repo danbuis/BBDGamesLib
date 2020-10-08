@@ -1,4 +1,4 @@
-package openGL;
+package OpenGL;
 
 import GameEngine.GameItem;
 import GameEngine.Transformation;
@@ -6,6 +6,9 @@ import org.joml.Matrix4f;
 
 import static org.lwjgl.opengl.GL11.*;
 
+/**
+ * A class to draw objects on the screen
+ */
 public class Renderer {
 
     /**
@@ -13,35 +16,42 @@ public class Renderer {
      */
     private static final float FOV = (float) Math.toRadians(60.0f);
 
+    /**
+     * Near cutoff to render on the z axis
+     */
     private static final float Z_NEAR = 0.01f;
 
+    /**
+     * Far cutoff to render on the z axis
+     */
     private static final float Z_FAR = 1000.f;
 
+    /**
+     * Object ot user for transforming with the world and projection matrices
+     */
     private final Transformation transformation;
 
-    //private ShaderProgram shaderProgram;
 
+    /**
+     * Constructor
+     */
     public Renderer() {
         transformation = new Transformation();
     }
 
-    public void init(Window window) {
-        // Create shader
-        //shaderProgram = new ShaderProgram();
-        //shaderProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vs"));
-        //shaderProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.fs"));
-        //shaderProgram.link();
 
-        // Create uniforms for world and projection matrices and texture
-        //shaderProgram.createUniform("projectionMatrix");
-        //shaderProgram.createUniform("worldMatrix");
-        //shaderProgram.createUniform("texture_sampler");
-    }
-
+    /**
+     * Clear the renderer
+     */
     public void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+    /**
+     * Render a list of items to the window
+     * @param window window to display items
+     * @param gameItems an array of GameItems, each of which is guaranteed to have some sort of render() method.
+     */
     public void render(Window window, GameItem[] gameItems) {
         clear();
 
@@ -52,9 +62,7 @@ public class Renderer {
 
         // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
-        //shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
-        //shaderProgram.setUniform("texture_sampler", 0);
         // Render each gameItem
         for (GameItem gameItem : gameItems) {
             // Set world matrix for this item
@@ -67,7 +75,6 @@ public class Renderer {
 
             gameItem.setUniforms(projectionMatrix, worldMatrix);
 
-            //shaderProgram.setUniform("worldMatrix", worldMatrix);
             // Render the mesh for this game item
             gameItem.getMesh().render();
             gameItem.shader.unbind();
@@ -76,8 +83,6 @@ public class Renderer {
     }
 
     public void cleanup() {
-        //if (shaderProgram != null) {
-        //    shaderProgram.cleanup();
-        //}
+
     }
 }

@@ -1,6 +1,6 @@
 package GameEngine;
 
-import openGL.Window;
+import OpenGL.Window;
 
 public interface GameComponent {
 
