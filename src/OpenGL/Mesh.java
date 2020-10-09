@@ -1,7 +1,10 @@
 package OpenGL;
 
+import Geometry2d.BBDPoint;
+import Geometry2d.BBDPolygon;
 import org.lwjgl.system.MemoryUtil;
 
+import javax.xml.soap.Text;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -38,6 +41,20 @@ public class Mesh {
      * What Texture to apply to the mesh
      */
     private final Texture texture;
+
+
+    public static float[] buildMeshPositions(BBDPolygon inputShape){
+
+        BBDPoint[] points = inputShape.getPoints();
+        float[] positions = new float[3*points.length];
+        for (int i = 0; i< points.length; i++){
+            positions[i * 3] = points[i].getXLoc();
+            positions[i * 3 + 1] = points[i].getYLoc();
+            positions[i * 3 + 2] = 0;
+        }
+
+        return positions;
+    }
 
     /**
      * All purpose constructor to pass in vertex and texture data.
@@ -113,10 +130,12 @@ public class Mesh {
      * Actually draw the mesh.
      */
     public void render() {
-        // Activate firs texture bank
-        glActiveTexture(GL_TEXTURE0);
-        // Bind the texture
-        glBindTexture(GL_TEXTURE_2D, texture.getId());
+        if(texture != null) {
+            // Activate first texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
 
         // Draw the mesh
         glBindVertexArray(getVaoId());
