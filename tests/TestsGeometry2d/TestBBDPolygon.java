@@ -496,18 +496,18 @@ public class TestBBDPolygon {
         square3.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
         square4.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
 
-        assertTrue(square1.equals(square1));
-        assertTrue(square1.equals(square2));
-        assertTrue(square3.equals(square4));
+        assertEquals(square1, square1);
+        assertEquals(square2, square1);
+        assertEquals(square4, square3);
 
-        assertFalse(this.buildDiamond().equals(square1));
+        assertNotEquals(square1, this.buildDiamond());
 
         ArrayList<BBDPoint> fiveLong = new ArrayList<BBDPoint>();
         Collections.addAll(fiveLong, square1.getPoints());
         fiveLong.add(new BBDPoint(0,3));
         BBDPolygon penta = new BBDPolygon(fiveLong.toArray(new BBDPoint[0]));
 
-        assertFalse(penta.equals(square1));
+        assertNotEquals(square1, penta);
     }
 
 }
