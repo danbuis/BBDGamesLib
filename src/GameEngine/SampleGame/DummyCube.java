@@ -22,6 +22,11 @@ public class DummyCube extends GameItem {
         super(mesh, shaderProgram);
     }
 
+    /**
+     * Set uniforms to be used by this GameItems shader program.
+     * @param projectionMatrix projection matrix
+     * @param worldMatrix world matrix
+     */
     @Override
     public void setUniforms(Matrix4f projectionMatrix, Matrix4f worldMatrix) {
         this.shader.setUniform("projectionMatrix", projectionMatrix);
@@ -29,6 +34,11 @@ public class DummyCube extends GameItem {
         this.shader.setUniform("texture_sampler", 0);
     }
 
+    /**
+     * Keyboard input to change the transformation of the cube.  Up/Down to translate up and down.  Left/Right to translate
+     * left and right.  A/Q to translate in and out.  Z/X to scale up and down.
+     * @param window the Window object this GameComponent is using.
+     */
     @Override
     public void input(Window window){
         displyInc = 0;
@@ -54,6 +64,10 @@ public class DummyCube extends GameItem {
         }
     }
 
+    /**
+     * Connect the keyboard input to the GameComponent's postion matrices and such.
+     * @param interval elapsed time
+     */
     @Override
     public void update(float interval){
         // Update position

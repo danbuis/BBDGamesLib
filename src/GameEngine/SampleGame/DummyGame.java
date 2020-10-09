@@ -13,6 +13,24 @@ public class DummyGame implements GameComponent {
         renderer = new Renderer();
     }
 
+    /**
+     * An implementation of the init function expected by the GameComponent interface.
+     * This particular function builds a cube from vertex information, maps a texture to it, and creates a new Mesh object
+     * and adds it to a list of items to be rendered.
+     *
+     * Vertex position and vertex texture coordinates map 1:1 to eacheother.  You should have the same number of position
+     * vertices as texture coordinates.  In this instance the number of position verts is driven by the number of texture
+     * coordinates.  Since each vertex can only have one texture coordinate, and we are making a cube, vertexes will need
+     * to be repeated so that  different faces can use different parts of the texture.  In this case the back 2 vertical
+     * edges of the cube are sharing textures with adjacent sides, so we only have 20 verts for a cube instead of 24.  You
+     * can see the differene by scaling up the cube so that the view is inside the cube, that way you can see the back
+     * face and the mirrored texture at the edges.
+     *
+     * The indicies array takes the list of positions and makes triangles out of the indices.  Those triangles define what
+     * gets rendered.
+     * @param window Window object that will be displaying the GameComponent
+     * @throws Exception
+     */
     @Override
     public void init(Window window) throws Exception {
 
@@ -125,6 +143,11 @@ public class DummyGame implements GameComponent {
         gameItems = new GameItem[]{gameItem};
     }
 
+    /**
+     * Build a simple shader program.  Adds a fragment and vertex shader, a texture, and feeds it the appropriate uniforms
+     * @return a complete shader program
+     * @throws Exception
+     */
     private ShaderProgram buildShaderProgram() throws Exception {
         ShaderProgram returnProgram = new ShaderProgram();
 
@@ -132,7 +155,7 @@ public class DummyGame implements GameComponent {
         returnProgram.createVertexShader(Utils.loadShaderScript("/shaders/vertex.vs"));
         returnProgram.createFragmentShader(Utils.loadShaderScript("/shaders/fragment.fs"));
 
-        //give the shader program an id
+        //build and compile
         returnProgram.link();
 
         // Create uniforms for world and projection matrices and texture
