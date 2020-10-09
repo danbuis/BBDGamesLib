@@ -129,7 +129,7 @@ public class DummyGame implements GameComponent {
                 16, 18, 19, 17, 16, 19,
                 // Back face
                 4, 6, 7, 5, 4, 7,};
-        Texture texture = new Texture("textures/grassblock.png");
+        Texture texture = new Texture("resources/textures/grassblock.png");
         Mesh mesh = new Mesh(positions, textCoords, indices, texture);
         ShaderProgram exampleShader = buildShaderProgram();
         GameItem gameItem = new DummyCube(mesh, exampleShader);
@@ -144,7 +144,9 @@ public class DummyGame implements GameComponent {
     }
 
     /**
-     * Build a simple shader program.  Adds a fragment and vertex shader, a texture, and feeds it the appropriate uniforms
+     * Build a simple shader program.  Adds a fragment and vertex shader, a texture, and feeds it the appropriate uniforms.
+     * The shaders should probably be under a resources folder that is added to your projects path.  In my case in
+     * intelliJ I right clicked the resources folder and went "Mark Directory As" -> "Resources".
      * @return a complete shader program
      * @throws Exception
      */

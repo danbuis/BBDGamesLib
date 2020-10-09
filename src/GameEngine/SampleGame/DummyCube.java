@@ -65,7 +65,7 @@ public class DummyCube extends GameItem {
     }
 
     /**
-     * Connect the keyboard input to the GameComponent's postion matrices and such.
+     * Connect the keyboard input to the GameComponent's position matrices and such.
      * @param interval elapsed time
      */
     @Override
