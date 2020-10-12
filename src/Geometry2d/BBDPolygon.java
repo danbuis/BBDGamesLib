@@ -46,14 +46,9 @@ public class BBDPolygon implements BBDGeometry{
      * @return max width of the polygon
      */
     public float width(){
-        float maxX = Float.NEGATIVE_INFINITY;
-        float minX = Float.POSITIVE_INFINITY;
+        float maxX = maxX();
+        float minX = minX();
 
-        for (BBDPoint point : points){
-            float x = point.getXLoc();
-            if(x < minX){minX = x;}
-            if(x > maxX){maxX = x;}
-        }
         return maxX - minX;
     }
 
@@ -62,16 +57,62 @@ public class BBDPolygon implements BBDGeometry{
      * @return max height of the polygon
      */
     public float height(){
-        float maxY = Float.NEGATIVE_INFINITY;
-        float minY = Float.POSITIVE_INFINITY;
+        float maxY = maxY();
+        float minY = minY();
 
+        return maxY - minY;
+    }
+
+    /**
+     * find the maximum X value
+     * @return maximum X value
+     */
+    public float maxX(){
+        float maxX = Float.NEGATIVE_INFINITY;
+        for (BBDPoint point : points){
+            float x = point.getXLoc();
+            if(x > maxX){maxX = x;}
+        }
+        return maxX;
+    }
+
+    /**
+     * find the maximum Y value
+     * @return maximum Y value
+     */
+    public float maxY(){
+        float maxY = Float.NEGATIVE_INFINITY;
+        for (BBDPoint point : points){
+            float y = point.getYLoc();
+            if(y > maxY){maxY = y;}
+        }
+        return maxY;
+    }
+
+    /**
+     * find the minimum X value
+     * @return minimum X value
+     */
+    public float minX(){
+        float minX = Float.POSITIVE_INFINITY;
+        for (BBDPoint point : points){
+            float x = point.getXLoc();
+            if(x < minX){minX = x;}
+        }
+        return minX;
+    }
+
+    /**
+     * find the minimum Y value
+     * @return minimum Y value
+     */
+    public float minY(){
+        float minY = Float.POSITIVE_INFINITY;
         for (BBDPoint point : points){
             float y = point.getYLoc();
             if(y < minY){minY = y;}
-            if(y > maxY){maxY = y;}
-
         }
-        return maxY - minY;
+        return minY;
     }
 
 

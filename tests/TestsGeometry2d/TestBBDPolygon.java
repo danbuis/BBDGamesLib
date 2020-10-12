@@ -168,7 +168,6 @@ public class TestBBDPolygon {
         //a block of tests to help pinpoint an issue elsewhere
         BBDPolygon square = this.buildSquare();
         square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f)));
-        System.out.println(square.extendedToString());
         assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, 0.5f), new BBDPoint(12, 0.5f))).length);
         assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f))).length);
         assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(-0.5f, -0.5f), new BBDPoint(12, -0.5f))).length);
@@ -192,7 +191,6 @@ public class TestBBDPolygon {
         assertTrue(diamond.checkPointInside(onEdge));
 
         BBDPolygon square = this.buildSquare();
-        System.out.println(square.extendedToString());
         assertTrue(square.checkPointInside(new BBDPoint(0.5f, 0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(0.5f, -0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(-0.5f, -0.5f)));

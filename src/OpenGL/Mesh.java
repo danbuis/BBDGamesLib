@@ -1,5 +1,6 @@
 package OpenGL;
 
+import Geometry2d.BBDGeometryUtils;
 import Geometry2d.BBDPoint;
 import Geometry2d.BBDPolygon;
 import org.lwjgl.system.MemoryUtil;
@@ -42,9 +43,12 @@ public class Mesh {
      */
     private final Texture texture;
 
-
+    /**
+     * Position coordinates are created directly from the BBDPoints that define the polygon.
+     * @param inputShape shape to use for a mesh.
+     * @return array of floats for position coordinates
+     */
     public static float[] buildMeshPositions(BBDPolygon inputShape){
-
         BBDPoint[] points = inputShape.getPoints();
         float[] positions = new float[3*points.length];
         for (int i = 0; i< points.length; i++){
@@ -52,8 +56,69 @@ public class Mesh {
             positions[i * 3 + 1] = points[i].getYLoc();
             positions[i * 3 + 2] = 0;
         }
-
         return positions;
+    }
+
+    /**
+     * Texture coordinates are created with the assumption that the shape should go to the very edges of the given texture.
+     * Remember that 0,0 is the upper left corner of the image file, and 1,1 is the lower right.
+     * @param inputShape shape to use for a mesh.
+     * @return array of floats for texture coordinates
+     */
+    public static float[] buildTextureCoordinates(BBDPolygon inputShape){
+         float maxY = inputShape.maxY();
+         float minX = inputShape.minX();
+         float width = inputShape.width();
+         float height = inputShape.height();
+         BBDPoint[] points = inputShape.getPoints();
+         float[] textureCoordinates = new float[2*points.length];
+         float deltaX;
+         float deltaY;
+         for(int i = 0; i< points.length; i++){
+             System.out.println(points[i]);
+             System.out.println(maxY);
+             System.out.println(minX);
+             System.out.println(width);
+             System.out.println(height);
+            deltaY = maxY - points[i].getYLoc();
+            deltaX = points[i].getXLoc() - minX;
+
+            textureCoordinates[2 * i] = deltaX/width;
+            textureCoordinates[2 * i+1] = deltaY/height;
+         }
+         return textureCoordinates;
+    }
+
+    /**
+     * Build indices array for the mesh
+     * @param inputShape BBDPolygon to use to create a mesh
+     * @return indices array
+     */
+    public static int[] buildIndices(BBDPolygon inputShape){
+        BBDPoint[] points = inputShape.getPoints();
+        BBDPolygon[] triangles = inputShape.decomposeIntoTriangles(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
+        int[] output = new int[3 * triangles.length];
+
+        for (int tri = 0; tri < triangles.length; tri++){
+            for (int vert = 0; vert < 3; vert++){
+                for(int inputIndex = 0; inputIndex < points.length; inputIndex++){
+                    if(triangles[tri].getPoints()[vert].equals(points[inputIndex])){
+                        output[3*tri + vert] = inputIndex;
+                    }
+                }
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Build a mesh object from a BBDPolygon object and a texture file.
+     * @param inputShape BBDPolygon to use to create a mesh
+     * @param texture image texture to apply to the mesh
+     * @return Mesh object
+     */
+    public static Mesh buildMeshFromPolygon(BBDPolygon inputShape, Texture texture){
+        return new Mesh(buildMeshPositions(inputShape), buildTextureCoordinates(inputShape), buildIndices(inputShape), texture);
     }
 
     /**
