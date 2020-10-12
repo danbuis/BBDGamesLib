@@ -12,12 +12,12 @@ public class Engine implements Runnable {
     /**
      * How many frames per second will be drawn
      */
-    public static final int TARGET_FPS = 75;
+    public static int TARGET_FPS = 75;
 
     /**
      * How many updates per second will be performed
      */
-    public static final int TARGET_UPS = 30;
+    public static int TARGET_UPS = 30;
 
     /**
      * Window to draw GameComponents to
@@ -146,5 +146,21 @@ public class Engine implements Runnable {
     protected void render() {
         gameLogic.render(window);
         window.update();
+    }
+
+    public int getTargetUps(){
+        return this.TARGET_UPS;
+    }
+
+    public void setTargetUps(int newTarget){
+        this.TARGET_UPS = newTarget;
+    }
+
+    public int getTargetFps(){
+        return this.TARGET_FPS;
+    }
+
+    public void setTargetFps(int newTarget){
+        this.TARGET_FPS = newTarget;
     }
 }
