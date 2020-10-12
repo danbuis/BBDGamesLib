@@ -87,8 +87,12 @@ public class GameItem2d extends GameItem{
         rotation = new Vector3f();
     }
 
-    public Vector3f getPosition() {
-        return position;
+    public int getLayer(){
+        return this.layer;
+    }
+    
+    public void setLayer(int newLayer){
+        this.layer = newLayer;
     }
 
     public void setPosition(float x, float y) {
@@ -113,10 +117,6 @@ public class GameItem2d extends GameItem{
         if(shapeInteracts){
             shape.translate(x,y);
         }
-    }
-
-    public float getScale() {
-        return scale;
     }
 
     public void setScale(float scale) {
@@ -157,11 +157,6 @@ public class GameItem2d extends GameItem{
         // scale
         this.scale = scaleFactor;
     }
-
-    public Vector3f getRotation() {
-        return rotation;
-    }
-
 
     public void setRotation(float z) {
         if (shapeInteracts){
