@@ -90,7 +90,7 @@ public class GameItem2d extends GameItem{
     public int getLayer(){
         return this.layer;
     }
-    
+
     public void setLayer(int newLayer){
         this.layer = newLayer;
     }

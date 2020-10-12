@@ -14,17 +14,17 @@ public class Renderer {
     /**
      * Field of View in Radians
      */
-    private static final float FOV = (float) Math.toRadians(60.0f);
+    private static float FOV = (float) Math.toRadians(60.0f);
 
     /**
      * Near cutoff to render on the z axis
      */
-    private static final float Z_NEAR = 0.01f;
+    private static float Z_NEAR = 0.01f;
 
     /**
      * Far cutoff to render on the z axis
      */
-    private static final float Z_FAR = 1000.f;
+    private static float Z_FAR = 1000.f;
 
     /**
      * Object ot user for transforming with the world and projection matrices
@@ -84,5 +84,53 @@ public class Renderer {
 
     public void cleanup() {
 
+    }
+
+    /**
+     * Get the current field of view
+     * @return current FOV
+     */
+    public float getFOV(){
+        return this.FOV;
+    }
+
+    /**
+     * Set a new field of view
+     * @param newFOV
+     */
+    public void setFOV(float newFOV){
+        this.FOV = newFOV;
+    }
+
+    /**
+     * Get the current near clipping distance
+     * @return current Z_NEAR
+     */
+    public float getZNear(){
+        return this.Z_NEAR;
+    }
+
+    /**
+     * Set the near clipping distance
+     * @param newZNear
+     */
+    public void setZNear(float newZNear){
+        this.Z_NEAR = newZNear;
+    }
+
+    /**
+     * Get the current near clipping distance
+     * @return current Z_FAR
+     */
+    public float getZFar(){
+        return this.Z_FAR;
+    }
+
+    /**
+     * Set the far clipping distance
+     * @param newZFar
+     */
+    public void setZFar(float newZFar){
+        this.Z_FAR = newZFar;
     }
 }
