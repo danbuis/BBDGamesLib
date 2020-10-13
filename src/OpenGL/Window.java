@@ -54,7 +54,7 @@ public class Window {
 
     /**
      * Function to initialize a window.  This will set up some default values and get a lot of
-     * boilerplate code taken care of.
+     * boilerplate code taken care of, most of which relates to getting some openGL parameters set up.
      */
     public void init() {
         // Setup an error callback. The default implementation

@@ -75,11 +75,6 @@ public class Mesh {
          float deltaX;
          float deltaY;
          for(int i = 0; i< points.length; i++){
-             System.out.println(points[i]);
-             System.out.println(maxY);
-             System.out.println(minX);
-             System.out.println(width);
-             System.out.println(height);
             deltaY = maxY - points[i].getYLoc();
             deltaX = points[i].getXLoc() - minX;
 
