@@ -11,7 +11,8 @@ import org.joml.Vector3f;
  * A class that represents a 2d object in a game.  It extends GameComponent and therefore uses the GameComponent interface
  * and is instantiated with some basic data such as a mesh and the shaderProgram.  It connects to the Geometry2d package
  * by including a BBDPolygon and having the ability to have it interact with other BBDPolygons and therefore
- * capitalize on the built in functionality for things like distance, area, overlaps etc.
+ * capitalize on the built in functionality for things like distance, area, overlaps etc.  NOTE that a single polygon may
+ * behave unpredicatably if attached to more than 1 GameItem, particularly if interaction is set to true.
  *
  * The intended use of this class us to be used as a base for the end user's game items.  This serves as a decent base,
  * but if you want to do anything with render or update for example you will need to overwrite those methods.  See
@@ -24,20 +25,6 @@ public class GameItem2d extends GameItem{
      */
     private final Mesh mesh;
 
-    /**
-     * Data structure to hold the position modification of the object
-     */
-    private final Vector3f position;
-
-    /**
-     * Scale factor of the object
-     */
-    private float scale;
-
-    /**
-     * Data structure to hold the rotation modification of the object
-     */
-    private final Vector3f rotation;
 
     /**
      * ShaderProgram to be used to render this object
@@ -82,9 +69,9 @@ public class GameItem2d extends GameItem{
         this.shape = shape;
         this.shapeInteracts = shapeInteracts;
         BBDPoint center = shape.center();
-        position = new Vector3f(center.getXLoc(), center.getYLoc(), layer*LAYER_INTERVAL);
-        scale = 1;
-        rotation = new Vector3f();
+        super.setPosition(center.getXLoc(), center.getYLoc(), -layer*LAYER_INTERVAL);
+        super.setScale(1);
+        super.setRotation(0,0,0);
     }
 
     public int getLayer(){
@@ -93,15 +80,19 @@ public class GameItem2d extends GameItem{
 
     public void setLayer(int newLayer){
         this.layer = newLayer;
+        this.setDepth();
+    }
+
+    private void setDepth(){
+        this.setPosition(this.getPosition().x, this.getPosition().y, -this.layer*LAYER_INTERVAL);
     }
 
     public void setPosition(float x, float y) {
-        this.position.x = x;
-        this.position.y = y;
-
         if(shapeInteracts){
             BBDPoint currentCenter = shape.center();
-            this.translate(currentCenter.getXLoc() - x, currentCenter.getYLoc() - y);
+            this.translate(x - currentCenter.getXLoc(), y - currentCenter.getYLoc());
+        }else{
+            this.setPosition(x, y, this.getPosition().z);
         }
     }
 
@@ -111,20 +102,18 @@ public class GameItem2d extends GameItem{
      * @param y delta Y
      */
     public void translate(float x, float y) {
-        this.position.x += x;
-        this.position.y += y;
-
         if(shapeInteracts){
             shape.translate(x,y);
         }
+        this.setPosition(this.getPosition().x + x, this.getPosition().y + y, this.getPosition().z);
     }
 
     public void setScale(float scale) {
         if(shapeInteracts){
-            this.shape.scale(scale/this.scale);
+            this.shape.scale(scale/this.getScale());
         }
 
-        this.scale = scale;
+        this.setScale(scale);
     }
 
     /**
@@ -136,7 +125,7 @@ public class GameItem2d extends GameItem{
             this.shape.scale(scaleFactor);
         }
 
-        this.scale = scale * scaleFactor;
+        this.setScale(this.getScale() * scaleFactor);
     }
 
     /**
@@ -150,21 +139,23 @@ public class GameItem2d extends GameItem{
             this.shape.scaleFromPoint(point, scaleFactor);
         }
         // translate
-        float deltaX = this.position.x - point.getXLoc();
-        float deltaY = this.position.y - point.getYLoc();
-        this.position.x = this.position.x + deltaX * scaleFactor;
-        this.position.y = this.position.y + deltaY * scaleFactor;
+        float deltaX = this.getPosition().x - point.getXLoc();
+        float deltaY = this.getPosition().y - point.getYLoc();
+        float newX = this.getPosition().x + deltaX * scaleFactor;
+        float newY = this.getPosition().y + deltaY * scaleFactor;
+        this.setPosition(newX, newY);
         // scale
-        this.scale = scaleFactor;
+        this.setScale(scaleFactor);
     }
 
     public void setRotation(float z) {
+        Vector3f rotation = this.getRotation();
         if (shapeInteracts){
-            float currentRotation = this.rotation.z;
+            float currentRotation = rotation.z;
             this.shape.rotate(currentRotation - z);
         }
 
-        this.rotation.z = z;
+        this.setRotation(rotation.x, rotation.y, z);
     }
 
     /**
@@ -172,7 +163,7 @@ public class GameItem2d extends GameItem{
      * @param angle angle in radians to rotate
      */
     public void rotate(float angle){
-        this.rotation.rotateZ(angle);
+        this.getRotation().rotateZ(angle);
 
         if (shapeInteracts){
             this.shape.rotate(angle);
@@ -186,7 +177,7 @@ public class GameItem2d extends GameItem{
      * @param angle angle in radians to rotate
      */
     public void rotateAroundPoint(BBDPoint point, float angle){
-        this.rotation.rotateAxis(angle, point.getXLoc(), point.getYLoc(), 0);
+        this.getRotation().rotateAxis(angle, point.getXLoc(), point.getYLoc(), 0);
 
         if(shapeInteracts){
             this.shape.rotateAroundPoint(point, angle);
