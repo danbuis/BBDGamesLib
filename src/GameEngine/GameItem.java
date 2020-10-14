@@ -27,7 +27,7 @@ public class GameItem implements GameComponent{
     /**
      * Data structure to hold the position modification of the object
      */
-    private Vector3f position;
+    private final Vector3f position;
 
     /**
      * Scale factor of the object

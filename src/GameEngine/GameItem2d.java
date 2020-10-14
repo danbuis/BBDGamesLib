@@ -113,7 +113,7 @@ public class GameItem2d extends GameItem{
             this.shape.scale(scale/this.getScale());
         }
 
-        this.setScale(scale);
+        super.setScale(scale);
     }
 
     /**
@@ -124,8 +124,7 @@ public class GameItem2d extends GameItem{
         if(shapeInteracts){
             this.shape.scale(scaleFactor);
         }
-
-        this.setScale(this.getScale() * scaleFactor);
+        super.setScale(this.getScale() * scaleFactor);
     }
 
     /**
@@ -141,18 +140,19 @@ public class GameItem2d extends GameItem{
         // translate
         float deltaX = this.getPosition().x - point.getXLoc();
         float deltaY = this.getPosition().y - point.getYLoc();
-        float newX = this.getPosition().x + deltaX * scaleFactor;
-        float newY = this.getPosition().y + deltaY * scaleFactor;
-        this.setPosition(newX, newY);
+        float newX = point.getXLoc() + deltaX * scaleFactor;
+        float newY = point.getYLoc() + deltaY * scaleFactor;
+        super.setPosition(newX, newY, this.getPosition().z);
+
         // scale
-        this.setScale(scaleFactor);
+        super.setScale(scaleFactor);
     }
 
     public void setRotation(float z) {
         Vector3f rotation = this.getRotation();
         if (shapeInteracts){
             float currentRotation = rotation.z;
-            this.shape.rotate(currentRotation - z);
+            this.shape.rotate(z - currentRotation);
         }
 
         this.setRotation(rotation.x, rotation.y, z);
@@ -163,7 +163,9 @@ public class GameItem2d extends GameItem{
      * @param angle angle in radians to rotate
      */
     public void rotate(float angle){
-        this.getRotation().rotateZ(angle);
+        Vector3f currentRotation = this.getRotation();
+
+        this.setRotation(currentRotation.x, currentRotation.y, currentRotation.z + angle);
 
         if (shapeInteracts){
             this.shape.rotate(angle);
@@ -177,7 +179,17 @@ public class GameItem2d extends GameItem{
      * @param angle angle in radians to rotate
      */
     public void rotateAroundPoint(BBDPoint point, float angle){
-        this.getRotation().rotateAxis(angle, point.getXLoc(), point.getYLoc(), 0);
+        //this.getRotation().rotateAxis(angle, point.getXLoc(), point.getYLoc(), 0);
+        Vector3f centerOfRotation = new Vector3f(point.getXLoc(), point.getYLoc(), 0);
+
+        Matrix4f test = new Matrix4f();
+        test.translate(centerOfRotation)
+                .rotate(angle, 0, 0, 1)
+                .translate(centerOfRotation.negate())
+                .transformPosition(this.getPosition());
+
+        Vector3f currentRotation = this.getRotation();
+        this.setRotation(currentRotation.x, currentRotation.y, currentRotation.z + angle);
 
         if(shapeInteracts){
             this.shape.rotateAroundPoint(point, angle);

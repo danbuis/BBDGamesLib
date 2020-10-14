@@ -105,6 +105,14 @@ public class TestBBDPolygon {
         assertEquals(new BBDPoint(1, 0), square.getPoints()[1]);
         assertEquals(new BBDPoint(0, 0), square.getPoints()[2]);
         assertEquals(new BBDPoint(0, 1), square.getPoints()[3]);
+
+        BBDPolygon otherSquare = this.buildSquare();
+
+        otherSquare.scaleFromPoint(new BBDPoint(-1,-1), 5);
+        System.out.println(otherSquare);
+        assertEquals(9, otherSquare.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, otherSquare.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+
     }
 
     @Test
