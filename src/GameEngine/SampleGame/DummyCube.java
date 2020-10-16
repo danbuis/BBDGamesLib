@@ -36,7 +36,8 @@ public class DummyCube extends GameItem {
 
     /**
      * Keyboard input to change the transformation of the cube.  Up/Down to translate up and down.  Left/Right to translate
-     * left and right.  A/Q to translate in and out.  Z/X to scale up and down.
+     * left and right.  A/Q to translate in and out.  Z/X to scale up and down.  This implementation does not support multiple
+     * key presses/input
      * @param window the Window object this GameComponent is using.
      */
     @Override
@@ -65,7 +66,8 @@ public class DummyCube extends GameItem {
     }
 
     /**
-     * Connect the keyboard input to the GameComponent's position matrices and such.
+     * Connect the keyboard input to the GameComponent's position matrices and such.  This item
+     * uses flat values per update and doesn't care about how much time has passed between updates.
      * @param interval elapsed time
      */
     @Override
@@ -86,8 +88,8 @@ public class DummyCube extends GameItem {
         this.setScale(scale);
 
         // Update rotation angle
-        float rotation = this.getRotation().x + 1.5f;
-        if (rotation > 360) {
+        float rotation = (float) (this.getRotation().x + Math.toRadians(1.5f));
+        if (rotation > Math.PI * 2) {
             rotation = 0;
         }
         this.setRotation(rotation, rotation, rotation);

@@ -1,6 +1,8 @@
 package GameEngine.SampleGame;
 
 import GameEngine.*;
+import Geometry2d.BBDPoint;
+import Geometry2d.BBDPolygon;
 import OpenGL.*;
 
 public class DummyGame implements GameComponent {
@@ -132,15 +134,32 @@ public class DummyGame implements GameComponent {
         Texture texture = new Texture("resources/textures/grassblock.png");
         Mesh mesh = new Mesh(positions, textCoords, indices, texture);
         ShaderProgram exampleShader = buildShaderProgram();
-        GameItem gameItem = new DummyCube(mesh, exampleShader);
-
+        GameItem item1 = new DummyCube(mesh, exampleShader);
+        item1.setPosition(0, 0, -2);
         /*
         Build a background 2d object to demo and test with
+        OpenGL objects rotate around their local origin.  This object is centered at the origin, but then we move it away
+        by updating its position.  In openGL land this means that the object internally thinks it is centered at the origin
+        but at render time the position matrix shifts the position in world space.
          */
+        BBDPolygon poly1 = new BBDPolygon(new BBDPoint[]{new BBDPoint(-1.5f, 0), new BBDPoint(0.5f, 2),
+                new BBDPoint(1.5f,1), new BBDPoint(1.5f,0), new BBDPoint(-0.5f,-2)});
+        Mesh shape1 = Mesh.buildMeshFromPolygon(poly1, null);
+        ShaderProgram example2 = buildSolidColorShader("dark_green");
+        GameItem2d item2 = new DummyShape2d(shape1, example2, poly1, 5000, false, 7);
+        item2.translate(1.5f, 0);
 
+                /*
+        Build a background 2d object to demo and test with
+         */
+        BBDPolygon poly2 = new BBDPolygon(new BBDPoint[]{new BBDPoint(0, 0), new BBDPoint(0, 2),
+                new BBDPoint(-3,2), new BBDPoint(-3,-2), new BBDPoint(-2,-2), new BBDPoint(-2,0)});
+        Mesh shape2 = Mesh.buildMeshFromPolygon(poly2, null);
+        ShaderProgram example3 = buildSolidColorShader("brown");
+        GameItem2d item3 = new DummyShape2d(shape2, example3, poly2, 5100, false, 0);
 
-        gameItem.setPosition(0, 0, -2);
-        gameItems = new GameItem[]{gameItem};
+        //populate list of items to be rendered
+        gameItems = new GameItem[]{item1, item2, item3};
     }
 
     /**
@@ -164,6 +183,23 @@ public class DummyGame implements GameComponent {
         returnProgram.createUniform("projectionMatrix");
         returnProgram.createUniform("worldMatrix");
         returnProgram.createUniform("texture_sampler");
+
+        return returnProgram;
+    }
+
+    private ShaderProgram buildSolidColorShader(String color) throws Exception{
+        ShaderProgram returnProgram = new ShaderProgram();
+
+        //create and attach shaders
+        returnProgram.createVertexShader(Utils.loadShaderScript("/shaders/vertex.vs"));
+        returnProgram.createFragmentShader(Utils.loadShaderScript("/shaders/"+color+".fs"));
+
+        //build and compile
+        returnProgram.link();
+
+        // Create uniforms for world and projection matrices and texture
+        returnProgram.createUniform("projectionMatrix");
+        returnProgram.createUniform("worldMatrix");
 
         return returnProgram;
     }
