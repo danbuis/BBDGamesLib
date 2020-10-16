@@ -1,9 +1,9 @@
 package GameEngine.SampleGame;
 
 import GameEngine.GameItem;
-import openGL.Mesh;
-import openGL.Window;
-import openGL.ShaderProgram;
+import OpenGL.Mesh;
+import OpenGL.Window;
+import OpenGL.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -22,6 +22,11 @@ public class DummyCube extends GameItem {
         super(mesh, shaderProgram);
     }
 
+    /**
+     * Set uniforms to be used by this GameItems shader program.
+     * @param projectionMatrix projection matrix
+     * @param worldMatrix world matrix
+     */
     @Override
     public void setUniforms(Matrix4f projectionMatrix, Matrix4f worldMatrix) {
         this.shader.setUniform("projectionMatrix", projectionMatrix);
@@ -29,6 +34,12 @@ public class DummyCube extends GameItem {
         this.shader.setUniform("texture_sampler", 0);
     }
 
+    /**
+     * Keyboard input to change the transformation of the cube.  Up/Down to translate up and down.  Left/Right to translate
+     * left and right.  A/Q to translate in and out.  Z/X to scale up and down.  This implementation does not support multiple
+     * key presses/input
+     * @param window the Window object this GameComponent is using.
+     */
     @Override
     public void input(Window window){
         displyInc = 0;
@@ -54,6 +65,11 @@ public class DummyCube extends GameItem {
         }
     }
 
+    /**
+     * Connect the keyboard input to the GameComponent's position matrices and such.  This item
+     * uses flat values per update and doesn't care about how much time has passed between updates.
+     * @param interval elapsed time
+     */
     @Override
     public void update(float interval){
         // Update position
@@ -72,8 +88,8 @@ public class DummyCube extends GameItem {
         this.setScale(scale);
 
         // Update rotation angle
-        float rotation = this.getRotation().x + 1.5f;
-        if (rotation > 360) {
+        float rotation = (float) (this.getRotation().x + Math.toRadians(1.5f));
+        if (rotation > Math.PI * 2) {
             rotation = 0;
         }
         this.setRotation(rotation, rotation, rotation);

@@ -105,6 +105,13 @@ public class TestBBDPolygon {
         assertEquals(new BBDPoint(1, 0), square.getPoints()[1]);
         assertEquals(new BBDPoint(0, 0), square.getPoints()[2]);
         assertEquals(new BBDPoint(0, 1), square.getPoints()[3]);
+
+        BBDPolygon otherSquare = this.buildSquare();
+
+        otherSquare.scaleFromPoint(new BBDPoint(-1,-1), 5);
+        assertEquals(9, otherSquare.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, otherSquare.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+
     }
 
     @Test
@@ -168,7 +175,6 @@ public class TestBBDPolygon {
         //a block of tests to help pinpoint an issue elsewhere
         BBDPolygon square = this.buildSquare();
         square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f)));
-        System.out.println(square.extendedToString());
         assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, 0.5f), new BBDPoint(12, 0.5f))).length);
         assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f))).length);
         assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(-0.5f, -0.5f), new BBDPoint(12, -0.5f))).length);
@@ -192,11 +198,18 @@ public class TestBBDPolygon {
         assertTrue(diamond.checkPointInside(onEdge));
 
         BBDPolygon square = this.buildSquare();
-        System.out.println(square.extendedToString());
         assertTrue(square.checkPointInside(new BBDPoint(0.5f, 0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(0.5f, -0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(-0.5f, -0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(-0.5f, 0.5f)));
+
+        // this one was found as an error in production and traced to this simple case.  Putting here for simplified unit testing and
+        // to ensure that it doesn't happen in regression.
+        BBDPolygon bugged = new BBDPolygon(new BBDPoint[]{new BBDPoint(-3, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 0)});
+        BBDPoint center = bugged.centerAverage();
+        assertEquals(-2.333333, center.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-1.333334, center.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertTrue(bugged.checkPointInside(center));
     }
 
     @Test
@@ -496,18 +509,18 @@ public class TestBBDPolygon {
         square3.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
         square4.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
 
-        assertTrue(square1.equals(square1));
-        assertTrue(square1.equals(square2));
-        assertTrue(square3.equals(square4));
+        assertEquals(square1, square1);
+        assertEquals(square2, square1);
+        assertEquals(square4, square3);
 
-        assertFalse(this.buildDiamond().equals(square1));
+        assertNotEquals(square1, this.buildDiamond());
 
         ArrayList<BBDPoint> fiveLong = new ArrayList<BBDPoint>();
         Collections.addAll(fiveLong, square1.getPoints());
         fiveLong.add(new BBDPoint(0,3));
         BBDPolygon penta = new BBDPolygon(fiveLong.toArray(new BBDPoint[0]));
 
-        assertFalse(penta.equals(square1));
+        assertNotEquals(square1, penta);
     }
 
 }

@@ -105,7 +105,6 @@ public class TestBBDPoint {
         assertEquals(0, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         testPoint.rotateAroundPoint(new BBDPoint(-1,1), (float) (Math.PI/-2));
-        System.out.println(testPoint);
         assertEquals(-2, testPoint.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-1, testPoint.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
