@@ -31,11 +31,9 @@ public class DummyGame implements GameComponent {
      * The indicies array takes the list of positions and makes triangles out of the indices.  Those triangles define what
      * gets rendered.
      * @param window Window object that will be displaying the GameComponent
-     * @throws Exception
      */
     @Override
     public void init(Window window) {
-        renderer.init(window);
 
         // Create the Mesh
         float[] positions = new float[] {
@@ -176,8 +174,8 @@ public class DummyGame implements GameComponent {
             returnProgram = new ShaderProgram();
 
             //create and attach shaders
-            returnProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vs"));
-            returnProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.fs"));
+            returnProgram.createVertexShader(Utils.loadShaderScript("/shaders/vertex.vs"));
+            returnProgram.createFragmentShader(Utils.loadShaderScript("/shaders/fragment.fs"));
 
             //give the shader program an id
             returnProgram.link();
@@ -193,19 +191,24 @@ public class DummyGame implements GameComponent {
         return returnProgram;
     }
 
-    private ShaderProgram buildSolidColorShader(String color) throws Exception{
-        ShaderProgram returnProgram = new ShaderProgram();
+    private ShaderProgram buildSolidColorShader(String color){
+        ShaderProgram returnProgram = null;
+        try {
+            returnProgram = new ShaderProgram();
 
-        //create and attach shaders
-        returnProgram.createVertexShader(Utils.loadShaderScript("/shaders/vertex.vs"));
-        returnProgram.createFragmentShader(Utils.loadShaderScript("/shaders/"+color+".fs"));
+            //create and attach shaders
+            returnProgram.createVertexShader(Utils.loadShaderScript("/shaders/vertex.vs"));
+            returnProgram.createFragmentShader(Utils.loadShaderScript("/shaders/"+color+".fs"));
 
-        //build and compile
-        returnProgram.link();
+            //build and compile
+            returnProgram.link();
 
-        // Create uniforms for world and projection matrices and texture
-        returnProgram.createUniform("projectionMatrix");
-        returnProgram.createUniform("worldMatrix");
+            // Create uniforms for world and projection matrices and texture
+            returnProgram.createUniform("projectionMatrix");
+            returnProgram.createUniform("worldMatrix");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return returnProgram;
     }

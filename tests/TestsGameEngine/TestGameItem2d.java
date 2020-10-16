@@ -120,8 +120,9 @@ public class TestGameItem2d {
         GameItem2d item = new GameItem2d(mesh, null, poly, 3500, true);
         assertEquals(5, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(5, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(4, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(4, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
+        //should still be 0 because the square hasn't moved yet.  The origin of local space is still the same.
+        assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.5, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
