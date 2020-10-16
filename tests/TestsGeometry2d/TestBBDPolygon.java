@@ -109,7 +109,6 @@ public class TestBBDPolygon {
         BBDPolygon otherSquare = this.buildSquare();
 
         otherSquare.scaleFromPoint(new BBDPoint(-1,-1), 5);
-        System.out.println(otherSquare);
         assertEquals(9, otherSquare.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(9, otherSquare.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
@@ -203,6 +202,14 @@ public class TestBBDPolygon {
         assertTrue(square.checkPointInside(new BBDPoint(0.5f, -0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(-0.5f, -0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(-0.5f, 0.5f)));
+
+        // this one was found as an error in production and traced to this simple case.  Putting here for simplified unit testing and
+        // to ensure that it doesn't happen in regression.
+        BBDPolygon bugged = new BBDPolygon(new BBDPoint[]{new BBDPoint(-3, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 0)});
+        BBDPoint center = bugged.centerAverage();
+        assertEquals(-2.333333, center.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-1.333334, center.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertTrue(bugged.checkPointInside(center));
     }
 
     @Test

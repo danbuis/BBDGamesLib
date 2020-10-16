@@ -91,7 +91,6 @@ public class TestMesh {
         BBDPolygon poly = this.buildSquare();
         int[] testPositions = Mesh.buildIndices(poly);
         assertEquals(6, testPositions.length);
-        System.out.println(testPositions.toString());
         assertEquals(testPositions[0], 2);
         assertEquals(testPositions[1], 1);
         assertEquals(testPositions[2], 0);

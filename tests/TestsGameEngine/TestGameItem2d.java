@@ -51,7 +51,6 @@ public class TestGameItem2d {
         item.translate(4,4);
 
         assertEquals(new BBDPoint(4,4), poly.center());
-        System.out.println("In test : " +item.getPosition());
         assertEquals(4.0, (float)item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(4.0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -311,7 +310,6 @@ public class TestGameItem2d {
 
         //scale
         item.scale(5);
-        System.out.println(poly.extendedToString());
         assertEquals(5, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(5, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -358,9 +356,7 @@ public class TestGameItem2d {
 
         //scaleFromPoint
         BBDPoint centerOfScale = new BBDPoint(-1,-1);
-        System.out.println(poly.extendedToString());
         item.scaleFromPoint(centerOfScale, 5);
-        System.out.println(poly.extendedToString());
         assertEquals(9, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(9, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(4, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
