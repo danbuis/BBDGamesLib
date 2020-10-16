@@ -240,7 +240,12 @@ public class BBDPolygon implements BBDGeometry{
      * @return an integer from BBDGeometryUtils designating in what direction the vertices are.
      */
     public int determineDirectionality(){
-        BBDPolygon[] triangles = this.decomposeIntoTriangles(null);
+        BBDPolygon[] triangles = null;
+        if(this.points.length !=3){
+            triangles = new BBDPolygon[]{this};
+        } else{
+            triangles = this.decomposeIntoTriangles(null);
+        }
         //the first triangle is likely to be the cleanest one that doesn't skip points
         return this.determineDirectionality(triangles[0]);
     }
@@ -532,7 +537,7 @@ public class BBDPolygon implements BBDGeometry{
             for(int i=1; i< remainingPoints.size()-1; i++){
                 test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
                 BBDPoint center = test.centerAverage();
-                if(temp.checkPointInside(center)){
+                if(temp.checkPointInside(center) || remainingPoints.size() == 3){
                     if(triangleDirectionality != null){
                         test.enforceDirectionality(triangleDirectionality);
                     }
@@ -575,7 +580,6 @@ public class BBDPolygon implements BBDGeometry{
 
     @Override
     public boolean equals(Object other){
-        System.out.println("Starting equals");
         if (this == other){
             return true;
         }

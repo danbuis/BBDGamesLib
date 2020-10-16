@@ -66,7 +66,7 @@ public class Mesh {
      * @return array of floats for texture coordinates
      */
     public static float[] buildTextureCoordinates(BBDPolygon inputShape){
-         float maxY = inputShape.maxY();
+        float maxY = inputShape.maxY();
          float minX = inputShape.minX();
          float width = inputShape.width();
          float height = inputShape.height();
@@ -84,7 +84,7 @@ public class Mesh {
          return textureCoordinates;
     }
 
-    /**
+    /*
      * Build indices array for the mesh
      * @param inputShape BBDPolygon to use to create a mesh
      * @return indices array
@@ -93,7 +93,6 @@ public class Mesh {
         BBDPoint[] points = inputShape.getPoints();
         BBDPolygon[] triangles = inputShape.decomposeIntoTriangles(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
         int[] output = new int[3 * triangles.length];
-
         for (int tri = 0; tri < triangles.length; tri++){
             for (int vert = 0; vert < 3; vert++){
                 for(int inputIndex = 0; inputIndex < points.length; inputIndex++){
@@ -113,7 +112,10 @@ public class Mesh {
      * @return Mesh object
      */
     public static Mesh buildMeshFromPolygon(BBDPolygon inputShape, Texture texture){
-        return new Mesh(buildMeshPositions(inputShape), buildTextureCoordinates(inputShape), buildIndices(inputShape), texture);
+        float[] positions = buildMeshPositions(inputShape);
+        float[] textureCoordinates = buildTextureCoordinates(inputShape);
+        int [] indices = buildIndices(inputShape);
+        return new Mesh(positions, textureCoordinates, indices, texture);
     }
 
     /**
@@ -134,7 +136,6 @@ public class Mesh {
 
             vaoId = glGenVertexArrays();
             glBindVertexArray(vaoId);
-
             // Position VBO
             int vboId = glGenBuffers();
             vboIdList.add(vboId);
@@ -144,7 +145,6 @@ public class Mesh {
             glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
             // Texture coordinates VBO
             vboId = glGenBuffers();
             vboIdList.add(vboId);
@@ -154,7 +154,6 @@ public class Mesh {
             glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-
             // Index VBO
             vboId = glGenBuffers();
             vboIdList.add(vboId);
@@ -162,7 +161,6 @@ public class Mesh {
             indicesBuffer.put(indices).flip();
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         } finally {
@@ -216,7 +214,9 @@ public class Mesh {
         }
 
         // Delete the texture
-        texture.cleanup();
+        if(texture != null) {
+            texture.cleanup();
+        }
 
         // Delete the VAO
         glBindVertexArray(0);

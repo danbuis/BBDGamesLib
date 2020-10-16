@@ -12,7 +12,7 @@ import org.joml.Vector3f;
  * and is instantiated with some basic data such as a mesh and the shaderProgram.  It connects to the Geometry2d package
  * by including a BBDPolygon and having the ability to have it interact with other BBDPolygons and therefore
  * capitalize on the built in functionality for things like distance, area, overlaps etc.  NOTE that a single polygon may
- * behave unpredicatably if attached to more than 1 GameItem, particularly if interaction is set to true.
+ * behave unpredictably if attached to more than 1 GameItem, particularly if interaction is set to true.
  *
  * The intended use of this class us to be used as a base for the end user's game items.  This serves as a decent base,
  * but if you want to do anything with render or update for example you will need to overwrite those methods.  See
@@ -68,8 +68,7 @@ public class GameItem2d extends GameItem{
         this.layer = layer;
         this.shape = shape;
         this.shapeInteracts = shapeInteracts;
-        BBDPoint center = shape.center();
-        super.setPosition(center.getXLoc(), center.getYLoc(), -layer*LAYER_INTERVAL);
+        super.setPosition(0, 0, -layer*LAYER_INTERVAL);
         super.setScale(1);
         super.setRotation(0,0,0);
     }
@@ -160,12 +159,18 @@ public class GameItem2d extends GameItem{
 
     /**
      * Mimics BBDPolygon's rotate function to rotate the shape and update the rotation matrix accordingly
+     * BBDGeometry uses radians, whereas the rendering library uses degrees, so we'll need to convert between them so that
+     * continuity is maintained.
      * @param angle angle in radians to rotate
      */
     public void rotate(float angle){
         Vector3f currentRotation = this.getRotation();
+        this.setRotation(currentRotation.x, currentRotation.y, (currentRotation.z + angle));
+        //BBDPoint center = shape.center();
+        //rotateMeshAroundPoint(center, angle);
 
-        this.setRotation(currentRotation.x, currentRotation.y, currentRotation.z + angle);
+
+        //this.setRotation(currentRotation.x, currentRotation.y, currentRotation.z + angle);
 
         if (shapeInteracts){
             this.shape.rotate(angle);
@@ -180,20 +185,32 @@ public class GameItem2d extends GameItem{
      */
     public void rotateAroundPoint(BBDPoint point, float angle){
         //this.getRotation().rotateAxis(angle, point.getXLoc(), point.getYLoc(), 0);
-        Vector3f centerOfRotation = new Vector3f(point.getXLoc(), point.getYLoc(), 0);
+        //Vector3f centerOfRotation = new Vector3f(point.getXLoc(), point.getYLoc(), 0);
 
-        Matrix4f test = new Matrix4f();
-        test.translate(centerOfRotation)
-                .rotate(angle, 0, 0, 1)
-                .translate(centerOfRotation.negate())
-                .transformPosition(this.getPosition());
+        rotateMeshAroundPoint(point, angle);
 
         Vector3f currentRotation = this.getRotation();
-        this.setRotation(currentRotation.x, currentRotation.y, currentRotation.z + angle);
+        this.setRotation(currentRotation.x, currentRotation.y, (currentRotation.z + angle));
 
         if(shapeInteracts){
             this.shape.rotateAroundPoint(point, angle);
         }
+    }
+
+    /**
+     * Generic method for rotation.  This is useful because meshes rotate about their local origin, which when using
+     * BBDPolygons is the origin of that polygon.  Since not all meshes are guaranteed to initialize on the origin we need
+     * to account for that.  The function is the same no matter where it is called.
+     * @param point point to use as the center
+     * @param angle angle to rotate
+     */
+    private void rotateMeshAroundPoint(BBDPoint point, float angle){
+        Matrix4f test = new Matrix4f();
+        Vector3f centerOfRotation = new Vector3f(point.getXLoc(), point.getYLoc(), 0);
+        test.translate(centerOfRotation)
+                .rotate(angle, 0, 0, 1)
+                .translate(centerOfRotation.negate())
+                .transformPosition(this.getPosition());
     }
 
     public Mesh getMesh() {

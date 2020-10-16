@@ -43,15 +43,15 @@ public class Transformation {
      * get the matrix used to move a vertex based on its translation, rotation and scale.  We use this so that the
      * original data is clean and untouched
      * @param offset how far is the object translated
-     * @param rotation how much has it been rotated
+     * @param rotation how much has it been rotated in radians
      * @param scale how much has it been scaled
      * @return the matrix to go from local coordinates to world coordinates
      */
     public Matrix4f getWorldMatrix(Vector3f offset, Vector3f rotation, float scale) {
         return worldMatrix.translation(offset).
-                rotateX((float)Math.toRadians(rotation.x)).
-                rotateY((float)Math.toRadians(rotation.y)).
-                rotateZ((float)Math.toRadians(rotation.z)).
+                rotateX(rotation.x).
+                rotateY(rotation.y).
+                rotateZ(rotation.z).
                 scale(scale);
     }
 }
