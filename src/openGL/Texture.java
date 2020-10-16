@@ -13,7 +13,7 @@ public class Texture {
 
     private final int id;
 
-    public Texture(String fileName) throws Exception {
+    public Texture(String fileName) {
         this(loadTexture(fileName));
     }
 
@@ -29,10 +29,10 @@ public class Texture {
         return id;
     }
 
-    private static int loadTexture(String fileName) throws Exception {
-        int width;
-        int height;
-        ByteBuffer buf;
+    private static int loadTexture(String fileName) {
+        int width = -1;
+        int height = -1;
+        ByteBuffer buf = null;
         // Load Texture file
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer w = stack.mallocInt(1);
@@ -47,6 +47,8 @@ public class Texture {
             /* Get width and height of image */
             width = w.get();
             height = h.get();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Create a new OpenGL texture

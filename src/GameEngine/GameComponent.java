@@ -4,7 +4,7 @@ import openGL.Window;
 
 public interface GameComponent {
 
-    void init(Window window) throws Exception;
+    void init(Window window);
 
     void input(Window window);
 

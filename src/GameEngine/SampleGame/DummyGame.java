@@ -14,7 +14,7 @@ public class DummyGame implements GameComponent {
     }
 
     @Override
-    public void init(Window window) throws Exception {
+    public void init(Window window) {
         renderer.init(window);
         // Create the Mesh
         float[] positions = new float[] {
@@ -125,20 +125,26 @@ public class DummyGame implements GameComponent {
         gameItems = new GameItem[]{gameItem};
     }
 
-    private ShaderProgram buildShaderProgram() throws Exception {
-        ShaderProgram returnProgram = new ShaderProgram();
+    private ShaderProgram buildShaderProgram(){
+        ShaderProgram returnProgram = null;
+        try {
+            returnProgram = new ShaderProgram();
 
-        //create and attach shaders
-        returnProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vs"));
-        returnProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.fs"));
+            //create and attach shaders
+            returnProgram.createVertexShader(Utils.loadResource("/shaders/vertex.vs"));
+            returnProgram.createFragmentShader(Utils.loadResource("/shaders/fragment.fs"));
 
-        //give the shader program an id
-        returnProgram.link();
+            //give the shader program an id
+            returnProgram.link();
 
-        // Create uniforms for world and projection matrices and texture
-        returnProgram.createUniform("projectionMatrix");
-        returnProgram.createUniform("worldMatrix");
-        returnProgram.createUniform("texture_sampler");
+            // Create uniforms for world and projection matrices and texture
+            returnProgram.createUniform("projectionMatrix");
+            returnProgram.createUniform("worldMatrix");
+            returnProgram.createUniform("texture_sampler");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         return returnProgram;
     }

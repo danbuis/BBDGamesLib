@@ -32,7 +32,7 @@ public class Engine implements Runnable {
         }
     }
 
-    protected void init() throws Exception {
+    protected void init() {
         window.init();
         timer.init();
         gameLogic.init(window);

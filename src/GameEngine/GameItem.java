@@ -63,7 +63,7 @@ public class GameItem implements GameComponent{
     }
 
     @Override
-    public void init(Window window) throws Exception {
+    public void init(Window window) {
 
     }
 
