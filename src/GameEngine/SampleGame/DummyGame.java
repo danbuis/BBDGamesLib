@@ -149,7 +149,7 @@ public class DummyGame implements GameComponent {
         GameItem2d item2 = new DummyShape2d(shape1, example2, poly1, 5000, false, 7);
         item2.translate(1.5f, 0);
 
-                /*
+        /*
         Build a background 2d object to demo and test with
          */
         BBDPolygon poly2 = new BBDPolygon(new BBDPoint[]{new BBDPoint(0, 0), new BBDPoint(0, 2),
