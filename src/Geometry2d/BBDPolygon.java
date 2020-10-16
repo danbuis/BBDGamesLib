@@ -46,14 +46,9 @@ public class BBDPolygon implements BBDGeometry{
      * @return max width of the polygon
      */
     public float width(){
-        float maxX = Float.NEGATIVE_INFINITY;
-        float minX = Float.POSITIVE_INFINITY;
+        float maxX = maxX();
+        float minX = minX();
 
-        for (BBDPoint point : points){
-            float x = point.getXLoc();
-            if(x < minX){minX = x;}
-            if(x > maxX){maxX = x;}
-        }
         return maxX - minX;
     }
 
@@ -62,16 +57,62 @@ public class BBDPolygon implements BBDGeometry{
      * @return max height of the polygon
      */
     public float height(){
-        float maxY = Float.NEGATIVE_INFINITY;
-        float minY = Float.POSITIVE_INFINITY;
+        float maxY = maxY();
+        float minY = minY();
 
+        return maxY - minY;
+    }
+
+    /**
+     * find the maximum X value
+     * @return maximum X value
+     */
+    public float maxX(){
+        float maxX = Float.NEGATIVE_INFINITY;
+        for (BBDPoint point : points){
+            float x = point.getXLoc();
+            if(x > maxX){maxX = x;}
+        }
+        return maxX;
+    }
+
+    /**
+     * find the maximum Y value
+     * @return maximum Y value
+     */
+    public float maxY(){
+        float maxY = Float.NEGATIVE_INFINITY;
+        for (BBDPoint point : points){
+            float y = point.getYLoc();
+            if(y > maxY){maxY = y;}
+        }
+        return maxY;
+    }
+
+    /**
+     * find the minimum X value
+     * @return minimum X value
+     */
+    public float minX(){
+        float minX = Float.POSITIVE_INFINITY;
+        for (BBDPoint point : points){
+            float x = point.getXLoc();
+            if(x < minX){minX = x;}
+        }
+        return minX;
+    }
+
+    /**
+     * find the minimum Y value
+     * @return minimum Y value
+     */
+    public float minY(){
+        float minY = Float.POSITIVE_INFINITY;
         for (BBDPoint point : points){
             float y = point.getYLoc();
             if(y < minY){minY = y;}
-            if(y > maxY){maxY = y;}
-
         }
-        return maxY - minY;
+        return minY;
     }
 
 
@@ -199,7 +240,12 @@ public class BBDPolygon implements BBDGeometry{
      * @return an integer from BBDGeometryUtils designating in what direction the vertices are.
      */
     public int determineDirectionality(){
-        BBDPolygon[] triangles = this.decomposeIntoTriangles(null);
+        BBDPolygon[] triangles = null;
+        if(this.points.length !=3){
+            triangles = new BBDPolygon[]{this};
+        } else{
+            triangles = this.decomposeIntoTriangles(null);
+        }
         //the first triangle is likely to be the cleanest one that doesn't skip points
         return this.determineDirectionality(triangles[0]);
     }
@@ -491,7 +537,7 @@ public class BBDPolygon implements BBDGeometry{
             for(int i=1; i< remainingPoints.size()-1; i++){
                 test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
                 BBDPoint center = test.centerAverage();
-                if(temp.checkPointInside(center)){
+                if(temp.checkPointInside(center) || remainingPoints.size() == 3){
                     if(triangleDirectionality != null){
                         test.enforceDirectionality(triangleDirectionality);
                     }
@@ -534,7 +580,6 @@ public class BBDPolygon implements BBDGeometry{
 
     @Override
     public boolean equals(Object other){
-        System.out.println("Starting equals");
         if (this == other){
             return true;
         }

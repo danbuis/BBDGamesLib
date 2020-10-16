@@ -1,4 +1,4 @@
-package openGL;
+package OpenGL;
 
 import org.lwjgl.system.MemoryStack;
 
@@ -9,18 +9,38 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBImage.*;
 
+/**
+ * Class to handle a specific texture.  This is basically a way to access the texture with a few
+ * niceties tacked on for ease of use.
+ */
 public class Texture {
 
+    /**
+     * Memory address for the texture
+     */
     private final int id;
 
+    /**
+     * Constructor for making a Texture object
+     * @param fileName relative file path
+     * @throws Exception reason that the constructor fails
+     */
     public Texture(String fileName) {
         this(loadTexture(fileName));
     }
 
+    /**
+     * Constructor to make a constructor based on a location in memory.
+     * @param id designated id
+     */
     public Texture(int id) {
         this.id = id;
     }
 
+    /**
+     * Bind this texture to what is currently being drawn.  Failure to bind a texture means that
+     * the most recent texture will be used instead.
+     */
     public void bind() {
         glBindTexture(GL_TEXTURE_2D, id);
     }
@@ -29,10 +49,16 @@ public class Texture {
         return id;
     }
 
+    /**
+     * Load an image file and make a texture object that handles a lot of boilerplace automatically.
+     * @param fileName relative file path
+     * @return address location of the Texture
+     */
     private static int loadTexture(String fileName) {
         int width = -1;
         int height = -1;
         ByteBuffer buf = null;
+
         // Load Texture file
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer w = stack.mallocInt(1);
