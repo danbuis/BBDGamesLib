@@ -228,6 +228,7 @@ public class DummyGame implements GameComponent {
     }
 
     public void render(Window window) {
+        renderer.resetRenderer(window);
         renderer.renderArray(window, gameItems);
     }
 

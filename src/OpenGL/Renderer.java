@@ -4,6 +4,7 @@ import GameEngine.GameItem;
 import GameEngine.Transformation;
 import org.joml.Matrix4f;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -49,19 +50,21 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    /**
-     * Render a list of items to the window
-     * @param window window to display items
-     * @param gameItems an array of GameItems, each of which is guaranteed to have some sort of render() method.
-     */
-    public void renderArray(Window window, GameItem[] gameItems) {
+    public void resetRenderer(Window window){
         clear();
 
         if (window.isResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
+    }
 
+    /**
+     * Render a list of items to the window
+     * @param window window to display items
+     * @param gameItems an array of GameItems, each of which is guaranteed to have some sort of render() method.
+     */
+    public void renderArray(Window window, GameItem[] gameItems) {
         // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
 
@@ -72,13 +75,6 @@ public class Renderer {
     }
 
     public void renderList(Window window, List<GameItem> gameItems){
-        clear();
-
-        if (window.isResized()) {
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
-
         // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
 
@@ -89,13 +85,6 @@ public class Renderer {
     }
 
     public void renderItem(Window window, GameItem item){
-        clear();
-
-        if (window.isResized()) {
-            glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
-
         // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
         render(item, projectionMatrix);
