@@ -1,3 +1,7 @@
+Installation
+To use this library simply add either the included jar file, or the latest release as a dependency in your project.
+The jar file is packaged with this libraries dependencies for convenience.
+
 Geometry2d
 Contains several classes to perform geometry calculations, specifically Points, Segments, and Polygons.
 All Polygons are by definition closed polys, but there is not restriction on concave/convex.
