@@ -4,6 +4,8 @@ import GameEngine.GameItem;
 import GameEngine.Transformation;
 import org.joml.Matrix4f;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -52,7 +54,7 @@ public class Renderer {
      * @param window window to display items
      * @param gameItems an array of GameItems, each of which is guaranteed to have some sort of render() method.
      */
-    public void render(Window window, GameItem[] gameItems) {
+    public void renderArray(Window window, GameItem[] gameItems) {
         clear();
 
         if (window.isResized()) {
@@ -65,21 +67,54 @@ public class Renderer {
 
         // Render each gameItem
         for (GameItem gameItem : gameItems) {
-            // Set world matrix for this item
-            Matrix4f worldMatrix = transformation.getWorldMatrix(
-                    gameItem.getPosition(),
-                    gameItem.getRotation(),
-                    gameItem.getScale());
-            //make sure we are using the correct ShaderProgram
-            gameItem.shader.bind();
+            render(gameItem, projectionMatrix);
+        }
+    }
 
-            gameItem.setUniforms(projectionMatrix, worldMatrix);
+    public void renderList(Window window, List<GameItem> gameItems){
+        clear();
 
-            // Render the mesh for this game item
-            gameItem.getMesh().render();
-            gameItem.shader.unbind();
+        if (window.isResized()) {
+            glViewport(0, 0, window.getWidth(), window.getHeight());
+            window.setResized(false);
         }
 
+        // Update projection Matrix
+        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+
+        // Render each gameItem
+        for (GameItem gameItem : gameItems) {
+            render(gameItem, projectionMatrix);
+        }
+    }
+
+    public void renderItem(Window window, GameItem item){
+        clear();
+
+        if (window.isResized()) {
+            glViewport(0, 0, window.getWidth(), window.getHeight());
+            window.setResized(false);
+        }
+
+        // Update projection Matrix
+        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        render(item, projectionMatrix);
+    }
+
+    private void render(GameItem item, Matrix4f projectionMatrix){
+        // Set world matrix for this item
+        Matrix4f worldMatrix = transformation.getWorldMatrix(
+                item.getPosition(),
+                item.getRotation(),
+                item.getScale());
+        //make sure we are using the correct ShaderProgram
+        item.shader.bind();
+
+        item.setUniforms(projectionMatrix, worldMatrix);
+
+        // Render the mesh for this game item
+        item.getMesh().render();
+        item.shader.unbind();
     }
 
     public void cleanup() {

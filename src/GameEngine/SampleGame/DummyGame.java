@@ -228,7 +228,7 @@ public class DummyGame implements GameComponent {
     }
 
     public void render(Window window) {
-        renderer.render(window, gameItems);
+        renderer.renderArray(window, gameItems);
     }
 
     @Override
