@@ -46,8 +46,8 @@ public class Transformation {
     }
 
     /**
-     * get the matrix used to move a vertex based on its translation, rotation and scale.  We use this so that the
-     * original data is clean and untouched
+     * Get the matrix used to move a vertex based on its translation, rotation and scale, and the orientation of the
+     * camera We use this so that the original data is clean and untouched.
      * @param gameItem item to work with
      * @param viewMatrix the matrix for the camera's location
      * @return the matrix combining the view and model matrices
@@ -64,8 +64,8 @@ public class Transformation {
 
     /**
      * Get a matrix representing the camera position in the world.
-     * @param camera
-     * @return
+     * @param camera camera object to use
+     * @return matrix representing how the camera is oriented in space
      */
     public Matrix4f getViewMatrix(Camera camera) {
         Vector3f cameraPos = camera.getPosition();

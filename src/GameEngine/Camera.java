@@ -2,12 +2,25 @@ package GameEngine;
 
 import org.joml.Vector3f;
 
+/**
+ * Object to represent the way the user is viewing the scene.  Essentially a matrix representing
+ * location and orientation
+ */
 public class Camera {
 
+    /**
+     * Position of the camera
+     */
     private final Vector3f position;
 
+    /**
+     * Rotation of the camera
+     */
     private final Vector3f rotation;
 
+    /** Generic constructor
+     *
+     */
     public Camera() {
         position = new Vector3f();
         rotation = new Vector3f();

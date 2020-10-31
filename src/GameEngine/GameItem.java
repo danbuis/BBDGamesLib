@@ -14,7 +14,7 @@ import org.joml.Vector3f;
  * the same Mesh object instance, but still have them do different things on the screen during render.
  *
  * The intended use of this class us to be used as a base for the end user's game items.  This serves as a decent base,
- * but if you want to do anything with render or upaate for example you will need to overwrite those methods.  See
+ * but if you want to do anything with render or update for example you will need to overwrite those methods.  See
  * SampleGame.DummyCube for an example.
  */
 public class GameItem implements GameComponent{
@@ -91,8 +91,8 @@ public class GameItem implements GameComponent{
     }
 
     /**
-     * Set some unifroms for rendering.  This method should be overwritten if you have either
-     * additional unifroms, such as textures, OR you don't use "projectionMatrix" and "worldMatrix" as
+     * Set some uniforms for rendering.  This method should be overwritten if you have either
+     * additional uniforms, such as textures, OR you don't use "projectionMatrix" and "worldMatrix" as
      * uniform names.
      * @param projectionMatrix projection matrix
      * @param modelViewMatrix combination of the camera and world matrices
@@ -106,7 +106,6 @@ public class GameItem implements GameComponent{
      * Empty init function to conform to the GameComponent interface.  Intended to be overridden by classes that extend
      * GameItem.
      * @param window Window object that will be displaying the GameComponent
-     * @throws Exception might throw an exception
      */
     @Override
     public void init(Window window) {
