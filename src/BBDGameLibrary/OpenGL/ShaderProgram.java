@@ -1,4 +1,4 @@
-package OpenGL;
+package BBDGameLibrary.OpenGL;
 
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;

@@ -1,6 +1,6 @@
-package GameEngine;
+package BBDGameLibrary.GameEngine;
 
-import OpenGL.Window;
+import BBDGameLibrary.OpenGL.Window;
 
 /**
  * The core class to run a game.  Handles things like the game loop, FPS etc.  The main() method of your project
