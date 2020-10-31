@@ -11,6 +11,8 @@ public class DummyGame implements GameComponent {
 
     private GameItem[] gameItems;
 
+    private Camera camera = new Camera();
+
     public DummyGame() {
         renderer = new Renderer();
     }
@@ -20,15 +22,15 @@ public class DummyGame implements GameComponent {
      * This particular function builds a cube from vertex information, maps a texture to it, and creates a new Mesh object
      * and adds it to a list of items to be rendered.
      *
-     * Vertex position and vertex texture coordinates map 1:1 to eacheother.  You should have the same number of position
+     * Vertex position and vertex texture coordinates map 1:1 to each other.  You should have the same number of position
      * vertices as texture coordinates.  In this instance the number of position verts is driven by the number of texture
      * coordinates.  Since each vertex can only have one texture coordinate, and we are making a cube, vertexes will need
      * to be repeated so that  different faces can use different parts of the texture.  In this case the back 2 vertical
      * edges of the cube are sharing textures with adjacent sides, so we only have 20 verts for a cube instead of 24.  You
-     * can see the differene by scaling up the cube so that the view is inside the cube, that way you can see the back
+     * can see the difference by scaling up the cube so that the view is inside the cube, that way you can see the back
      * face and the mirrored texture at the edges.
      *
-     * The indicies array takes the list of positions and makes triangles out of the indices.  Those triangles define what
+     * The indices array takes the list of positions and makes triangles out of the indices.  Those triangles define what
      * gets rendered.
      * @param window Window object that will be displaying the GameComponent
      */
@@ -182,7 +184,7 @@ public class DummyGame implements GameComponent {
 
             // Create uniforms for world and projection matrices and texture
             returnProgram.createUniform("projectionMatrix");
-            returnProgram.createUniform("worldMatrix");
+            returnProgram.createUniform("modelViewMatrix");
             returnProgram.createUniform("texture_sampler");
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,7 +207,7 @@ public class DummyGame implements GameComponent {
 
             // Create uniforms for world and projection matrices and texture
             returnProgram.createUniform("projectionMatrix");
-            returnProgram.createUniform("worldMatrix");
+            returnProgram.createUniform("modelViewMatrix");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -229,7 +231,7 @@ public class DummyGame implements GameComponent {
 
     public void render(Window window) {
         renderer.resetRenderer(window);
-        renderer.renderArray(window, gameItems);
+        renderer.renderArray(window, gameItems, camera);
     }
 
     @Override

@@ -25,12 +25,12 @@ public class DummyCube extends GameItem {
     /**
      * Set uniforms to be used by this GameItems shader program.
      * @param projectionMatrix projection matrix
-     * @param worldMatrix world matrix
+     * @param modelViewMatrix camera and world matrices
      */
     @Override
-    public void setUniforms(Matrix4f projectionMatrix, Matrix4f worldMatrix) {
+    public void setUniforms(Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
         this.shader.setUniform("projectionMatrix", projectionMatrix);
-        this.shader.setUniform("worldMatrix", worldMatrix);
+        this.shader.setUniform("modelViewMatrix", modelViewMatrix);
         this.shader.setUniform("texture_sampler", 0);
     }
 

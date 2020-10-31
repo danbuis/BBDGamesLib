@@ -16,9 +16,9 @@ public class DummyShape2d extends GameItem2d {
     }
 
     @Override
-    public void setUniforms(Matrix4f projectionMatrix, Matrix4f worldMatrix) {
+    public void setUniforms(Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
         this.shader.setUniform("projectionMatrix", projectionMatrix);
-        this.shader.setUniform("worldMatrix", worldMatrix);
+        this.shader.setUniform("modelViewMatrix", modelViewMatrix);
     }
 
     /**

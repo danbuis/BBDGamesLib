@@ -95,11 +95,11 @@ public class GameItem implements GameComponent{
      * additional unifroms, such as textures, OR you don't use "projectionMatrix" and "worldMatrix" as
      * uniform names.
      * @param projectionMatrix projection matrix
-     * @param worldMatrix world matrix
+     * @param modelViewMatrix combination of the camera and world matrices
      */
-    public void setUniforms(Matrix4f projectionMatrix, Matrix4f worldMatrix) {
+    public void setUniforms(Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
         this.shader.setUniform("projectionMatrix", projectionMatrix);
-        this.shader.setUniform("worldMatrix", worldMatrix);
+        this.shader.setUniform("modelViewMatrix", modelViewMatrix);
     }
 
     /**
