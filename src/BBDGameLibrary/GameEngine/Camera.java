@@ -1,4 +1,4 @@
-package GameEngine;
+package BBDGameLibrary.GameEngine;
 
 import org.joml.Vector3f;
 

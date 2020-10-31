@@ -1,4 +1,4 @@
-package GameEngine;
+package BBDGameLibrary.GameEngine;
 
 /** Simple class to handle some time based logic so that the game engine
  * can smoothly handle different update speeds.

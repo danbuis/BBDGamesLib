@@ -1,8 +1,8 @@
-package GameEngine;
+package BBDGameLibrary.GameEngine;
 
-import OpenGL.Mesh;
-import OpenGL.ShaderProgram;
-import OpenGL.Window;
+import BBDGameLibrary.OpenGL.Mesh;
+import BBDGameLibrary.OpenGL.ShaderProgram;
+import BBDGameLibrary.OpenGL.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

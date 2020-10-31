@@ -1,9 +1,9 @@
-package GameEngine.SampleGame;
+package BBDGameLibrary.GameEngine.SampleGame;
 
-import GameEngine.*;
-import Geometry2d.BBDPoint;
-import Geometry2d.BBDPolygon;
-import OpenGL.*;
+import BBDGameLibrary.GameEngine.*;
+import BBDGameLibrary.Geometry2d.BBDPoint;
+import BBDGameLibrary.Geometry2d.BBDPolygon;
+import BBDGameLibrary.OpenGL.*;
 
 public class DummyGame implements GameComponent {
 
@@ -139,7 +139,7 @@ public class DummyGame implements GameComponent {
         item1.setPosition(0, 0, -2);
         /*
         Build a background 2d object to demo and test with
-        OpenGL objects rotate around their local origin.  This object is centered at the origin, but then we move it away
+        BBDGameLibrary.OpenGL objects rotate around their local origin.  This object is centered at the origin, but then we move it away
         by updating its position.  In openGL land this means that the object internally thinks it is centered at the origin
         but at render time the position matrix shifts the position in world space.
          */

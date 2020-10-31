@@ -1,4 +1,4 @@
-package OpenGL;
+package BBDGameLibrary.OpenGL;
 
 import java.io.InputStream;
 import java.util.Scanner;

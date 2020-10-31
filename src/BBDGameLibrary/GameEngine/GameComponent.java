@@ -1,6 +1,6 @@
-package GameEngine;
+package BBDGameLibrary.GameEngine;
 
-import OpenGL.Window;
+import BBDGameLibrary.OpenGL.Window;
 
 /**
  * Interface defining what a GameComponent is expected to do

@@ -1,11 +1,10 @@
-package OpenGL;
+package BBDGameLibrary.OpenGL;
 
-import Geometry2d.BBDGeometryUtils;
-import Geometry2d.BBDPoint;
-import Geometry2d.BBDPolygon;
+import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDPoint;
+import BBDGameLibrary.Geometry2d.BBDPolygon;
 import org.lwjgl.system.MemoryUtil;
 
-import javax.xml.soap.Text;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;

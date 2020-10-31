@@ -1,4 +1,4 @@
-package Geometry2d;
+package BBDGameLibrary.Geometry2d;
 
 public class BBDGeometryUtils {
     public static final float ALLOWABLE_DELTA_COARSE = 0.0005f;

@@ -1,6 +1,6 @@
-package Geometry2d;
+package BBDGameLibrary.Geometry2d;
 
-import Geometry2d.Exceptions.CoordinateOverflowException;
+import BBDGameLibrary.Geometry2d.Exceptions.CoordinateOverflowException;
 
 public class BBDPoint implements BBDGeometry{
     /**
