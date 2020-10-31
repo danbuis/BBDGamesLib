@@ -155,7 +155,7 @@ public class BBDPoint implements BBDGeometry{
                 || this.xLoc == Float.POSITIVE_INFINITY
                 || this.xLoc == Float.MIN_VALUE
                 || this.xLoc == Float.NEGATIVE_INFINITY){
-            throw new CoordinateOverflowException("X coordinate of a point has reached the bounds provided by the Double type");
+            throw new CoordinateOverflowException("X coordinate of a point has reached the bounds provided by the Float type");
         }
 
         //validate yLoc
@@ -163,7 +163,7 @@ public class BBDPoint implements BBDGeometry{
                 || this.yLoc == Float.POSITIVE_INFINITY
                 || this.yLoc == Float.MIN_VALUE
                 || this.yLoc == Float.NEGATIVE_INFINITY){
-            throw new CoordinateOverflowException("Y coordinate of a point has reached the bounds provided by the Double type");
+            throw new CoordinateOverflowException("Y coordinate of a point has reached the bounds provided by the float type");
         }
     }
 }
