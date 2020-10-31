@@ -1,15 +1,15 @@
-package GameEngine;
+package BBDGameLibrary.GameEngine;
 
-import Geometry2d.BBDPoint;
-import Geometry2d.BBDPolygon;
-import OpenGL.Mesh;
-import OpenGL.ShaderProgram;
+import BBDGameLibrary.Geometry2d.BBDPoint;
+import BBDGameLibrary.Geometry2d.BBDPolygon;
+import BBDGameLibrary.OpenGL.Mesh;
+import BBDGameLibrary.OpenGL.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
  * A class that represents a 2d object in a game.  It extends GameComponent and therefore uses the GameComponent interface
- * and is instantiated with some basic data such as a mesh and the shaderProgram.  It connects to the Geometry2d package
+ * and is instantiated with some basic data such as a mesh and the shaderProgram.  It connects to the BBDGameLibrary.Geometry2d package
  * by including a BBDPolygon and having the ability to have it interact with other BBDPolygons and therefore
  * capitalize on the built in functionality for things like distance, area, overlaps etc.  NOTE that a single polygon may
  * behave unpredictably if attached to more than 1 GameItem, particularly if interaction is set to true.

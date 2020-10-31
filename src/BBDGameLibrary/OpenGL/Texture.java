@@ -1,4 +1,4 @@
-package OpenGL;
+package BBDGameLibrary.OpenGL;
 
 import org.lwjgl.system.MemoryStack;
 
@@ -77,12 +77,12 @@ public class Texture {
             e.printStackTrace();
         }
 
-        // Create a new OpenGL texture
+        // Create a new BBDGameLibrary.OpenGL texture
         int textureId = glGenTextures();
         // Bind the texture
         glBindTexture(GL_TEXTURE_2D, textureId);
 
-        // Tell OpenGL how to unpack the RGBA bytes. Each component is 1 byte size
+        // Tell BBDGameLibrary.OpenGL how to unpack the RGBA bytes. Each component is 1 byte size
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

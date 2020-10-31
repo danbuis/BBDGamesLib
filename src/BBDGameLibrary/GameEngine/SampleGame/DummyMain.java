@@ -1,10 +1,10 @@
-package GameEngine.SampleGame;
+package BBDGameLibrary.GameEngine.SampleGame;
 
-import GameEngine.Engine;
-import GameEngine.GameComponent;
+import BBDGameLibrary.GameEngine.Engine;
+import BBDGameLibrary.GameEngine.GameComponent;
 
 /**
- * A sample entry point for a game using the GameEngine and OpenGL packages
+ * A sample entry point for a game using the BBDGameLibrary.GameEngine and BBDGameLibrary.OpenGL packages
  */
 public class DummyMain {
 

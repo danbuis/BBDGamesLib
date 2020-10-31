@@ -1,4 +1,4 @@
-package OpenGL;
+package BBDGameLibrary.OpenGL;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -103,7 +103,7 @@ public class Window {
                 (vidmode.height() - height) / 2
         );
 
-        // Make the OpenGL context current
+        // Make the BBDGameLibrary.OpenGL context current
         glfwMakeContextCurrent(windowHandle);
 
         if (isvSync()) {

@@ -1,8 +1,8 @@
-package OpenGL;
+package BBDGameLibrary.OpenGL;
 
-import GameEngine.Camera;
-import GameEngine.GameItem;
-import GameEngine.Transformation;
+import BBDGameLibrary.GameEngine.Camera;
+import BBDGameLibrary.GameEngine.GameItem;
+import BBDGameLibrary.GameEngine.Transformation;
 import org.joml.Matrix4f;
 import java.util.List;
 

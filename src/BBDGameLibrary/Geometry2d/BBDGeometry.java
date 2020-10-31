@@ -1,4 +1,4 @@
-package Geometry2d;
+package BBDGameLibrary.Geometry2d;
 
 public interface BBDGeometry {
     public void translate(float dx, float dy);

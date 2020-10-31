@@ -1,9 +1,9 @@
-package GameEngine.SampleGame;
+package BBDGameLibrary.GameEngine.SampleGame;
 
-import GameEngine.GameItem;
-import OpenGL.Mesh;
-import OpenGL.Window;
-import OpenGL.ShaderProgram;
+import BBDGameLibrary.GameEngine.GameItem;
+import BBDGameLibrary.OpenGL.Mesh;
+import BBDGameLibrary.OpenGL.Window;
+import BBDGameLibrary.OpenGL.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

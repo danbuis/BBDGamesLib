@@ -1,6 +1,6 @@
-package Geometry2d;
+package BBDGameLibrary.Geometry2d;
 
-import Geometry2d.Exceptions.ParallelLinesException;
+import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
 
 public class BBDSegment implements BBDGeometry{
     /**

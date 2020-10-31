@@ -1,9 +1,9 @@
 package TestsOpenGL;
 
-import Geometry2d.BBDGeometryUtils;
-import Geometry2d.BBDPoint;
-import Geometry2d.BBDPolygon;
-import OpenGL.Mesh;
+import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDPoint;
+import BBDGameLibrary.Geometry2d.BBDPolygon;
+import BBDGameLibrary.OpenGL.Mesh;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

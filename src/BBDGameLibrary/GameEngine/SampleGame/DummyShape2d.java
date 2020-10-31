@@ -1,10 +1,9 @@
-package GameEngine.SampleGame;
+package BBDGameLibrary.GameEngine.SampleGame;
 
-import GameEngine.GameItem2d;
-import Geometry2d.BBDPoint;
-import Geometry2d.BBDPolygon;
-import OpenGL.Mesh;
-import OpenGL.ShaderProgram;
+import BBDGameLibrary.GameEngine.GameItem2d;
+import BBDGameLibrary.Geometry2d.BBDPolygon;
+import BBDGameLibrary.OpenGL.Mesh;
+import BBDGameLibrary.OpenGL.ShaderProgram;
 import org.joml.Matrix4f;
 
 public class DummyShape2d extends GameItem2d {
