@@ -2,7 +2,7 @@ Installation
 To use this library simply add either the included jar file, or the latest release as a dependency in your project.
 The jar file is packaged with this libraries dependencies for convenience.
 
-Geometry2d
+BBDGameLibrary.Geometry2d
 Contains several classes to perform geometry calculations, specifically Points, Segments, and Polygons.
 All Polygons are by definition closed polys, but there is not restriction on concave/convex.
 All distance measurements use distance squared to avoid the overhead of repeatedly calculating sqrts.
@@ -11,18 +11,18 @@ by overloading the distance() function so that the end user doesn't need to reme
 can measure distance to other objects.
 All angles use East as 0 degrees, North as 90, and South as -90.
 
-GameEngine
+BBDGameLibrary.GameEngine
 Provides a basic collection of objects to build and run a simple game engine.  Includes tooling to do
-things like handling input, updating objects, and rendering objects using the OpenGL package.  In order to make
+things like handling input, updating objects, and rendering objects using the BBDGameLibrary.OpenGL package.  In order to make
 use of this package you MUST have the LWJGL and JOML libraries on your build path.  LWJGL is how java interfaces
-with OpenGL, and JOML is a library to handle vector related math.  Included in this package is a subpackage
+with BBDGameLibrary.OpenGL, and JOML is a library to handle vector related math.  Included in this package is a subpackage
 with a complete simple game showing how the parts are intended to be used together.  This dummy game illustrates
 how to build the core game, how to extend the base classes for your game items, and how to do some basic updating.
 Included are a few GLSL scripts for rendering, a texture, and both 2d and 3d elements.
 
-OpenGL
+BBDGameLibrary.OpenGL
 This package provides some useful classes for interfacing with opengl, this library is heavily dependant on LWJGL.
-It provides some tools to do things like building Shaders for OpenGL and actually drawing items to the screen.
-You will likely be using the GameEngine package pretty heavily with this one since they are interdependent.
+It provides some tools to do things like building Shaders for BBDGameLibrary.OpenGL and actually drawing items to the screen.
+You will likely be using the BBDGameLibrary.GameEngine package pretty heavily with this one since they are interdependent.
 In the future they might be decoupled as additional rendering options are built, but it is not on the road map
 presently.  Please see the DummyGame package for some example usages of this package.

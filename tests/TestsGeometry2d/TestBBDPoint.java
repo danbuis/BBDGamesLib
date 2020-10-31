@@ -1,8 +1,8 @@
 package TestsGeometry2d;
 
-import Geometry2d.BBDGeometryUtils;
-import Geometry2d.BBDPoint;
-import Geometry2d.Exceptions.CoordinateOverflowException;
+import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDPoint;
+import BBDGameLibrary.Geometry2d.Exceptions.CoordinateOverflowException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

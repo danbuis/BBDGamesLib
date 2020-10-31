@@ -1,11 +1,11 @@
 package TestsGameEngine;
 
-import GameEngine.GameItem2d;
-import Geometry2d.BBDGeometryUtils;
-import Geometry2d.BBDPoint;
-import Geometry2d.BBDPolygon;
-import OpenGL.Mesh;
-import OpenGL.Window;
+import BBDGameLibrary.GameEngine.GameItem2d;
+import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDPoint;
+import BBDGameLibrary.Geometry2d.BBDPolygon;
+import BBDGameLibrary.OpenGL.Mesh;
+import BBDGameLibrary.OpenGL.Window;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,10 +1,9 @@
 package TestsGeometry2d;
 
-import Geometry2d.BBDGeometryUtils;
-import Geometry2d.BBDPoint;
-import Geometry2d.BBDSegment;
-import Geometry2d.Exceptions.CoordinateOverflowException;
-import Geometry2d.Exceptions.ParallelLinesException;
+import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDPoint;
+import BBDGameLibrary.Geometry2d.BBDSegment;
+import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
