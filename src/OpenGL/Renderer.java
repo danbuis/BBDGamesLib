@@ -1,10 +1,9 @@
 package OpenGL;
 
+import GameEngine.Camera;
 import GameEngine.GameItem;
 import GameEngine.Transformation;
 import org.joml.Matrix4f;
-
-import java.lang.reflect.Array;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -64,42 +63,48 @@ public class Renderer {
      * @param window window to display items
      * @param gameItems an array of GameItems, each of which is guaranteed to have some sort of render() method.
      */
-    public void renderArray(Window window, GameItem[] gameItems) {
+    public void renderArray(Window window, GameItem[] gameItems, Camera camera) {
         // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
 
         // Render each gameItem
         for (GameItem gameItem : gameItems) {
-            render(gameItem, projectionMatrix);
+            render(gameItem, projectionMatrix, camera);
         }
     }
 
-    public void renderList(Window window, List<GameItem> gameItems){
+    public void renderList(Window window, List<GameItem> gameItems, Camera camera){
         // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
 
         // Render each gameItem
         for (GameItem gameItem : gameItems) {
-            render(gameItem, projectionMatrix);
+            render(gameItem, projectionMatrix, camera);
         }
     }
 
-    public void renderItem(Window window, GameItem item){
+    public void renderItem(Window window, GameItem item, Camera camera){
         // Update projection Matrix
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
-        render(item, projectionMatrix);
+        render(item, projectionMatrix, camera);
     }
 
-    private void render(GameItem item, Matrix4f projectionMatrix){
+    private void render(GameItem item, Matrix4f projectionMatrix, Camera camera){
+        // Update view Matrix
+        Matrix4f viewMatrix = transformation.getViewMatrix(camera);
+
         // Set world matrix for this item
-        Matrix4f worldMatrix = transformation.getWorldMatrix(
-                item.getPosition(),
-                item.getRotation(),
-                item.getScale());
+        //Matrix4f worldMatrix = transformation.getWorldMatrix(
+        //        item.getPosition(),
+        //        item.getRotation(),
+        //        item.getScale());
         //make sure we are using the correct ShaderProgram
+
+        Matrix4f modelViewMatrix = transformation.getModelViewMatrix(item, viewMatrix);
+
         item.shader.bind();
 
-        item.setUniforms(projectionMatrix, worldMatrix);
+        item.setUniforms(projectionMatrix, modelViewMatrix);
 
         // Render the mesh for this game item
         item.getMesh().render();
