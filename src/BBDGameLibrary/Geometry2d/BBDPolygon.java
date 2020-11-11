@@ -15,7 +15,7 @@ public class BBDPolygon implements BBDGeometry{
     // Pieces that define the polygon.
     // Users should not be able to modify these directly.
     private BBDPoint[] points;
-    private final BBDSegment[] segments;
+    private BBDSegment[] segments;
 
     public BBDPoint[] getPoints(){
         return this.points;
@@ -31,14 +31,17 @@ public class BBDPolygon implements BBDGeometry{
      * @param inputPoints points used to define the perimeter of the polygon
      */
     public BBDPolygon (BBDPoint[] inputPoints){
+        this.points = inputPoints;
+        this.segments = buildSegments(inputPoints);
+    }
+
+    private BBDSegment[] buildSegments(BBDPoint[] inputPoints){
         ArrayList<BBDSegment> segments = new ArrayList<>();
         for(int index = 0; index< inputPoints.length; index++){
             int nextIndex = (index + 1) % inputPoints.length;
             segments.add(new BBDSegment(inputPoints[index], inputPoints[nextIndex]));
         }
-
-        this.points = inputPoints;
-        this.segments = segments.toArray(new BBDSegment[0]);
+        return segments.toArray(new BBDSegment[0]);
     }
 
     /**
@@ -232,6 +235,7 @@ public class BBDPolygon implements BBDGeometry{
             List<BBDPoint> newList = Arrays.asList(this.points);
             Collections.reverse(newList);
             this.points = newList.toArray(new BBDPoint[0]);
+            this.segments = buildSegments(newList.toArray(new BBDPoint[0]));
         }
     }
 
@@ -565,6 +569,7 @@ public class BBDPolygon implements BBDGeometry{
         }
         return accumulatedTotal;
     }
+
 
     public String toString(){
         return "BBDPolygon object consisting of "+this.points.length+" vertices ";
