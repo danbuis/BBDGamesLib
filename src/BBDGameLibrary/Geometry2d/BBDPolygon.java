@@ -570,7 +570,6 @@ public class BBDPolygon implements BBDGeometry{
         return accumulatedTotal;
     }
 
-
     public String toString(){
         return "BBDPolygon object consisting of "+this.points.length+" vertices ";
     }

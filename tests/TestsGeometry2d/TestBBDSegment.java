@@ -183,6 +183,12 @@ public class TestBBDSegment {
         try{
             assertEquals(new BBDPoint(0.5f, 0.5f), test1.interceptPoint(test2));
             assertEquals(new BBDPoint(0.5f, 0.5f), test1.interceptPoint(test3));
+
+            //this is a test case cascading from the testPointInside the polygons
+            BBDPoint center = new BBDPoint(-2.333333f, -1.33333f);
+            BBDSegment testSegment = new BBDSegment(new BBDPoint(-2,-2), new BBDPoint(-2,0));
+            assertEquals(new BBDPoint(-2, -1.333333f), testSegment.interceptPoint(new BBDSegment(center, 0, 11)));
+
         } catch(ParallelLinesException e){
             System.out.println("You probably shouldn't be getting an exception here");
             e.printStackTrace();
@@ -193,6 +199,7 @@ public class TestBBDSegment {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
+
     }
 
     @Test
@@ -260,5 +267,13 @@ public class TestBBDSegment {
         assertEquals(test2, test1);
         assertEquals(test1, test2);
         assertNotEquals(test3, test1);
+    }
+
+    @Test
+    public void testCopy(){
+        BBDSegment test1 = new BBDSegment(new BBDPoint(0,0), new BBDPoint(1,1));
+        BBDSegment copy1 = new BBDSegment(new BBDPoint(10,0), new BBDPoint(11,1));
+
+        assertEquals(copy1, new BBDSegment(test1, 10, 0));
     }
 }

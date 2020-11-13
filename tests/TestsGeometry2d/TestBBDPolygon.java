@@ -208,7 +208,8 @@ public class TestBBDPolygon {
         BBDPoint center = bugged.centerAverage();
         assertEquals(-2.333333, center.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-1.333334, center.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertTrue(bugged.checkPointInside(center));
+        boolean test = bugged.checkPointInside(center);
+        assertTrue(test);
     }
 
     @Test
@@ -520,6 +521,18 @@ public class TestBBDPolygon {
         BBDPolygon penta = new BBDPolygon(fiveLong.toArray(new BBDPoint[0]));
 
         assertNotEquals(square1, penta);
+    }
+
+    @Test
+    public void testDirectionalityOfSegments(){
+        BBDPolygon square1 = this.buildSquare();
+        square1.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+        assertEquals(new BBDPoint(1,1), square1.getSegments()[0].getStartPoint());
+        assertEquals(new BBDPoint(1,-1), square1.getSegments()[0].getEndPoint());
+
+        square1.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
+        assertEquals(new BBDPoint(1,-1), square1.getSegments()[2].getStartPoint());
+        assertEquals(new BBDPoint(1,1), square1.getSegments()[2].getEndPoint());
     }
 
 }
