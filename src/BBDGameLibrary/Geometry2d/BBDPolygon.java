@@ -453,6 +453,102 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
+     * Offset an entire polygon with a simpler function call.  Positive offsets make the shape bigger.  Negative values
+     * can be used, but may behave unpredictable.  Convex polygons are the only ones supported right now cancave polygons
+     * may behave unpredictably
+     * @param offsetDistance How far to offset the shape.  Positive numbers shift the edge away from the center.  Negative
+     *                       values are not supported right now and may behave unpredictably
+     * @return  new BBDPolygon that has the offset added to the base shape
+     * @throws ParallelLinesException if you are trying to calculate the intercept of parallel lines.  If you encounter this
+     *                                it means you have some colinear lines and they should probably be combined
+     */
+    public BBDPolygon offsetPolygon(float offsetDistance) throws ParallelLinesException {
+        return this.offsetPolygon(offsetDistance, 0, this.segments.length -1);
+    }
+
+    /**
+     * Offset a contiguous portion of a polygon.  Positive offsets make the shape bigger.  Negative values can be used,
+     * but may behave unpredictably.  Convex polygons are the only ones supported right now, concave polygons may behave
+     * unpredictably.
+     * @param offsetDistance How far to offset the shape.  Positive numbers shift the edge away from the center.  Negative
+     *                       values are not supported right now and may behave unpredictably
+     * @param startIndex The segment index from which to start the offset.  The offset will proceed to the next highest
+     *                   index and wrap to 0 when it reaches the end
+     * @param endIndex The segment index to terminate the offset.
+     * @return A new BBDPolygon that has the offset added to the base shape
+     * @throws ParallelLinesException if you are trying to calculate the intercept of parallel lines.  If you encounter this
+     *                                it means you have some colinear lines and they should probably be combined
+     */
+    public BBDPolygon offsetPolygon(float offsetDistance, int startIndex, int endIndex) throws ParallelLinesException {
+        //check polygon direction so we know which way to offset
+        float offsetAngleModifier;
+        if (this.determineDirectionality() == BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON){
+            offsetAngleModifier = (float)Math.PI/2;
+        }else{
+            offsetAngleModifier = (float)-Math.PI/2;
+        }
+
+        //loop through the segments from the start to the end and copy
+        //build a list off offsets and a list of not, which is 2 contiguous lists
+        ArrayList<BBDSegment> offsetSegments = new ArrayList<>();
+        ArrayList<BBDSegment> otherSegments = new ArrayList<>();
+        float currentAngle;
+        BBDSegment segment;
+        ArrayList<BBDSegment> segmentList = new ArrayList<>(Arrays.asList(this.segments));
+        Collections.rotate(segmentList, -startIndex);
+        for(int i = 0; i< segmentList.size() ; i++){
+            segment = segmentList.get(i);
+            if(i<=(endIndex-startIndex + this.segments.length)%this.segments.length) {
+                currentAngle = segment.getStartPoint().angleToOtherPoint(segment.getEndPoint());
+                BBDSegment segmentToAdd = new BBDSegment(segment, offsetDistance, (float) (currentAngle-offsetAngleModifier));
+                offsetSegments.add(segmentToAdd);
+            }else{
+                otherSegments.add(segment);
+            }
+        }
+
+        ArrayList<BBDPoint> offsetPoints = new ArrayList<>();
+        //find new vertices
+        if(otherSegments.size() != 0) {
+            //get the first
+            offsetPoints.add(offsetSegments.get(0).interceptPoint(otherSegments.get(otherSegments.size() - 1)));
+            //get the middles
+            if (offsetSegments.size() > 1) {
+                for (int i = 0; i < offsetSegments.size() - 1; i++) {
+                    offsetPoints.add(offsetSegments.get(i).interceptPoint(offsetSegments.get(i + 1)));
+                }
+            }
+            //get the last
+            offsetPoints.add(offsetSegments.get(offsetSegments.size() - 1).interceptPoint(otherSegments.get(0)));
+        }else{
+            for(int i = 0; i<offsetSegments.size() -1; i++){
+                offsetPoints.add(offsetSegments.get(i).interceptPoint(offsetSegments.get(i + 1)));
+            }
+            offsetPoints.add(offsetSegments.get(0).interceptPoint(offsetSegments.get(offsetSegments.size()-1)));
+        }
+
+        //find original verts to carry over
+        ArrayList<BBDPoint> otherPoints = new ArrayList<>();
+        if(otherSegments.size() != 0) {
+            for (BBDSegment nonOffsetSegment : otherSegments) {
+                if (!otherPoints.contains(nonOffsetSegment.getStartPoint())) {
+                    otherPoints.add(nonOffsetSegment.getStartPoint());
+                }
+                if (!otherPoints.contains(nonOffsetSegment.getEndPoint())) {
+                    otherPoints.add(nonOffsetSegment.getEndPoint());
+                }
+            }
+            //remove last and first as they will be effectively repeats of the first and last of the offsets
+            otherPoints.remove(otherPoints.size() - 1);
+            otherPoints.remove(0);
+        }
+
+        //combine and create new BBDPolygon
+        offsetPoints.addAll(otherPoints);
+        return new BBDPolygon(offsetPoints.toArray(new BBDPoint[0]));
+    }
+
+    /**
      * Determine the distance squared to another polygon.  If a polygon is overlapping
      * then the distance will be 0.
      * @param otherPolygon other polygon to measure distance to
@@ -615,7 +711,6 @@ public class BBDPolygon implements BBDGeometry{
             }
             Collections.rotate(forwardList, 1);
             Collections.rotate(backwardList, 1);
-            i++;
         }
         return false;
     }
