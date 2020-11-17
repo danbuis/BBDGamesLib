@@ -48,11 +48,11 @@ public class Mesh {
      * @return array of floats for position coordinates
      */
     public static float[] buildMeshPositions(BBDPolygon inputShape){
-        BBDPoint[] points = inputShape.getPoints();
-        float[] positions = new float[3*points.length];
-        for (int i = 0; i< points.length; i++){
-            positions[i * 3] = points[i].getXLoc();
-            positions[i * 3 + 1] = points[i].getYLoc();
+        ArrayList<BBDPoint> points = inputShape.getPoints();
+        float[] positions = new float[3*points.size()];
+        for (int i = 0; i< points.size(); i++){
+            positions[i * 3] = points.get(i).getXLoc();
+            positions[i * 3 + 1] = points.get(i).getYLoc();
             positions[i * 3 + 2] = 0;
         }
         return positions;
@@ -69,13 +69,13 @@ public class Mesh {
          float minX = inputShape.minX();
          float width = inputShape.width();
          float height = inputShape.height();
-         BBDPoint[] points = inputShape.getPoints();
-         float[] textureCoordinates = new float[2*points.length];
+         ArrayList<BBDPoint> points = inputShape.getPoints();
+         float[] textureCoordinates = new float[2*points.size()];
          float deltaX;
          float deltaY;
-         for(int i = 0; i< points.length; i++){
-            deltaY = maxY - points[i].getYLoc();
-            deltaX = points[i].getXLoc() - minX;
+         for(int i = 0; i< points.size(); i++){
+            deltaY = maxY - points.get(i).getYLoc();
+            deltaX = points.get(i).getXLoc() - minX;
 
             textureCoordinates[2 * i] = deltaX/width;
             textureCoordinates[2 * i+1] = deltaY/height;
@@ -89,13 +89,13 @@ public class Mesh {
      * @return indices array
      */
     public static int[] buildIndices(BBDPolygon inputShape){
-        BBDPoint[] points = inputShape.getPoints();
+        ArrayList<BBDPoint> points = inputShape.getPoints();
         BBDPolygon[] triangles = inputShape.decomposeIntoTriangles(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
         int[] output = new int[3 * triangles.length];
         for (int tri = 0; tri < triangles.length; tri++){
             for (int vert = 0; vert < 3; vert++){
-                for(int inputIndex = 0; inputIndex < points.length; inputIndex++){
-                    if(triangles[tri].getPoints()[vert].equals(points[inputIndex])){
+                for(int inputIndex = 0; inputIndex < points.size(); inputIndex++){
+                    if(triangles[tri].getPoints().get(vert).equals(points.get(inputIndex))){
                         output[3*tri + vert] = inputIndex;
                     }
                 }

@@ -7,7 +7,7 @@ import BBDGameLibrary.Geometry2d.BBDSegment;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +20,7 @@ public class TestBBDPolygon {
         BBDPoint point3 = new BBDPoint(-1,-1);
         BBDPoint point4 = new BBDPoint(-1,1);
 
-        BBDPoint[] points = {point1, point2, point3, point4};
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
 
         return new BBDPolygon(points);
     }
@@ -31,7 +31,7 @@ public class TestBBDPolygon {
         BBDPoint point3 = new BBDPoint(-1,0);
         BBDPoint point4 = new BBDPoint(0,1);
 
-        BBDPoint[] points = {point1, point2, point3, point4};
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
 
         return new BBDPolygon(points);
     }
@@ -41,14 +41,14 @@ public class TestBBDPolygon {
         BBDPolygon test = buildSquare();
 
         //make sure that the arrays have the right length
-        assertEquals(4, test.getPoints().length);
-        assertEquals(4, test.getSegments().length);
+        assertEquals(4, test.getPoints().size());
+        assertEquals(4, test.getSegments().size());
 
         //check the 4 sides
-        assertEquals(new BBDSegment(new BBDPoint(1,1), new BBDPoint(1,-1)), test.getSegments()[0]);
-        assertEquals(new BBDSegment(new BBDPoint(1,-1), new BBDPoint(-1,-1)), test.getSegments()[1]);
-        assertEquals(new BBDSegment(new BBDPoint(-1,-1), new BBDPoint(-1,1)), test.getSegments()[2]);
-        assertEquals(new BBDSegment(new BBDPoint(-1,1), new BBDPoint(1,1)), test.getSegments()[3]);
+        assertEquals(new BBDSegment(new BBDPoint(1,1), new BBDPoint(1,-1)), test.getSegments().get(0));
+        assertEquals(new BBDSegment(new BBDPoint(1,-1), new BBDPoint(-1,-1)), test.getSegments().get(1));
+        assertEquals(new BBDSegment(new BBDPoint(-1,-1), new BBDPoint(-1,1)), test.getSegments().get(2));
+        assertEquals(new BBDSegment(new BBDPoint(-1,1), new BBDPoint(1,1)), test.getSegments().get(3));
     }
 
     @Test
@@ -66,10 +66,10 @@ public class TestBBDPolygon {
     public void testTranslate(){
         BBDPolygon square = this.buildSquare();
         square.translate(4,4);
-        assertEquals(new BBDPoint(5,5), square.getPoints()[0]);
-        assertEquals(new BBDPoint(5,3), square.getPoints()[1]);
-        assertEquals(new BBDPoint(3,3), square.getPoints()[2]);
-        assertEquals(new BBDPoint(3,5), square.getPoints()[3]);
+        assertEquals(new BBDPoint(5,5), square.getPoints().get(0));
+        assertEquals(new BBDPoint(5,3), square.getPoints().get(1));
+        assertEquals(new BBDPoint(3,3), square.getPoints().get(2));
+        assertEquals(new BBDPoint(3,5), square.getPoints().get(3));
     }
 
     @Test
@@ -86,13 +86,13 @@ public class TestBBDPolygon {
         BBDPolygon square = this.buildSquare();
 
         square.scale(0.5f);
-        assertEquals(new BBDPoint(0.5f, 0.5f), square.getPoints()[0]);
+        assertEquals(new BBDPoint(0.5f, 0.5f), square.getPoints().get(0));
 
         square.scale(4);
-        assertEquals(new BBDPoint(2,2), square.getPoints()[0]);
-        assertEquals(new BBDPoint(2,-2), square.getPoints()[1]);
-        assertEquals(new BBDPoint(-2,-2), square.getPoints()[2]);
-        assertEquals(new BBDPoint(-2,2), square.getPoints()[3]);
+        assertEquals(new BBDPoint(2,2), square.getPoints().get(0));
+        assertEquals(new BBDPoint(2,-2), square.getPoints().get(1));
+        assertEquals(new BBDPoint(-2,-2), square.getPoints().get(2));
+        assertEquals(new BBDPoint(-2,2), square.getPoints().get(3));
     }
 
     @Test
@@ -100,16 +100,16 @@ public class TestBBDPolygon {
         BBDPolygon square = this.buildSquare();
 
         square.scaleFromPoint(new BBDPoint(1,1), 0.5f);
-        assertEquals(new BBDPoint(1, 1), square.getPoints()[0]);
-        assertEquals(new BBDPoint(1, 0), square.getPoints()[1]);
-        assertEquals(new BBDPoint(0, 0), square.getPoints()[2]);
-        assertEquals(new BBDPoint(0, 1), square.getPoints()[3]);
+        assertEquals(new BBDPoint(1, 1), square.getPoints().get(0));
+        assertEquals(new BBDPoint(1, 0), square.getPoints().get(1));
+        assertEquals(new BBDPoint(0, 0), square.getPoints().get(2));
+        assertEquals(new BBDPoint(0, 1), square.getPoints().get(3));
 
         BBDPolygon otherSquare = this.buildSquare();
 
         otherSquare.scaleFromPoint(new BBDPoint(-1,-1), 5);
-        assertEquals(9, otherSquare.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(9, otherSquare.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, otherSquare.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, otherSquare.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
     }
 
@@ -118,10 +118,10 @@ public class TestBBDPolygon {
         BBDPolygon square = this.buildSquare();
 
         square.rotate((float) Math.PI);
-        assertEquals(new BBDPoint(-1, -1), square.getPoints()[0]);
-        assertEquals(new BBDPoint(-1, 1), square.getPoints()[1]);
-        assertEquals(new BBDPoint(1, 1), square.getPoints()[2]);
-        assertEquals(new BBDPoint(1, -1), square.getPoints()[3]);
+        assertEquals(new BBDPoint(-1, -1), square.getPoints().get(0));
+        assertEquals(new BBDPoint(-1, 1), square.getPoints().get(1));
+        assertEquals(new BBDPoint(1, 1), square.getPoints().get(2));
+        assertEquals(new BBDPoint(1, -1), square.getPoints().get(3));
     }
 
     @Test
@@ -129,10 +129,10 @@ public class TestBBDPolygon {
         BBDPolygon square = this.buildSquare();
 
         square.rotateAroundPoint(new BBDPoint(1,1), (float) Math.PI);
-        assertEquals(new BBDPoint(1, 1), square.getPoints()[0]);
-        assertEquals(new BBDPoint(1, 3), square.getPoints()[1]);
-        assertEquals(new BBDPoint(3, 3), square.getPoints()[2]);
-        assertEquals(new BBDPoint(3, 1), square.getPoints()[3]);
+        assertEquals(new BBDPoint(1, 1), square.getPoints().get(0));
+        assertEquals(new BBDPoint(1, 3), square.getPoints().get(1));
+        assertEquals(new BBDPoint(3, 3), square.getPoints().get(2));
+        assertEquals(new BBDPoint(3, 1), square.getPoints().get(3));
     }
 
     @Test
@@ -204,7 +204,7 @@ public class TestBBDPolygon {
 
         // this one was found as an error in production and traced to this simple case.  Putting here for simplified unit testing and
         // to ensure that it doesn't happen in regression.
-        BBDPolygon bugged = new BBDPolygon(new BBDPoint[]{new BBDPoint(-3, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 0)});
+        BBDPolygon bugged = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint(-3, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 0))));
         BBDPoint center = bugged.centerAverage();
         assertEquals(-2.333333, center.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-1.333334, center.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -230,12 +230,12 @@ public class TestBBDPolygon {
         BBDPoint point4 = new BBDPoint(-1,1);
         BBDPoint point45 = new BBDPoint(0,1);
 
-        BBDPoint[] points = {point1, point15, point2, point25, point3, point35, point4, point45};
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point15, point2, point25, point3, point35, point4, point45));
         assertEquals(4, new BBDPolygon(points).area(), BBDGeometryUtils.ALLOWABLE_DELTA);
 
         //make a concave polygon, and make sure that the first 3 points make a triangle NOT inside
         point2 = new BBDPoint(0,0);
-        BBDPoint[] points2 = {point15, point2, point25, point3, point35, point4, point45, point1};
+        ArrayList<BBDPoint> points2 = new ArrayList<>(Arrays.asList(point15, point2, point25, point3, point35, point4, point45, point1));
         assertEquals(3, new BBDPolygon(points2).area(), BBDGeometryUtils.ALLOWABLE_DELTA);
     }
 
@@ -254,7 +254,7 @@ public class TestBBDPolygon {
         //modify most of them to create several types of scenarios
         overlapping.translate(0.2f, 0.2f);
         adjacent.translate(0.5f, 2);
-        insideEdge.scaleFromPoint(controlPolygon.getPoints()[0], 0.5f);
+        insideEdge.scaleFromPoint(controlPolygon.getPoints().get(0), 0.5f);
         shareVertex.translate(2,2);
         contains.scale(0.5f);
         separate.translate(3,3);
@@ -297,7 +297,7 @@ public class TestBBDPolygon {
         //modify most of them to create several types of scenarios
         overlapping.translate(0.2f, 0.2f);
         adjacent.translate(0.5f, 2);
-        insideEdge.scaleFromPoint(controlPolygon.getPoints()[0], 0.5f);
+        insideEdge.scaleFromPoint(controlPolygon.getPoints().get(0), 0.5f);
         shareVertex.translate(2,2);
         contains.scale(0.5f);
         separate.translate(3,3);
@@ -340,7 +340,7 @@ public class TestBBDPolygon {
         //modify most of them to create several types of scenarios
         overlapping.translate(0.2f, 0.2f);
         adjacent.translate(0.5f, 2);
-        insideEdge.scaleFromPoint(controlPolygon.getPoints()[0], 0.5f);
+        insideEdge.scaleFromPoint(controlPolygon.getPoints().get(0), 0.5f);
         shareVertex.translate(2,2);
         contains.scale(0.5f);
         separate.translate(3,3);
@@ -374,17 +374,17 @@ public class TestBBDPolygon {
         BBDPoint point2 = new BBDPoint(1, -1);
         BBDPoint point3 = new BBDPoint(-1, 0.2f);
 
-        BBDPolygon cw1 = new BBDPolygon(new BBDPoint[]{point1, point2, point3});
-        BBDPolygon cw2 = new BBDPolygon(new BBDPoint[]{point2, point3, point1});
-        BBDPolygon cw3 = new BBDPolygon(new BBDPoint[]{point3, point1, point2});
+        BBDPolygon cw1 = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point2, point3)));
+        BBDPolygon cw2 = new BBDPolygon(new ArrayList<>(Arrays.asList(point2, point3, point1)));
+        BBDPolygon cw3 = new BBDPolygon(new ArrayList<>(Arrays.asList(point3, point1, point2)));
 
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw1.determineDirectionality());
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw2.determineDirectionality());
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw3.determineDirectionality());
 
-        BBDPolygon ccw1 = new BBDPolygon(new BBDPoint[]{point3, point2, point1});
-        BBDPolygon ccw2 = new BBDPolygon(new BBDPoint[]{point2, point1, point3});
-        BBDPolygon ccw3 = new BBDPolygon(new BBDPoint[]{point1, point3, point2});
+        BBDPolygon ccw1 = new BBDPolygon(new ArrayList<>(Arrays.asList(point3, point2, point1)));
+        BBDPolygon ccw2 = new BBDPolygon(new ArrayList<>(Arrays.asList(point2, point1, point3)));
+        BBDPolygon ccw3 = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point3, point2)));
 
         assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw1.determineDirectionality());
         assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw2.determineDirectionality());
@@ -397,17 +397,17 @@ public class TestBBDPolygon {
         BBDPoint point2 = new BBDPoint(7, -5);
         BBDPoint point3 = new BBDPoint(6.5f, -5);
 
-        BBDPolygon cw1 = new BBDPolygon(new BBDPoint[]{point1, point2, point3});
-        BBDPolygon cw2 = new BBDPolygon(new BBDPoint[]{point2, point3, point1});
-        BBDPolygon cw3 = new BBDPolygon(new BBDPoint[]{point3, point1, point2});
+        BBDPolygon cw1 = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point2, point3)));
+        BBDPolygon cw2 = new BBDPolygon(new ArrayList<>(Arrays.asList(point2, point3, point1)));
+        BBDPolygon cw3 = new BBDPolygon(new ArrayList<>(Arrays.asList(point3, point1, point2)));
 
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw1.determineDirectionality());
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw2.determineDirectionality());
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw3.determineDirectionality());
 
-        BBDPolygon ccw1 = new BBDPolygon(new BBDPoint[]{point3, point2, point1});
-        BBDPolygon ccw2 = new BBDPolygon(new BBDPoint[]{point2, point1, point3});
-        BBDPolygon ccw3 = new BBDPolygon(new BBDPoint[]{point1, point3, point2});
+        BBDPolygon ccw1 = new BBDPolygon(new ArrayList<>(Arrays.asList(point3, point2, point1)));
+        BBDPolygon ccw2 = new BBDPolygon(new ArrayList<>(Arrays.asList(point2, point1, point3)));
+        BBDPolygon ccw3 = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point3, point2)));
 
         assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw1.determineDirectionality());
         assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw2.determineDirectionality());
@@ -420,7 +420,7 @@ public class TestBBDPolygon {
         BBDPoint point2 = new BBDPoint(1, -1);
         BBDPoint point3 = new BBDPoint(-1, 0.2f);
 
-        BBDPolygon polygon = new BBDPolygon(new BBDPoint[]{point1, point2, point3});
+        BBDPolygon polygon = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point2, point3)));
 
         //test beforehand
         assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
@@ -514,10 +514,9 @@ public class TestBBDPolygon {
 
         assertNotEquals(square1, this.buildDiamond());
 
-        ArrayList<BBDPoint> fiveLong = new ArrayList<BBDPoint>();
-        Collections.addAll(fiveLong, square1.getPoints());
+        ArrayList<BBDPoint> fiveLong = new ArrayList<>(square1.getPoints());
         fiveLong.add(new BBDPoint(0,3));
-        BBDPolygon penta = new BBDPolygon(fiveLong.toArray(new BBDPoint[0]));
+        BBDPolygon penta = new BBDPolygon(fiveLong);
 
         assertNotEquals(square1, penta);
     }
