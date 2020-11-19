@@ -41,6 +41,18 @@ public class BBDPolygon implements BBDGeometry{
         this.segments = segments;
     }
 
+    private void buildSegments(ArrayList<BBDPoint> inputPoints){
+        ArrayList<BBDSegment> segments = new ArrayList<>();
+        for(int index = 0; index< inputPoints.size(); index++){
+            int nextIndex = (index + 1) % inputPoints.size();
+            segments.add(new BBDSegment(inputPoints.get(index), inputPoints.get(nextIndex)));
+        }
+
+        this.points = inputPoints;
+        this.segments = segments;
+    }
+
+
     /**
      * The horizontal dimension of this polygon
      * @return max width of the polygon
@@ -220,6 +232,80 @@ public class BBDPolygon implements BBDGeometry{
 
         return new BBDPoint(aggX/size, aggY / size);
     }
+
+    /**
+     * Insert a point into the polygon's perimeter
+     * @param point new point
+     * @param index where to insert in the order
+     */
+    public boolean insertPoint(BBDPoint point, int index){
+        if(index >= 0 && index < this.points.size()) {
+            this.points.add(index, point);
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Attempt to delete a point at an index
+     * @param index index of the point to delte
+     * @return was a point successfully deleted
+     */
+    public boolean deletePoint(int index){
+        if(index < this.points.size()) {
+            this.points.remove(index);
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Attempt to delete a specific point
+     * @param point point to delete
+     * @return was a point successfully deleted
+     */
+    public boolean deletePoint(BBDPoint point){
+        if(this.points.contains(point)) {
+            this.points.remove(point);
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Translate a single point
+     * @param index what point to move
+     * @param dx x-axis translation
+     * @param dy y-axis translation
+     */
+    public boolean movePoint(int index, float dx, float dy){
+        if(index <= 0 && index>this.points.size()) {
+            this.points.get(index).translate(dx, dy);
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean moveContiguousPoints(int startIndex, int endIndex, float dx, float dy){
+        if(startIndex <= endIndex && startIndex<=0 && endIndex < this.points.size()){
+            for (int i=startIndex; i<=endIndex; i++){
+                this.points.get(i).translate(dx, dy);
+            }
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     /**
      * Ensure that this polygon's vertices go in a specific direction.
