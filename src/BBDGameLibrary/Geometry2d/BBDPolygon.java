@@ -237,6 +237,7 @@ public class BBDPolygon implements BBDGeometry{
      * Insert a point into the polygon's perimeter
      * @param point new point
      * @param index where to insert in the order
+     * @return was a point inserted
      */
     public boolean insertPoint(BBDPoint point, int index){
         if(index >= 0 && index < this.points.size()) {
@@ -283,6 +284,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param index what point to move
      * @param dx x-axis translation
      * @param dy y-axis translation
+     * @return was this action performed
      */
     public boolean movePoint(int index, float dx, float dy){
         if(index >= 0 && index < this.points.size()) {
@@ -294,6 +296,14 @@ public class BBDPolygon implements BBDGeometry{
         }
     }
 
+    /**
+     * Move several contiguous points the same amount
+     * @param startIndex start index, inclusive
+     * @param endIndex end index, inclusive
+     * @param dx amount to shift along the x-axis
+     * @param dy amount to shift along the y-axis
+     * @return was this action performed
+     */
     public boolean moveContiguousPoints(int startIndex, int endIndex, float dx, float dy){
         if(startIndex <= endIndex && startIndex<=0 && endIndex < this.points.size()){
             for (int i=startIndex; i<=endIndex; i++){
