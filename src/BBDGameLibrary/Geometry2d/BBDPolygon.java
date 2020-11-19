@@ -254,7 +254,7 @@ public class BBDPolygon implements BBDGeometry{
      * @return was a point successfully deleted
      */
     public boolean deletePoint(int index){
-        if(index < this.points.size()) {
+        if(index >= 0 && index < this.points.size()) {
             this.points.remove(index);
             this.buildSegments(this.points);
             return true;
@@ -285,7 +285,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param dy y-axis translation
      */
     public boolean movePoint(int index, float dx, float dy){
-        if(index <= 0 && index>this.points.size()) {
+        if(index >= 0 && index < this.points.size()) {
             this.points.get(index).translate(dx, dy);
             this.buildSegments(this.points);
             return true;
