@@ -521,4 +521,85 @@ public class TestBBDPolygon {
         assertNotEquals(square1, penta);
     }
 
+    @Test
+    public void testInsertPoint(){
+        BBDPolygon square = this.buildSquare();
+        BBDPoint insert = new BBDPoint(0,0);
+
+        assertFalse(square.insertPoint(insert, -1));
+        assertFalse(square.insertPoint(insert,4));
+
+        ArrayList<BBDPoint> modifiedPoints = new ArrayList<>(square.getPoints());
+        modifiedPoints.add(3, insert);
+
+        assertTrue(square.insertPoint(insert,3));
+        assertEquals(new BBDPolygon(modifiedPoints), square);
+    }
+
+    @Test
+    public void testDeletePointIndex(){
+        BBDPolygon square = this.buildSquare();
+
+        assertFalse(square.deletePoint(-1));
+        assertFalse(square.deletePoint(4));
+
+        ArrayList<BBDPoint> modifiedPoints = new ArrayList<>(square.getPoints());
+        modifiedPoints.remove(3);
+
+        assertTrue(square.deletePoint(3));
+        assertEquals(new BBDPolygon(modifiedPoints), square);
+    }
+
+    @Test
+    public void testDeletePointObject(){
+        BBDPolygon square = this.buildSquare();
+        BBDPoint deleted = new BBDPoint(1,1);
+
+        assertFalse(square.deletePoint(new BBDPoint(0,0)));
+
+        ArrayList<BBDPoint> modifiedPoints = new ArrayList<>(square.getPoints());
+        modifiedPoints.remove(0);
+
+        assertTrue(square.deletePoint(deleted));
+        assertEquals(new BBDPolygon(modifiedPoints), square);
+        assertFalse(square.deletePoint(deleted));
+    }
+
+    @Test
+    public void testMoveSinglePoint(){
+        BBDPolygon square = this.buildSquare();
+
+        assertFalse(square.movePoint(-1, 9,9));
+        assertFalse(square.movePoint(7, 9,9));
+
+        BBDPoint shiftedPoint = new BBDPoint(2,2);
+
+        ArrayList<BBDPoint> modifiedPoints = new ArrayList<>(square.getPoints());
+        modifiedPoints.remove(0);
+        modifiedPoints.add(0, shiftedPoint);
+
+        assertTrue(square.movePoint(0,1,1));
+        assertEquals(new BBDPolygon(modifiedPoints), square);
+    }
+
+    @Test
+    public void testMoveMultiplePoints(){
+        BBDPolygon square = this.buildSquare();
+
+        assertFalse(square.movePoint(-1, 9,9));
+        assertFalse(square.movePoint(7, 9,9));
+
+        BBDPoint shiftedPoint0 = new BBDPoint(2,2);
+        BBDPoint shiftedPoint1 = new BBDPoint(2,0);
+
+        ArrayList<BBDPoint> modifiedPoints = new ArrayList<>(square.getPoints());
+        modifiedPoints.remove(0);
+        modifiedPoints.add(0, shiftedPoint0);
+        modifiedPoints.remove(1);
+        modifiedPoints.add(1, shiftedPoint1);
+
+        assertTrue(square.moveContiguousPoints(0,1,1,1));
+        assertEquals(new BBDPolygon(modifiedPoints), square);
+    }
+
 }
