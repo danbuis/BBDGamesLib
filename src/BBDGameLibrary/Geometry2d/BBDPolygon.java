@@ -26,8 +26,9 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * General constructor that takes in a series of points and
-     * creates the polygon object
+     * General constructor that takes in a series of points and creates the polygon object.  Logically a polygon requires
+     * 3 or more different sides, therefore you will need to give it a list of 3+ points, otherwise some functions will
+     * not work.
      * @param inputPoints points used to define the perimeter of the polygon
      */
     public BBDPolygon (ArrayList<BBDPoint> inputPoints){
@@ -255,7 +256,7 @@ public class BBDPolygon implements BBDGeometry{
      * @return was a point successfully deleted
      */
     public boolean deletePoint(int index){
-        if(index >= 0 && index < this.points.size()) {
+        if(index >= 0 && index < this.points.size() && this.points.size() >= 4) {
             this.points.remove(index);
             this.buildSegments(this.points);
             return true;
@@ -270,7 +271,7 @@ public class BBDPolygon implements BBDGeometry{
      * @return was a point successfully deleted
      */
     public boolean deletePoint(BBDPoint point){
-        if(this.points.contains(point)) {
+        if(this.points.contains(point) && this.points.size() >= 4) {
             this.points.remove(point);
             this.buildSegments(this.points);
             return true;

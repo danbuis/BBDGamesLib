@@ -548,6 +548,10 @@ public class TestBBDPolygon {
 
         assertTrue(square.deletePoint(3));
         assertEquals(new BBDPolygon(modifiedPoints), square);
+
+        //check that we don't get to 2 points
+        assertEquals(3, square.getPoints().size());
+        assertFalse(square.deletePoint(1));
     }
 
     @Test
@@ -563,6 +567,10 @@ public class TestBBDPolygon {
         assertTrue(square.deletePoint(deleted));
         assertEquals(new BBDPolygon(modifiedPoints), square);
         assertFalse(square.deletePoint(deleted));
+
+        //check that we don't get to 2 points
+        assertEquals(3, square.getPoints().size());
+        assertFalse(square.deletePoint(1));
     }
 
     @Test
