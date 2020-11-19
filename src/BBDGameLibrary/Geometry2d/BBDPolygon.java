@@ -14,14 +14,14 @@ public class BBDPolygon implements BBDGeometry{
 
     // Pieces that define the polygon.
     // Users should not be able to modify these directly.
-    private BBDPoint[] points;
-    private final BBDSegment[] segments;
+    private ArrayList<BBDPoint> points;
+    private ArrayList<BBDSegment> segments;
 
-    public BBDPoint[] getPoints(){
+    public ArrayList<BBDPoint> getPoints(){
         return this.points;
     }
 
-    public BBDSegment[] getSegments(){
+    public ArrayList<BBDSegment> getSegments(){
         return this.segments;
     }
 
@@ -30,16 +30,28 @@ public class BBDPolygon implements BBDGeometry{
      * creates the polygon object
      * @param inputPoints points used to define the perimeter of the polygon
      */
-    public BBDPolygon (BBDPoint[] inputPoints){
+    public BBDPolygon (ArrayList<BBDPoint> inputPoints){
         ArrayList<BBDSegment> segments = new ArrayList<>();
-        for(int index = 0; index< inputPoints.length; index++){
-            int nextIndex = (index + 1) % inputPoints.length;
-            segments.add(new BBDSegment(inputPoints[index], inputPoints[nextIndex]));
+        for(int index = 0; index < inputPoints.size(); index++){
+            int nextIndex = (index + 1) % inputPoints.size();
+            segments.add(new BBDSegment(inputPoints.get(index), inputPoints.get(nextIndex)));
         }
 
         this.points = inputPoints;
-        this.segments = segments.toArray(new BBDSegment[0]);
+        this.segments = segments;
     }
+
+    private void buildSegments(ArrayList<BBDPoint> inputPoints){
+        ArrayList<BBDSegment> segments = new ArrayList<>();
+        for(int index = 0; index< inputPoints.size(); index++){
+            int nextIndex = (index + 1) % inputPoints.size();
+            segments.add(new BBDSegment(inputPoints.get(index), inputPoints.get(nextIndex)));
+        }
+
+        this.points = inputPoints;
+        this.segments = segments;
+    }
+
 
     /**
      * The horizontal dimension of this polygon
@@ -216,10 +228,84 @@ public class BBDPolygon implements BBDGeometry{
             aggY += point.getYLoc();
         }
 
-        int size = this.points.length;
+        int size = this.points.size();
 
         return new BBDPoint(aggX/size, aggY / size);
     }
+
+    /**
+     * Insert a point into the polygon's perimeter
+     * @param point new point
+     * @param index where to insert in the order
+     */
+    public boolean insertPoint(BBDPoint point, int index){
+        if(index >= 0 && index < this.points.size()) {
+            this.points.add(index, point);
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Attempt to delete a point at an index
+     * @param index index of the point to delte
+     * @return was a point successfully deleted
+     */
+    public boolean deletePoint(int index){
+        if(index >= 0 && index < this.points.size()) {
+            this.points.remove(index);
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Attempt to delete a specific point
+     * @param point point to delete
+     * @return was a point successfully deleted
+     */
+    public boolean deletePoint(BBDPoint point){
+        if(this.points.contains(point)) {
+            this.points.remove(point);
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Translate a single point
+     * @param index what point to move
+     * @param dx x-axis translation
+     * @param dy y-axis translation
+     */
+    public boolean movePoint(int index, float dx, float dy){
+        if(index >= 0 && index < this.points.size()) {
+            this.points.get(index).translate(dx, dy);
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean moveContiguousPoints(int startIndex, int endIndex, float dx, float dy){
+        if(startIndex <= endIndex && startIndex<=0 && endIndex < this.points.size()){
+            for (int i=startIndex; i<=endIndex; i++){
+                this.points.get(i).translate(dx, dy);
+            }
+            this.buildSegments(this.points);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     /**
      * Ensure that this polygon's vertices go in a specific direction.
@@ -229,9 +315,7 @@ public class BBDPolygon implements BBDGeometry{
         int currentDirection = this.determineDirectionality();
 
         if (currentDirection != direction && (direction == 0 || direction == 1)){
-            List<BBDPoint> newList = Arrays.asList(this.points);
-            Collections.reverse(newList);
-            this.points = newList.toArray(new BBDPoint[0]);
+            Collections.reverse(this.points);
         }
     }
 
@@ -241,7 +325,7 @@ public class BBDPolygon implements BBDGeometry{
      */
     public int determineDirectionality(){
         BBDPolygon[] triangles = null;
-        if(this.points.length !=3){
+        if(this.points.size() !=3){
             triangles = new BBDPolygon[]{this};
         } else{
             triangles = this.decomposeIntoTriangles(null);
@@ -258,8 +342,8 @@ public class BBDPolygon implements BBDGeometry{
     private int determineDirectionality(BBDPolygon triangle){
         BBDPoint averageCenter = triangle.centerAverage();
 
-        float angle1 = averageCenter.angleToOtherPoint(triangle.points[0]);
-        float angle2 = averageCenter.angleToOtherPoint(triangle.points[1]);
+        float angle1 = averageCenter.angleToOtherPoint(triangle.points.get(0));
+        float angle2 = averageCenter.angleToOtherPoint(triangle.points.get(1));
 
         angle1 += 2 * Math.PI;
         angle2 += 2 * Math.PI;
@@ -527,15 +611,15 @@ public class BBDPolygon implements BBDGeometry{
      * @return array of BBDPolygon triangles
      */
     public BBDPolygon[] decomposeIntoTriangles(Integer triangleDirectionality){
-        ArrayList<BBDPoint> remainingPoints = new ArrayList<>(Arrays.asList(this.points));
+        ArrayList<BBDPoint> remainingPoints = new ArrayList<BBDPoint>(this.points);
         ArrayList<BBDPolygon> triangles = new ArrayList<>();
 
         while(remainingPoints.size() >= 3){
-            BBDPolygon temp = new BBDPolygon(remainingPoints.toArray(new BBDPoint[0]));
+            BBDPolygon temp = new BBDPolygon(remainingPoints);
             //cycle through 3 adjacent vertices until we find a triangle with an interior inside the polygon
             BBDPolygon test;
             for(int i=1; i< remainingPoints.size()-1; i++){
-                test = new BBDPolygon(new BBDPoint[]{remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1)});
+                test = new BBDPolygon(new ArrayList<BBDPoint>(Arrays.asList(remainingPoints.get(i - 1), remainingPoints.get(i), remainingPoints.get(i + 1))));
                 BBDPoint center = test.centerAverage();
                 if(temp.checkPointInside(center) || remainingPoints.size() == 3){
                     if(triangleDirectionality != null){
@@ -558,16 +642,17 @@ public class BBDPolygon implements BBDGeometry{
         float accumulatedTotal = 0;
         BBDPolygon[] triangles = this.decomposeIntoTriangles(null);
         for(BBDPolygon triangle:triangles){
-            BBDPoint[] points = triangle.getPoints();
-            accumulatedTotal += Math.abs((points[0].getXLoc()*(points[1].getYLoc()-points[2].getYLoc())
-                    + points[1].getXLoc()*(points[2].getYLoc()-points[0].getYLoc())
-                    + points[2].getXLoc()*(points[0].getYLoc()-points[1].getYLoc()))/ 2.0);
+            ArrayList<BBDPoint> points = triangle.getPoints();
+            accumulatedTotal += Math.abs((points.get(0).getXLoc()*(points.get(1).getYLoc()-points.get(2).getYLoc())
+                                        + points.get(1).getXLoc()*(points.get(2).getYLoc()-points.get(0).getYLoc())
+                                        + points.get(2).getXLoc()*(points.get(0).getYLoc()-points.get(1).getYLoc()))
+                    / 2.0);
         }
         return accumulatedTotal;
     }
 
     public String toString(){
-        return "BBDPolygon object consisting of "+this.points.length+" vertices ";
+        return "BBDPolygon object consisting of "+this.points.size()+" vertices ";
     }
 
     public String extendedToString(){
@@ -588,21 +673,21 @@ public class BBDPolygon implements BBDGeometry{
         }
         BBDPolygon otherPolygon = (BBDPolygon)other;
         // check size first
-        if (otherPolygon.points.length != this.points.length){
+        if (otherPolygon.points.size() != this.points.size()){
             return false;
         }
 
         // then rotate through the points until we have a sequential match
         // checking forward and backward ordered lists
-        ArrayList<BBDPoint> forwardList = new ArrayList<>(Arrays.asList(this.points));
-        ArrayList<BBDPoint> backwardList = new ArrayList<>(Arrays.asList(this.points));
+        ArrayList<BBDPoint> forwardList = new ArrayList<>(this.points);
+        ArrayList<BBDPoint> backwardList = new ArrayList<>(this.points);
         Collections.reverse(backwardList);
 
-        int count = this.points.length;
+        int count = this.points.size();
         for (int i = 0; i < count; i++){
             int index = 0;
-            while(index < count && (otherPolygon.points[index].equals(forwardList.get(index))
-                    || otherPolygon.points[index].equals(backwardList.get(index)))) {
+            while(index < count && (otherPolygon.points.get(index).equals(forwardList.get(index))
+                    || otherPolygon.points.get(index).equals(backwardList.get(index)))) {
                 index++;
             }
             // if we made it all the way through the polygon's points
