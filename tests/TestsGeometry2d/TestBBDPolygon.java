@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -519,6 +520,21 @@ public class TestBBDPolygon {
         BBDPolygon penta = new BBDPolygon(fiveLong);
 
         assertNotEquals(square1, penta);
+
+        //do a few rotated bits
+        ArrayList<BBDPoint> test = square1.getPoints();
+
+        Collections.rotate(test, 1);
+        BBDPolygon testPoly = new BBDPolygon(test);
+        assertEquals(square2, testPoly);
+
+        Collections.rotate(test, 1);
+        testPoly = new BBDPolygon(test);
+        assertEquals(square2, testPoly);
+
+        Collections.rotate(test, 1);
+        testPoly = new BBDPolygon(test);
+        assertEquals(square2, testPoly);
     }
 
     @Test
