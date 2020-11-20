@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -519,6 +520,21 @@ public class TestBBDPolygon {
         BBDPolygon penta = new BBDPolygon(fiveLong);
 
         assertNotEquals(square1, penta);
+
+        //do a few rotated bits
+        ArrayList<BBDPoint> test = square1.getPoints();
+
+        Collections.rotate(test, 1);
+        BBDPolygon testPoly = new BBDPolygon(test);
+        assertEquals(square2, testPoly);
+
+        Collections.rotate(test, 1);
+        testPoly = new BBDPolygon(test);
+        assertEquals(square2, testPoly);
+
+        Collections.rotate(test, 1);
+        testPoly = new BBDPolygon(test);
+        assertEquals(square2, testPoly);
     }
 
     @Test
@@ -548,6 +564,10 @@ public class TestBBDPolygon {
 
         assertTrue(square.deletePoint(3));
         assertEquals(new BBDPolygon(modifiedPoints), square);
+
+        //check that we don't get to 2 points
+        assertEquals(3, square.getPoints().size());
+        assertFalse(square.deletePoint(1));
     }
 
     @Test
@@ -563,6 +583,10 @@ public class TestBBDPolygon {
         assertTrue(square.deletePoint(deleted));
         assertEquals(new BBDPolygon(modifiedPoints), square);
         assertFalse(square.deletePoint(deleted));
+
+        //check that we don't get to 2 points
+        assertEquals(3, square.getPoints().size());
+        assertFalse(square.deletePoint(1));
     }
 
     @Test
@@ -600,6 +624,24 @@ public class TestBBDPolygon {
 
         assertTrue(square.moveContiguousPoints(0,1,1,1));
         assertEquals(new BBDPolygon(modifiedPoints), square);
+    }
+
+    @Test
+    public void testCleanPolygon(){
+        //construct a square that has co-linear points on the edges.
+        BBDPoint point1 = new BBDPoint(1,1);
+        BBDPoint point15 = new BBDPoint(1,0);
+        BBDPoint point2 = new BBDPoint(1,-1);
+        BBDPoint point25 = new BBDPoint(0,-1);
+        BBDPoint point3 = new BBDPoint(-1,-1);
+        BBDPoint point35 = new BBDPoint(-1,0);
+        BBDPoint point4 = new BBDPoint(-1,1);
+        BBDPoint point45 = new BBDPoint(0,1);
+
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point15, point2, point25, point3, point35, point4, point45));
+        BBDPolygon dirty = new BBDPolygon(points);
+
+        assertEquals(this.buildSquare(), dirty.cleanPolygon());
     }
 
 }

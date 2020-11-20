@@ -26,8 +26,9 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
-     * General constructor that takes in a series of points and
-     * creates the polygon object
+     * General constructor that takes in a series of points and creates the polygon object.  Logically a polygon requires
+     * 3 or more different sides, therefore you will need to give it a list of 3+ points, otherwise some functions will
+     * not work.
      * @param inputPoints points used to define the perimeter of the polygon
      */
     public BBDPolygon (ArrayList<BBDPoint> inputPoints){
@@ -50,6 +51,40 @@ public class BBDPolygon implements BBDGeometry{
 
         this.points = inputPoints;
         this.segments = segments;
+    }
+
+    /**
+     * This function is used to get a clean copy of this polygon.  For instance if this polygon has to adjacent colinear
+     * segments that can cause issues for offsets, so this function can be used to create a polygon that merges the 2 into
+     * 1. (After all you might have a good reason for having adjacent colinear segments)
+     * @return a cleaner polygon that still has the same shape
+     */
+    public BBDPolygon cleanPolygon(){
+        ArrayList<BBDPoint> points = (ArrayList<BBDPoint>) this.points.clone();
+        BBDPolygon returnPolygon = new BBDPolygon(points);
+
+        boolean done = false;
+        BBDPoint pointToRemove = null;
+
+        while(!done){
+            for (int i = 0; i < returnPolygon.points.size(); i++){
+                float slope1 = returnPolygon.segments.get(i).slopeInDegrees();
+                float slope2 = returnPolygon.segments.get((i + 1) % returnPolygon.segments.size()).slopeInDegrees();
+
+                if(Math.abs(slope1 - slope2) < BBDGeometryUtils.ALLOWABLE_DELTA_COARSE){
+                    pointToRemove = returnPolygon.segments.get(i).getEndPoint();
+                    break;
+                }
+            }
+
+            if(pointToRemove != null){
+                returnPolygon.deletePoint(pointToRemove);
+                pointToRemove = null;
+            }else{
+                done = true;
+            }
+        }
+        return returnPolygon;
     }
 
 
@@ -237,6 +272,7 @@ public class BBDPolygon implements BBDGeometry{
      * Insert a point into the polygon's perimeter
      * @param point new point
      * @param index where to insert in the order
+     * @return was a point inserted
      */
     public boolean insertPoint(BBDPoint point, int index){
         if(index >= 0 && index < this.points.size()) {
@@ -254,7 +290,7 @@ public class BBDPolygon implements BBDGeometry{
      * @return was a point successfully deleted
      */
     public boolean deletePoint(int index){
-        if(index >= 0 && index < this.points.size()) {
+        if(index >= 0 && index < this.points.size() && this.points.size() >= 4) {
             this.points.remove(index);
             this.buildSegments(this.points);
             return true;
@@ -269,7 +305,7 @@ public class BBDPolygon implements BBDGeometry{
      * @return was a point successfully deleted
      */
     public boolean deletePoint(BBDPoint point){
-        if(this.points.contains(point)) {
+        if(this.points.contains(point) && this.points.size() >= 4) {
             this.points.remove(point);
             this.buildSegments(this.points);
             return true;
@@ -283,6 +319,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param index what point to move
      * @param dx x-axis translation
      * @param dy y-axis translation
+     * @return was this action performed
      */
     public boolean movePoint(int index, float dx, float dy){
         if(index >= 0 && index < this.points.size()) {
@@ -294,6 +331,14 @@ public class BBDPolygon implements BBDGeometry{
         }
     }
 
+    /**
+     * Move several contiguous points the same amount
+     * @param startIndex start index, inclusive
+     * @param endIndex end index, inclusive
+     * @param dx amount to shift along the x-axis
+     * @param dy amount to shift along the y-axis
+     * @return was this action performed
+     */
     public boolean moveContiguousPoints(int startIndex, int endIndex, float dx, float dy){
         if(startIndex <= endIndex && startIndex<=0 && endIndex < this.points.size()){
             for (int i=startIndex; i<=endIndex; i++){
