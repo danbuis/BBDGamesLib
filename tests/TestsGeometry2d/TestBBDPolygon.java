@@ -610,4 +610,22 @@ public class TestBBDPolygon {
         assertEquals(new BBDPolygon(modifiedPoints), square);
     }
 
+    @Test
+    public void testCleanPolygon(){
+        //construct a square that has co-linear points on the edges.
+        BBDPoint point1 = new BBDPoint(1,1);
+        BBDPoint point15 = new BBDPoint(1,0);
+        BBDPoint point2 = new BBDPoint(1,-1);
+        BBDPoint point25 = new BBDPoint(0,-1);
+        BBDPoint point3 = new BBDPoint(-1,-1);
+        BBDPoint point35 = new BBDPoint(-1,0);
+        BBDPoint point4 = new BBDPoint(-1,1);
+        BBDPoint point45 = new BBDPoint(0,1);
+
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point15, point2, point25, point3, point35, point4, point45));
+        BBDPolygon dirty = new BBDPolygon(points);
+
+        assertEquals(this.buildSquare(), dirty.cleanPolygon());
+    }
+
 }

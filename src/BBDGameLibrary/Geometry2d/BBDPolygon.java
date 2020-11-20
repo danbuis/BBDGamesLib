@@ -53,6 +53,40 @@ public class BBDPolygon implements BBDGeometry{
         this.segments = segments;
     }
 
+    /**
+     * This function is used to get a clean copy of this polygon.  For instance if this polygon has to adjacent colinear
+     * segments that can cause issues for offsets, so this function can be used to create a polygon that merges the 2 into
+     * 1. (After all you might have a good reason for having adjacent colinear segments)
+     * @return a cleaner polygon that still has the same shape
+     */
+    public BBDPolygon cleanPolygon(){
+        ArrayList<BBDPoint> points = (ArrayList<BBDPoint>) this.points.clone();
+        BBDPolygon returnPolygon = new BBDPolygon(points);
+
+        boolean done = false;
+        BBDPoint pointToRemove = null;
+
+        while(!done){
+            for (int i = 0; i < returnPolygon.points.size(); i++){
+                float slope1 = returnPolygon.segments.get(i).slopeInDegrees();
+                float slope2 = returnPolygon.segments.get((i + 1) % returnPolygon.segments.size()).slopeInDegrees();
+
+                if(Math.abs(slope1 - slope2) < BBDGeometryUtils.ALLOWABLE_DELTA_COARSE){
+                    pointToRemove = returnPolygon.segments.get(i).getEndPoint();
+                    break;
+                }
+            }
+
+            if(pointToRemove != null){
+                returnPolygon.deletePoint(pointToRemove);
+                pointToRemove = null;
+            }else{
+                done = true;
+            }
+        }
+        return returnPolygon;
+    }
+
 
     /**
      * The horizontal dimension of this polygon
