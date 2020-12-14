@@ -5,6 +5,10 @@ import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestMesh {
@@ -15,7 +19,7 @@ public class TestMesh {
         BBDPoint point3 = new BBDPoint(-1,-1);
         BBDPoint point4 = new BBDPoint(-1,1);
 
-        BBDPoint[] points = {point1, point2, point3, point4};
+        ArrayList<BBDPoint> points = new ArrayList<BBDPoint>(Arrays.asList(point1, point2, point3, point4));
 
         return new BBDPolygon(points);
     }
@@ -55,7 +59,7 @@ public class TestMesh {
         BBDPoint point4 = new BBDPoint(-0.8f,0.8f);
         BBDPoint point45 = new BBDPoint(0,1);
 
-        BBDPoint[] points = {point1, point15, point2, point25, point3, point35, point4, point45};
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point15, point2, point25, point3, point35, point4, point45));
         BBDPolygon poly = new BBDPolygon(points);
 
         float[] testCoords = Mesh.buildTextureCoordinates(poly);

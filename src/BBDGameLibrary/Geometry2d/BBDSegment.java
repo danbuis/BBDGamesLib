@@ -256,31 +256,38 @@ public class BBDSegment implements BBDGeometry{
                     + this.toString()+ " and "+ otherSegment.toString());
         }
 
-        //will we be rotating the whole assembly?
-        boolean needToRotateToAvoidVerticalLines = false;
-        //if we are kinda close to vertical, let's just call it and do some rotation.
-        if( 90-Math.abs(this.slopeInDegrees()) <= 0.1 || 90-Math.abs(otherSegment.slopeInDegrees()) <= 0.1) {
-            needToRotateToAvoidVerticalLines = true;
-        }
-
         BBDSegment thisCopy = new BBDSegment(this);
         BBDSegment otherCopy = new BBDSegment(otherSegment);
+
+        //will we be rotating the whole assembly?
+        boolean verticalLineInvolved = false;
+        BBDSegment verticalLine = null;
+        //if we are kinda close to vertical, let's just call it and do some rotation.
+        if( 90-Math.abs(this.slopeInDegrees()) <= 0.1) {
+            verticalLineInvolved = true;
+            verticalLine = thisCopy;
+        }else if(90-Math.abs(otherSegment.slopeInDegrees()) <= 0.1){
+            verticalLineInvolved = true;
+            verticalLine = otherCopy;
+        }
+
         BBDPoint intercept;
 
         //if we are kinda close to vertical, let's just call it and do some rotation.
-        if(needToRotateToAvoidVerticalLines){
-            BBDPoint origin = new BBDPoint(0,0);
+        if(verticalLineInvolved){
+            BBDSegment nonVertical;
+            if(verticalLine == thisCopy){
+                nonVertical = otherCopy;
+            }else{
+                nonVertical = thisCopy;
+            }
 
-            float thisDegrees = thisCopy.slopeInDegrees();
-            float otherDegrees = otherCopy.slopeInDegrees();
-            float angleDiff = thisDegrees - otherDegrees;
-            float angleToRotate = angleDiff/2;
+            float xCoord = verticalLine.startPoint.getXLoc();
+            //use point-slope form of a line (dy = m(dx))
 
-            thisCopy.rotateAroundPoint(origin, angleToRotate);
-            otherCopy.rotateAroundPoint(origin, angleToRotate);
+            float yCoord = nonVertical.slopeInRatio()*(xCoord-nonVertical.startPoint.getXLoc()) + nonVertical.startPoint.getYLoc();
 
-            intercept = calculateIntercept(thisCopy, otherCopy);
-            intercept.rotateAroundPoint(origin, -angleToRotate);
+            intercept = new BBDPoint(xCoord, yCoord);
         }else{
             intercept = calculateIntercept(thisCopy, otherCopy);
         }

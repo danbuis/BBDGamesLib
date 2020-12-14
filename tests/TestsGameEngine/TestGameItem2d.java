@@ -7,6 +7,10 @@ import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGameItem2d {
@@ -23,7 +27,7 @@ public class TestGameItem2d {
         BBDPoint point3 = new BBDPoint(-1,-1);
         BBDPoint point4 = new BBDPoint(-1,1);
 
-        BBDPoint[] points = {point1, point2, point3, point4};
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
 
         return new BBDPolygon(points);
     }
@@ -34,7 +38,7 @@ public class TestGameItem2d {
         BBDPoint point3 = new BBDPoint(3,3);
         BBDPoint point4 = new BBDPoint(3,5);
 
-        BBDPoint[] points = {point1, point2, point3, point4};
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
 
         return new BBDPolygon(points);
     }
@@ -51,7 +55,7 @@ public class TestGameItem2d {
         item.translate(4,4);
 
         assertEquals(new BBDPoint(4,4), poly.center());
-        assertEquals(4.0, (float)item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(4.0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(4.0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
     }
@@ -68,16 +72,16 @@ public class TestGameItem2d {
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
         item.setPosition(12,12);
 
-        assertEquals(13, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(13, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(13, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(13, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(12, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(12, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
 
         item.setPosition(0,0);
 
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -86,8 +90,8 @@ public class TestGameItem2d {
         GameItem2d otherItem = new GameItem2d(mesh, null, poly, 3000, false);
         otherItem.setPosition(12,12);
 
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(12, otherItem.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(12, otherItem.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, otherItem.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -118,8 +122,8 @@ public class TestGameItem2d {
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3500, true);
-        assertEquals(5, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(5, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(5, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(5, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         //should still be 0 because the square hasn't moved yet.  The origin of local space is still the same.
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -137,8 +141,8 @@ public class TestGameItem2d {
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3500, true);
         //check initial position
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.5, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -152,8 +156,8 @@ public class TestGameItem2d {
 
         //check end position and rotation
         //check initial position
-        assertEquals(-1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.5, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -174,8 +178,8 @@ public class TestGameItem2d {
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3500, true);
         //check initial position
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.5, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -189,8 +193,8 @@ public class TestGameItem2d {
 
         //check end position and rotation
         //check initial position
-        assertEquals(-1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.5, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -204,8 +208,8 @@ public class TestGameItem2d {
 
         //check end position and rotation
         //check initial position
-        assertEquals(-1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(-1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.5, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -226,8 +230,8 @@ public class TestGameItem2d {
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
         //check initial position
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -241,10 +245,10 @@ public class TestGameItem2d {
         //actually rotate
         item.rotateAroundPoint(firstCenterOfRotation, (float)Math.PI);
         //check initial position
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[1].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(3, poly.getPoints()[1].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(1).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(3, poly.getPoints().get(1).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(2, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(2, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -265,8 +269,8 @@ public class TestGameItem2d {
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
         //check initial position
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -274,8 +278,8 @@ public class TestGameItem2d {
 
         //scale first time
         item.setScale(5);
-        assertEquals(5, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(5, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(5, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(5, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -283,8 +287,8 @@ public class TestGameItem2d {
 
         //scale second time
         item.setScale(2);
-        assertEquals(2, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(2, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(2, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(2, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -302,8 +306,8 @@ public class TestGameItem2d {
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
         //check initial position
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -311,8 +315,8 @@ public class TestGameItem2d {
 
         //scale
         item.scale(5);
-        assertEquals(5, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(5, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(5, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(5, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -320,8 +324,8 @@ public class TestGameItem2d {
 
         //scale
         item.scale(2);
-        assertEquals(10, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(10, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(10, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(10, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -329,8 +333,8 @@ public class TestGameItem2d {
 
         //scale
         item.scale(0.2f);
-        assertEquals(2, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(2, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(2, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(2, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -348,8 +352,8 @@ public class TestGameItem2d {
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
         //check initial position
-        assertEquals(1, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -358,8 +362,8 @@ public class TestGameItem2d {
         //scaleFromPoint
         BBDPoint centerOfScale = new BBDPoint(-1,-1);
         item.scaleFromPoint(centerOfScale, 5);
-        assertEquals(9, poly.getPoints()[0].getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(9, poly.getPoints()[0].getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, poly.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, poly.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(4, item.getPosition().x, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(4, item.getPosition().y, BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(-3.0, item.getPosition().z, BBDGeometryUtils.ALLOWABLE_DELTA);

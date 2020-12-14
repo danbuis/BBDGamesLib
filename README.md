@@ -17,3 +17,8 @@ Add ability to render a variety of data structures
 v0.2.2
 Move screen clear/update out of individual rendering functions
 Add camera object to enable viewing the scene from any position and angle
+
+v0.3.0
+Polygons now made using lists instead of arrays
+Polygons can be modified programmatically (add/move/delete points)
+Minor improvements
