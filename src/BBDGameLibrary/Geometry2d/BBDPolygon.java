@@ -1,6 +1,8 @@
 package BBDGameLibrary.Geometry2d;
 
 import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -474,6 +476,20 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
+     * Simple function to generate all the points of intersection between 2 other polygons
+     * Built off the logic of polygon/segment intersection points.
+     * @param otherPolygon other polygon
+     * @return a list of points where the perimeter of the polygons intersects
+     */
+    public ArrayList<BBDPoint> polygonIntersectPolygonPoints(BBDPolygon otherPolygon){
+        ArrayList<BBDPoint> intersectPoints = new ArrayList<>();
+        for (BBDSegment segment: otherPolygon.getSegments()){
+            Collections.addAll(intersectPoints, this.segmentIntersectPolygonPoints(segment));
+        }
+        return intersectPoints;
+    }
+
+    /**
      * helper function to determine if a segment intersects the polygon.
      * @param segmentToCheck Segment not part of polygon to check for intersection
      * @return boolean stating if this segment intersects the polygon
@@ -647,6 +663,69 @@ public class BBDPolygon implements BBDGeometry{
             }
         }
         return minDist;
+    }
+
+    /**
+     * Create a polygon containing  a copy of all the points of the source polygon and the points of intersection inserted
+     * to the correct location.  This method is likely never called by the end user, but serves as an important step in
+     * polygon boolean operations.
+     * @param otherPolygon the other polygon we are looking at
+     * @return a new polygon with the same shape, but a few extra points
+     */
+    private BBDPolygon prepPolygonForBooleanOperations(BBDPolygon otherPolygon){
+        ArrayList<BBDPoint> copyList = new ArrayList<>();
+        for(BBDPoint point : this.points){
+            copyList.add(new BBDPoint(point));
+        }
+        BBDPolygon returnPoly = new BBDPolygon(copyList);
+
+        ArrayList<BBDPoint> pointsToInsert = this.polygonIntersectPolygonPoints(otherPolygon);
+
+        while (!pointsToInsert.isEmpty()){
+            for(int i = 0; i< returnPoly.segments.size(); i++){
+                BBDPoint point = pointsToInsert.get(0);
+                if(returnPoly.segments.get(i).pointOnSegment(point)){
+                    returnPoly.points.add(i+1, point);
+                    returnPoly.buildSegments(returnPoly.points);
+                }
+            }
+        }
+        return returnPoly;
+    }
+
+    public BBDPolygon createPolygonIntersection(BBDPolygon otherPolygon){
+        BBDPolygon poly1 = this.prepPolygonForBooleanOperations(otherPolygon);
+        BBDPolygon poly2 = this.prepPolygonForBooleanOperations(this);
+
+        ArrayList<BBDPoint> newPolygonList = new ArrayList<>();
+
+        //find a point that is inside
+        int startingIndexThis = 0;
+        int currentIndexThis = 0;
+        int currentIndexOther = 0;
+        int thisLength = this.points.size();
+        int otherLength = otherPolygon.points.size();
+        for (int i=0; i<this.points.size(); i++){
+            if(otherPolygon.checkPointInside(this.points.get(i))){
+                startingIndexThis = i;
+                currentIndexThis = i;
+            }
+        }
+
+        while (currentIndexThis != startingIndexThis + this.points.size()){
+            while(this.checkPointOnPerimeter(this.points.get(currentIndexThis % thisLength))){
+                newPolygonList.add(this.points.get(currentIndexThis % thisLength));
+                currentIndexThis++;
+            }
+            currentIndexOther = otherPolygon.points.indexOf(this.points.get(currentIndexThis  % thisLength));
+            while(otherPolygon.checkPointOnPerimeter(otherPolygon.points.get(currentIndexOther % otherLength))){
+                newPolygonList.add(otherPolygon.points.get(currentIndexOther % otherLength));
+                currentIndexOther++;
+            }
+            currentIndexThis = this.points.indexOf(otherPolygon.points.get(currentIndexOther % otherLength));
+        }
+
+        return new BBDPolygon(newPolygonList);
     }
 
     /**
