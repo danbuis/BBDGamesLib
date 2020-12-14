@@ -68,6 +68,21 @@ public class GameItem implements GameComponent{
         this.position.z = z;
     }
 
+    /**
+     * Calculate the distance in the XY plane
+     * @param other other GameItem
+     * @return distance squared, using the position vector as reference.  Does not take into account the mesh dimensions
+     */
+    public float distanceSquaredFlat(GameItem other){
+        Vector3f thisPosition = this.getPosition();
+        Vector3f otherPosition = other.getPosition();
+
+        float deltaX = thisPosition.x - otherPosition.x;
+        float deltaY = thisPosition.y - otherPosition.y;
+
+        return deltaX*deltaX + deltaY*deltaY;
+    }
+
     public float getScale() {
         return scale;
     }

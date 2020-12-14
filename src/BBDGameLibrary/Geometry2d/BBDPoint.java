@@ -23,6 +23,17 @@ public class BBDPoint implements BBDGeometry{
         this.yLoc = toCopy.yLoc;
     }
 
+    /**
+     * create a point in a direction based off an existing point
+     * @param distance how far away to put the copy
+     * @param direction what direction to shift the copy
+     * @return the new point
+     */
+    public BBDPoint (BBDPoint basePoint, float distance, float direction){
+        this.xLoc = (float) (basePoint.xLoc + Math.cos(direction) * distance);
+        this.yLoc = (float) (basePoint.yLoc + Math.sin(direction) * distance);
+    }
+
     public float getXLoc(){
         return this.xLoc;
     }

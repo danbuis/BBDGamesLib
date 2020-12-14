@@ -38,6 +38,17 @@ public class BBDSegment implements BBDGeometry{
         this.endPoint = new BBDPoint(toCopy.endPoint);
     }
 
+    /**
+     * Create a new segment based off an existing segment
+     * @param baseSegment original base segment
+     * @param distance distance to offset
+     * @param direction direction to offset
+     */
+    public BBDSegment(BBDSegment baseSegment, float distance, float direction){
+        this.startPoint = new BBDPoint(baseSegment.startPoint, distance, direction);
+        this.endPoint = new BBDPoint(baseSegment.endPoint, distance, direction);
+    }
+
     public BBDPoint getStartPoint(){
         return this.startPoint;
     }
@@ -386,6 +397,9 @@ public class BBDSegment implements BBDGeometry{
 
         return Math.min(startDist, endDist);
     }
+
+
+
 
     /**
      * Return the length squared of the segment.  Using squared distance to be consistent with the other distance items.

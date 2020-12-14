@@ -154,4 +154,18 @@ public class TestBBDPoint {
         assertTrue(exception.getMessage().contains(expectedMessage));
 
     }
+
+    @Test
+    public void testCopy(){
+        BBDPoint original1 = new BBDPoint(0,0);
+        BBDPoint original2 = new BBDPoint(4,1);
+
+        assertEquals(new BBDPoint(1,0), new BBDPoint(original1, 1,0));
+        assertEquals(new BBDPoint(0,1), new BBDPoint(original1, 1, (float) (Math.PI/2)));
+        assertEquals(new BBDPoint(0,-5), new BBDPoint(original1, 5, (float) (Math.PI/-2)));
+
+        assertEquals(new BBDPoint(5,1), new BBDPoint(original2, 1,0));
+        assertEquals(new BBDPoint(4,2), new BBDPoint(original2, 1, (float) (Math.PI/2)));
+        assertEquals(new BBDPoint(4,-4), new BBDPoint(original2, 5, (float) (Math.PI/-2)));
+    }
 }
