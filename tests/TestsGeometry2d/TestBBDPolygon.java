@@ -700,9 +700,16 @@ public class TestBBDPolygon {
 
         assertEquals(new BBDPolygon(overlappingPoints), controlPolygon.createPolygonIntersection(overlapping));
 
-        //one contains the other
-        //assertEquals(contains, controlPolygon.createPolygonIntersection(contains));
+        // one contains the other
+        assertEquals(contains, controlPolygon.createPolygonIntersection(contains));
+        // check symmetry of the above
+        assertEquals(contains, contains.createPolygonIntersection(controlPolygon));
 
+        //check no intersection
+        assertNull(controlPolygon.createPolygonIntersection(separate));
+
+        //check if polygons are the same
+        assertEquals(controlPolygon, controlPolygon.createPolygonIntersection(controlPolygon));
     }
 
 }

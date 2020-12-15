@@ -55,6 +55,14 @@ public class BBDPolygon implements BBDGeometry{
         this.segments = segments;
     }
 
+    private BBDPolygon copyPolygon(){
+        ArrayList<BBDPoint> copyList = new ArrayList<>();
+        for(BBDPoint point : this.points){
+            copyList.add(new BBDPoint(point));
+        }
+        return new BBDPolygon(copyList);
+    }
+
     /**
      * This function is used to get a clean copy of this polygon.  For instance if this polygon has to adjacent colinear
      * segments that can cause issues for offsets, so this function can be used to create a polygon that merges the 2 into
@@ -696,6 +704,18 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     public BBDPolygon createPolygonIntersection(BBDPolygon otherPolygon){
+        //let's catch some corner cases first
+        if(this.checkPolygonContainsPolygon(otherPolygon)){
+            return otherPolygon.copyPolygon();
+        }
+        if(otherPolygon.checkPolygonContainsPolygon(this)){
+            return this.copyPolygon();
+        }
+
+        if(!this.checkPolygonIntersectsPolygon(otherPolygon)){
+            return null;
+        }
+
         BBDPolygon polyThis = this.prepPolygonForBooleanOperations(otherPolygon);
         BBDPolygon polyOther = otherPolygon.prepPolygonForBooleanOperations(this);
 
