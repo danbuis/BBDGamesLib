@@ -677,6 +677,32 @@ public class TestBBDPolygon {
         assertEquals(0, containsPoints.size());
     }
 
+    @Test
+    public void testConvexPolygonIntersection(){
+        BBDPolygon controlPolygon = this.buildSquare();
+        BBDPolygon copy = this.buildSquare();
+        BBDPolygon overlapping = this.buildSquare();
+        BBDPolygon adjacent = this.buildSquare();
+        BBDPolygon contains = this.buildSquare();
+        BBDPolygon separate = this.buildSquare();
 
+        //modify most of them to create several types of scenarios
+        overlapping.translate(0.2f, 0.2f);
+        adjacent.translate(0.5f, 2);
+        contains.scale(0.5f);
+        separate.translate(3,3);
+
+        ArrayList<BBDPoint> overlappingPoints = new ArrayList<>();
+        overlappingPoints.add(new BBDPoint(1,1));
+        overlappingPoints.add(new BBDPoint(1,-0.8f));
+        overlappingPoints.add(new BBDPoint(-0.8f,-0.8f));
+        overlappingPoints.add(new BBDPoint(-0.8f, 1));
+
+        assertEquals(new BBDPolygon(overlappingPoints), controlPolygon.createPolygonIntersection(overlapping));
+
+        //one contains the other
+        //assertEquals(contains, controlPolygon.createPolygonIntersection(contains));
+
+    }
 
 }

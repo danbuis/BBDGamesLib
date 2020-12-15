@@ -682,11 +682,13 @@ public class BBDPolygon implements BBDGeometry{
         ArrayList<BBDPoint> pointsToInsert = this.polygonIntersectPolygonPoints(otherPolygon);
 
         while (!pointsToInsert.isEmpty()){
-            for(int i = 0; i< returnPoly.segments.size(); i++){
-                BBDPoint point = pointsToInsert.get(0);
+            BBDPoint point = pointsToInsert.get(0);
+            for(int i = 0; i < returnPoly.segments.size(); i++){
                 if(returnPoly.segments.get(i).pointOnSegment(point)){
                     returnPoly.points.add(i+1, point);
                     returnPoly.buildSegments(returnPoly.points);
+                    pointsToInsert.remove(0);
+                    break;
                 }
             }
         }
@@ -694,37 +696,44 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     public BBDPolygon createPolygonIntersection(BBDPolygon otherPolygon){
-        BBDPolygon poly1 = this.prepPolygonForBooleanOperations(otherPolygon);
-        BBDPolygon poly2 = this.prepPolygonForBooleanOperations(this);
+        BBDPolygon polyThis = this.prepPolygonForBooleanOperations(otherPolygon);
+        BBDPolygon polyOther = otherPolygon.prepPolygonForBooleanOperations(this);
 
         ArrayList<BBDPoint> newPolygonList = new ArrayList<>();
 
-        //find a point that is inside
+        //find the first point that is inside while the preceding one is outside
         int startingIndexThis = 0;
         int currentIndexThis = 0;
-        int currentIndexOther = 0;
-        int thisLength = this.points.size();
-        int otherLength = otherPolygon.points.size();
-        for (int i=0; i<this.points.size(); i++){
-            if(otherPolygon.checkPointInside(this.points.get(i))){
+        int currentIndexOther;
+        int thisLength = polyThis.points.size();
+        int otherLength = polyOther.points.size();
+        for (int i=0; i<polyThis.points.size(); i++){
+            if(polyOther.checkPointInside(polyThis.points.get(i)) && !polyOther.checkPointInside(polyThis.points.get((i + thisLength-1)%thisLength))){
                 startingIndexThis = i;
                 currentIndexThis = i;
+                break;
             }
         }
 
-        while (currentIndexThis != startingIndexThis + this.points.size()){
-            while(this.checkPointOnPerimeter(this.points.get(currentIndexThis % thisLength))){
-                newPolygonList.add(this.points.get(currentIndexThis % thisLength));
+        // the goal is to make a full circuit around polyThis, so once we get all the way around we are done
+        // we can't use that as the only conditional because otherwise we will skip the whole block initially since
+        // the start and current index begin the same.  Therefore we check if it is empty initially, and once that becomes
+        // false on all other loops we will be checking if we have completed the full circuit
+        while (newPolygonList.isEmpty() || currentIndexThis-1 != startingIndexThis){
+            while(polyOther.checkPointInside(polyThis.points.get(currentIndexThis % thisLength))){
+                newPolygonList.add(polyThis.points.get(currentIndexThis % thisLength));
                 currentIndexThis++;
             }
-            currentIndexOther = otherPolygon.points.indexOf(this.points.get(currentIndexThis  % thisLength));
-            while(otherPolygon.checkPointOnPerimeter(otherPolygon.points.get(currentIndexOther % otherLength))){
-                newPolygonList.add(otherPolygon.points.get(currentIndexOther % otherLength));
+            //at this point we are just added an intersection point, so let's find the same intersection on the other one, and then use the next point
+            currentIndexOther = polyOther.points.indexOf(polyThis.points.get((currentIndexThis-1)  % thisLength)) + 1;
+            while(polyThis.checkPointInside(polyOther.points.get(currentIndexOther % otherLength))){
+                newPolygonList.add(polyOther.points.get(currentIndexOther % otherLength));
                 currentIndexOther++;
             }
-            currentIndexThis = this.points.indexOf(otherPolygon.points.get(currentIndexOther % otherLength));
+            currentIndexThis = polyThis.points.indexOf(polyOther.points.get((currentIndexOther-1) % otherLength)) + 1;
         }
-
+        //remove the last one because it is a repeat of the first one
+        newPolygonList.remove(newPolygonList.size()-1);
         return new BBDPolygon(newPolygonList);
     }
 
@@ -820,7 +829,6 @@ public class BBDPolygon implements BBDGeometry{
             }
             Collections.rotate(forwardList, 1);
             Collections.rotate(backwardList, 1);
-            i++;
         }
         return false;
     }
