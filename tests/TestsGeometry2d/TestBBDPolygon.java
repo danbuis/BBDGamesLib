@@ -644,4 +644,39 @@ public class TestBBDPolygon {
         assertEquals(this.buildSquare(), dirty.cleanPolygon());
     }
 
+    @Test
+    public void testPolygonIntersectPolygon(){
+        BBDPolygon controlPolygon = this.buildSquare();
+        BBDPolygon copy = this.buildSquare();
+        BBDPolygon overlapping = this.buildSquare();
+        BBDPolygon adjacent = this.buildSquare();
+        BBDPolygon contains = this.buildSquare();
+        BBDPolygon separate = this.buildSquare();
+
+        //modify most of them to create several types of scenarios
+        overlapping.translate(0.2f, 0.2f);
+        adjacent.translate(0.5f, 2);
+        contains.scale(0.5f);
+        separate.translate(3,3);
+
+        //test the same poly
+        //assertEquals(controlPolygon.polygonIntersectPolygonPoints(copy), controlPolygon.getPoints());
+
+        //test overlap at 2 points
+        ArrayList<BBDPoint> overlappingPoints = controlPolygon.polygonIntersectPolygonPoints(overlapping);
+        assertEquals(2, overlappingPoints.size());
+        assertEquals(true, overlappingPoints.contains(new BBDPoint(1, -0.8f)));
+        assertEquals(true, overlappingPoints.contains(new BBDPoint(-0.8f, 1)));
+
+        //test separate
+        ArrayList<BBDPoint> separatePoints = controlPolygon.polygonIntersectPolygonPoints(separate);
+        assertEquals(0, separatePoints.size());
+
+        //test contains
+        ArrayList<BBDPoint> containsPoints = controlPolygon.polygonIntersectPolygonPoints(contains);
+        assertEquals(0, containsPoints.size());
+    }
+
+
+
 }
