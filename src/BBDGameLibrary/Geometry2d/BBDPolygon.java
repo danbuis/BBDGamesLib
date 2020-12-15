@@ -681,11 +681,7 @@ public class BBDPolygon implements BBDGeometry{
      * @return a new polygon with the same shape, but a few extra points
      */
     private BBDPolygon prepPolygonForBooleanOperations(BBDPolygon otherPolygon){
-        ArrayList<BBDPoint> copyList = new ArrayList<>();
-        for(BBDPoint point : this.points){
-            copyList.add(new BBDPoint(point));
-        }
-        BBDPolygon returnPoly = new BBDPolygon(copyList);
+        BBDPolygon returnPoly = this.copyPolygon();
 
         ArrayList<BBDPoint> pointsToInsert = this.polygonIntersectPolygonPoints(otherPolygon);
 

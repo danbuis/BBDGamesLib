@@ -710,6 +710,9 @@ public class TestBBDPolygon {
 
         //check if polygons are the same
         assertEquals(controlPolygon, controlPolygon.createPolygonIntersection(controlPolygon));
+
+        //test that using the copyPolygon() has indeed made copies and not impacted the originals
+        assertEquals(4, controlPolygon.getPoints().size());
     }
 
 }
