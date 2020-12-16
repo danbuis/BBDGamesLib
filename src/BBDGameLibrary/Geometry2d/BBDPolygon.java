@@ -696,6 +696,7 @@ public class BBDPolygon implements BBDGeometry{
                 }
             }
         }
+        returnPoly.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
         return returnPoly;
     }
 

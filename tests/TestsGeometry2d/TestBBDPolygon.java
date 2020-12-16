@@ -713,6 +713,25 @@ public class TestBBDPolygon {
 
         //test that using the copyPolygon() has indeed made copies and not impacted the originals
         assertEquals(4, controlPolygon.getPoints().size());
+
+        //check polygons that have more than 2 intersection points
+        ArrayList<BBDPoint> wideList = new ArrayList<>();
+        wideList.add(new BBDPoint(2, 0.5f));
+        wideList.add(new BBDPoint(-2, 0.5f));
+        wideList.add(new BBDPoint(-2, -0.5f));
+        wideList.add(new BBDPoint(2, -0.5f));
+        BBDPolygon widePoly = new BBDPolygon(wideList);
+
+        ArrayList<BBDPoint> testList = new ArrayList<>();
+        testList.add(new BBDPoint(1, 0.5f));
+        testList.add(new BBDPoint(-1, 0.5f));
+        testList.add(new BBDPoint(-1, -0.5f));
+        testList.add(new BBDPoint(1, -0.5f));
+        BBDPolygon testPoly = new BBDPolygon(testList);
+
+        controlPolygon.createPolygonIntersection(widePoly);
+
+        assertEquals(testPoly, controlPolygon.createPolygonIntersection(widePoly));
     }
 
 }
