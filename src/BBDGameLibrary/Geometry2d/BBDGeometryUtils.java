@@ -1,7 +1,7 @@
 package BBDGameLibrary.Geometry2d;
 
 public class BBDGeometryUtils {
-    public static final float ALLOWABLE_DELTA_COARSE = 0.0005f;
+    public static final float ALLOWABLE_DELTA_COARSE = 0.002f;
     public static final float ALLOWABLE_DELTA = 0.0001f;
     public static final int CLOCKWISE_POLYGON = 0;
     public static final int COUNTERCLOCKWISE_POLYGON = 1;
