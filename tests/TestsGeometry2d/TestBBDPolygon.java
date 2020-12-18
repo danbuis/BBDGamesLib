@@ -651,12 +651,13 @@ public class TestBBDPolygon {
     public void testDirectionalityOfSegments(){
         BBDPolygon square1 = this.buildSquare();
         square1.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
-        assertEquals(new BBDPoint(1,1), square1.getSegments()[0].getStartPoint());
-        assertEquals(new BBDPoint(1,-1), square1.getSegments()[0].getEndPoint());
+        assertEquals(new BBDPoint(1,1), square1.getSegments().get(0).getStartPoint());
+        assertEquals(new BBDPoint(1,-1), square1.getSegments().get(0).getEndPoint());
 
         square1.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
-        assertEquals(new BBDPoint(1,-1), square1.getSegments()[2].getStartPoint());
-        assertEquals(new BBDPoint(1,1), square1.getSegments()[2].getEndPoint());
+        System.out.println(square1.extendedToString());
+        assertEquals(new BBDPoint(1,-1), square1.getSegments().get(3).getStartPoint());
+        assertEquals(new BBDPoint(1,1), square1.getSegments().get(3).getEndPoint());
     }
 
     @Test
@@ -665,7 +666,7 @@ public class TestBBDPolygon {
         try {
             //try offsetting.  It is already CW by default
             BBDPolygon offsetZero = square.offsetPolygon(1, 0, 0);
-            BBDPolygon expectedZero = new BBDPolygon(new BBDPoint[]{new BBDPoint(2, 1), new BBDPoint(2, -1), new BBDPoint(-1, -1), new BBDPoint(-1, 1)});            assertEquals(new BBDPoint(2,1), offsetZero.getPoints()[0]);
+            BBDPolygon expectedZero = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint[]{new BBDPoint(2, 1), new BBDPoint(2, -1), new BBDPoint(-1, -1), new BBDPoint(-1, 1)})));
             assertEquals(expectedZero, offsetZero);
 
             //reverse it and try the same thing to make sure the right offset modifier is created
@@ -676,34 +677,34 @@ public class TestBBDPolygon {
 
             BBDPoint[] points = {point2, point1, point4, point3};
 
-            BBDPolygon reverseSquare =  new BBDPolygon(points);
-            BBDPolygon expectedReverse = new BBDPolygon(new BBDPoint[]{new BBDPoint(2, -1), new BBDPoint(2, 1), new BBDPoint(-1, 1), new BBDPoint(-1, -1)});
+            BBDPolygon reverseSquare =  new BBDPolygon(new ArrayList<>(Arrays.asList(points)));
+            BBDPolygon expectedReverse = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint[]{new BBDPoint(2, -1), new BBDPoint(2, 1), new BBDPoint(-1, 1), new BBDPoint(-1, -1)})));
 
             offsetZero = reverseSquare.offsetPolygon(1, 0, 0);
             assertEquals(expectedReverse, offsetZero);
 
             BBDPolygon offsetOne = square.offsetPolygon(1, 1,1);
-            BBDPolygon expectedOne = new BBDPolygon(new BBDPoint[]{new BBDPoint(1, 1), new BBDPoint(1, -2), new BBDPoint(-1, -2), new BBDPoint(-1, 1)});
+            BBDPolygon expectedOne = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint[]{new BBDPoint(1, 1), new BBDPoint(1, -2), new BBDPoint(-1, -2), new BBDPoint(-1, 1)})));
             assertEquals(expectedOne, offsetOne);
 
             BBDPolygon offsetTwo = square.offsetPolygon(1, 2,2);
-            BBDPolygon expectedTwo = new BBDPolygon(new BBDPoint[]{new BBDPoint(1, 1), new BBDPoint(1, -1), new BBDPoint(-2, -1), new BBDPoint(-2, 1)});
+            BBDPolygon expectedTwo = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint[]{new BBDPoint(1, 1), new BBDPoint(1, -1), new BBDPoint(-2, -1), new BBDPoint(-2, 1)})));
             assertEquals(expectedTwo, offsetTwo);
 
             BBDPolygon offsetThree = square.offsetPolygon(1, 3,3);
-            BBDPolygon expectedThree = new BBDPolygon(new BBDPoint[]{new BBDPoint(1, 2), new BBDPoint(1, -1), new BBDPoint(-1, -1), new BBDPoint(-1, 2)});
+            BBDPolygon expectedThree = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint[]{new BBDPoint(1, 2), new BBDPoint(1, -1), new BBDPoint(-1, -1), new BBDPoint(-1, 2)})));
             assertEquals(expectedThree, offsetThree);
 
             BBDPolygon offsetTwoContig = square.offsetPolygon(1, 0,1);
-            BBDPolygon expectedTwoContig = new BBDPolygon(new BBDPoint[]{new BBDPoint(2, 1), new BBDPoint(2, -2), new BBDPoint(-1, -2), new BBDPoint(-1, 1)});
+            BBDPolygon expectedTwoContig = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint[]{new BBDPoint(2, 1), new BBDPoint(2, -2), new BBDPoint(-1, -2), new BBDPoint(-1, 1)})));
             assertEquals(expectedTwoContig, offsetTwoContig);
 
             BBDPolygon offsetThreeContig = square.offsetPolygon(1, 0,2);
-            BBDPolygon expectedThreeContig = new BBDPolygon(new BBDPoint[]{new BBDPoint(2, 1), new BBDPoint(2, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 1)});
+            BBDPolygon expectedThreeContig = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint[]{new BBDPoint(2, 1), new BBDPoint(2, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 1)})));
             assertEquals(expectedThreeContig, offsetThreeContig);
 
             BBDPolygon offsetFourContig = square.offsetPolygon(1, 0,3);
-            BBDPolygon expectedFourContig = new BBDPolygon(new BBDPoint[]{new BBDPoint(2, 2), new BBDPoint(2, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 2)});
+            BBDPolygon expectedFourContig = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint[]{new BBDPoint(2, 2), new BBDPoint(2, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 2)})));
             assertEquals(expectedFourContig, offsetFourContig);
 
             BBDPolygon offsetOverflow = square.offsetPolygon(1, 2,1);
@@ -716,4 +717,12 @@ public class TestBBDPolygon {
         }
     }
 
+    @Test
+    public void testCircleCreation(){
+        BBDPolygon test = BBDGeometryUtils.createCircle(new BBDPoint(0,0), 3, 360);
+
+        assertEquals(360, test.getPoints().size());
+        assertEquals(new BBDPoint(0,3), test.getPoints().get(0));
+        assertEquals(new BBDPoint(3,0), test.getPoints().get(89));
+    }
 }

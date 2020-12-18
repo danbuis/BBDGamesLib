@@ -586,7 +586,7 @@ public class BBDPolygon implements BBDGeometry{
      *                                it means you have some colinear lines and they should probably be combined
      */
     public BBDPolygon offsetPolygon(float offsetDistance) throws ParallelLinesException {
-        return this.offsetPolygon(offsetDistance, 0, this.segments.length -1);
+        return this.offsetPolygon(offsetDistance, 0, this.segments.size() -1);
     }
 
     /**
@@ -617,11 +617,11 @@ public class BBDPolygon implements BBDGeometry{
         ArrayList<BBDSegment> otherSegments = new ArrayList<>();
         float currentAngle;
         BBDSegment segment;
-        ArrayList<BBDSegment> segmentList = new ArrayList<>(Arrays.asList(this.segments));
+        ArrayList<BBDSegment> segmentList = new ArrayList<>(this.segments);
         Collections.rotate(segmentList, -startIndex);
         for(int i = 0; i< segmentList.size() ; i++){
             segment = segmentList.get(i);
-            if(i<=(endIndex-startIndex + this.segments.length)%this.segments.length) {
+            if(i<=(endIndex-startIndex + this.segments.size())%this.segments.size()) {
                 currentAngle = segment.getStartPoint().angleToOtherPoint(segment.getEndPoint());
                 BBDSegment segmentToAdd = new BBDSegment(segment, offsetDistance, (float) (currentAngle-offsetAngleModifier));
                 offsetSegments.add(segmentToAdd);
@@ -668,7 +668,7 @@ public class BBDPolygon implements BBDGeometry{
 
         //combine and create new BBDPolygon
         offsetPoints.addAll(otherPoints);
-        return new BBDPolygon(offsetPoints.toArray(new BBDPoint[0]));
+        return new BBDPolygon(offsetPoints);
     }
 
     /**
