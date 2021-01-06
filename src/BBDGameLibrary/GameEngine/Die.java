@@ -2,15 +2,15 @@ package BBDGameLibrary.GameEngine;
 
 import java.util.Arrays;
 
-public class Die {
+public class Die<T> {
 
     //How many sides does this die have
     public final int sides;
 
     //if it has non-numeric faces what are they?
-    public final Object[] faces;
+    public final T[] faces;
 
-    private Object currentFace;
+    private T currentFace;
 
     public Die(int sides){
         this.sides = sides;
@@ -19,10 +19,10 @@ public class Die {
         for (int i = 1; i <= sides; i++){
             faces[i-1] = i;
         }
-        this.faces = faces;
+        this.faces = (T[]) (T[]) faces;
     }
 
-    public Die(Object[] faces){
+    public Die(T[] faces){
         this.sides = faces.length;
         this.faces = faces;
     }
@@ -31,7 +31,7 @@ public class Die {
         this.currentFace = this.faces[(int)Math.floor(Math.random() * this.sides)];
     }
 
-    public void setToFace(Object facing){
+    public void setToFace(T facing){
         int indexOfFace = Arrays.asList(this.faces).indexOf(facing);
         if(indexOfFace != -1){
             this.currentFace = facing;
@@ -42,7 +42,7 @@ public class Die {
         return currentFace == null;
     }
 
-    public Object getCurrentFace(){
+    public T getCurrentFace(){
         return this.currentFace;
     }
 }

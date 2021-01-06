@@ -9,7 +9,7 @@ public class TestDie {
 
     @Test
     public void testD6(){
-        Die test = new Die(6);
+        Die<Integer> test = new Die<>(6);
         assertTrue(test.isUnrolled());
 
         test.roll();
@@ -18,25 +18,25 @@ public class TestDie {
 
     @Test
     public void testSetToFace(){
-        Die test = new Die(6);
+        Die<Integer> test = new Die<>(6);
         test.setToFace(2);
         assertEquals(2, test.getCurrentFace());
 
-        test.setToFace("guac");
+        test.setToFace(99);
         assertEquals(2, test.getCurrentFace());
     }
 
     @Test
     public void testRolling(){
-        Die test = new Die(9999);
+        Die<Integer> test = new Die<>(9999);
         test.roll();
-        int firstRoll = (int) test.getCurrentFace();
+        int firstRoll = test.getCurrentFace();
         test.roll();
-        int secondRoll = (int) test.getCurrentFace();
+        int secondRoll = test.getCurrentFace();
 
         if (secondRoll == firstRoll){
             test.roll();
-            secondRoll = (int) test.getCurrentFace();
+            secondRoll = test.getCurrentFace();
         }
 
         assertNotEquals(firstRoll, secondRoll);
@@ -46,7 +46,7 @@ public class TestDie {
     public void diceObjects(){
         String[] faces = {"one", "two", "three", "four", "five", "Guac"};
 
-        Die test = new Die(faces);
+        Die<String> test = new Die<>(faces);
         assertTrue(test.isUnrolled());
 
         test.setToFace("three");
