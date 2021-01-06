@@ -10,7 +10,7 @@ public class Die {
     //if it has non-numeric faces what are they?
     public final Object[] faces;
 
-    public Object currentFace;
+    private Object currentFace;
 
     public Die(int sides){
         this.sides = sides;
@@ -33,6 +33,16 @@ public class Die {
 
     public void setToFace(Object facing){
         int indexOfFace = Arrays.asList(this.faces).indexOf(facing);
-        this.currentFace = facing;
+        if(indexOfFace != -1){
+            this.currentFace = facing;
+        }
+    }
+
+    public boolean isUnrolled(){
+        return currentFace == null;
+    }
+
+    public Object getCurrentFace(){
+        return this.currentFace;
     }
 }
