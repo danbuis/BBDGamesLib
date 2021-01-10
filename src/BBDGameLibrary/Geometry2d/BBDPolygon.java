@@ -42,6 +42,27 @@ public class BBDPolygon implements BBDGeometry{
         this.segments = segments;
     }
 
+    /**
+     * Constructor because right now I don't want to deal with changing over some tests.
+     *
+     * I'll leave it here for now and either fix the tests or the duplication later.
+     * @param points
+     */
+    public BBDPolygon(BBDPoint[] points){
+        ArrayList<BBDPoint> pointsList = new ArrayList<>();
+
+        for(BBDPoint point: points){
+            pointsList.add(point);
+        }
+        ArrayList<BBDSegment> segments = new ArrayList<>();
+        for(int index = 0; index < pointsList.size(); index++){
+            int nextIndex = (index + 1) % pointsList.size();
+            segments.add(new BBDSegment(pointsList.get(index), pointsList.get(nextIndex)));
+        }
+        this.points = pointsList;
+        this.segments = segments;
+    }
+
     private void buildSegments(ArrayList<BBDPoint> inputPoints){
         ArrayList<BBDSegment> segments = new ArrayList<>();
         for(int index = 0; index< inputPoints.size(); index++){
@@ -610,7 +631,7 @@ public class BBDPolygon implements BBDGeometry{
      *                                it means you have some colinear lines and they should probably be combined
      */
     public BBDPolygon offsetPolygon(float offsetDistance) throws ParallelLinesException {
-        return this.offsetPolygon(offsetDistance, 0, this.segments.length -1);
+        return this.offsetPolygon(offsetDistance, 0, this.segments.size() -1);
     }
 
     /**
@@ -641,11 +662,17 @@ public class BBDPolygon implements BBDGeometry{
         ArrayList<BBDSegment> otherSegments = new ArrayList<>();
         float currentAngle;
         BBDSegment segment;
-        ArrayList<BBDSegment> segmentList = new ArrayList<>(Arrays.asList(this.segments));
+
+        //deep copy to avoid rotating the original list.
+        ArrayList<BBDSegment> segmentList = new ArrayList<>();
+        for (BBDSegment seg: this.segments){
+            segmentList.add(new BBDSegment(seg));
+        }
         Collections.rotate(segmentList, -startIndex);
+
         for(int i = 0; i< segmentList.size() ; i++){
             segment = segmentList.get(i);
-            if(i<=(endIndex-startIndex + this.segments.length)%this.segments.length) {
+            if(i<=(endIndex-startIndex + this.segments.size())%this.segments.size()) {
                 currentAngle = segment.getStartPoint().angleToOtherPoint(segment.getEndPoint());
                 BBDSegment segmentToAdd = new BBDSegment(segment, offsetDistance, (float) (currentAngle-offsetAngleModifier));
                 offsetSegments.add(segmentToAdd);
@@ -692,7 +719,7 @@ public class BBDPolygon implements BBDGeometry{
 
         //combine and create new BBDPolygon
         offsetPoints.addAll(otherPoints);
-        return new BBDPolygon(offsetPoints.toArray(new BBDPoint[0]));
+        return new BBDPolygon(offsetPoints);
     }
 
     /**
