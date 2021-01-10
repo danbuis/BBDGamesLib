@@ -1,5 +1,7 @@
 package BBDGameLibrary.Geometry2d;
 
+import java.util.ArrayList;
+
 public class BBDGeometryUtils {
     public static final float ALLOWABLE_DELTA_COARSE = 0.002f;
     public static final float ALLOWABLE_DELTA = 0.0001f;
@@ -44,5 +46,20 @@ public class BBDGeometryUtils {
 
     public static boolean checkParallelSegments(BBDSegment seg1, BBDSegment seg2){
         return seg1.slopeInDegrees() == seg2.slopeInDegrees();
+    }
+
+    public static BBDPolygon createCircle(BBDPoint centerPoint, float radius, int steps){
+        float increment = 360/steps;
+        float centerX = centerPoint.getXLoc();
+        float centerY = centerPoint.getYLoc();
+        ArrayList<BBDPoint> points = new ArrayList<>();
+
+        for(int i = 0 ; i < steps; i++){
+            float angle = i*increment;
+            points.add(new BBDPoint(centerX + (float)(Math.sin(angle)) * radius,
+                                    centerY + (float)(Math.cos(angle)) * radius));
+        }
+
+        return new BBDPolygon(points);
     }
 }

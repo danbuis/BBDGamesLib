@@ -668,6 +668,7 @@ public class BBDPolygon implements BBDGeometry{
         for (BBDSegment seg: this.segments){
             segmentList.add(new BBDSegment(seg));
         }
+
         Collections.rotate(segmentList, -startIndex);
 
         for(int i = 0; i< segmentList.size() ; i++){

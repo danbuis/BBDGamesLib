@@ -801,5 +801,13 @@ public class TestBBDPolygon {
         } catch (ParallelLinesException e) {
             e.printStackTrace();
         }
+
+    @Test
+    public void testCircleCreation(){
+        BBDPolygon test = BBDGeometryUtils.createCircle(new BBDPoint(0,0), 3, 360);
+
+        assertEquals(360, test.getPoints().size());
+        assertEquals(new BBDPoint(0,3), test.getPoints().get(0));
+        assertEquals(new BBDPoint(3,0), test.getPoints().get(89));
     }
 }
