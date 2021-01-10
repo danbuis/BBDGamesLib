@@ -1,6 +1,8 @@
 package BBDGameLibrary.Geometry2d;
 
 import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +42,27 @@ public class BBDPolygon implements BBDGeometry{
         this.segments = segments;
     }
 
+    /**
+     * Constructor because right now I don't want to deal with changing over some tests.
+     *
+     * I'll leave it here for now and either fix the tests or the duplication later.
+     * @param points
+     */
+    public BBDPolygon(BBDPoint[] points){
+        ArrayList<BBDPoint> pointsList = new ArrayList<>();
+
+        for(BBDPoint point: points){
+            pointsList.add(point);
+        }
+        ArrayList<BBDSegment> segments = new ArrayList<>();
+        for(int index = 0; index < pointsList.size(); index++){
+            int nextIndex = (index + 1) % pointsList.size();
+            segments.add(new BBDSegment(pointsList.get(index), pointsList.get(nextIndex)));
+        }
+        this.points = pointsList;
+        this.segments = segments;
+    }
+
     private void buildSegments(ArrayList<BBDPoint> inputPoints){
         ArrayList<BBDSegment> segments = new ArrayList<>();
         for(int index = 0; index< inputPoints.size(); index++){
@@ -49,6 +72,14 @@ public class BBDPolygon implements BBDGeometry{
 
         this.points = inputPoints;
         this.segments = segments;
+    }
+
+    private BBDPolygon copyPolygon(){
+        ArrayList<BBDPoint> copyList = new ArrayList<>();
+        for(BBDPoint point : this.points){
+            copyList.add(new BBDPoint(point));
+        }
+        return new BBDPolygon(copyList);
     }
 
     /**
@@ -472,6 +503,20 @@ public class BBDPolygon implements BBDGeometry{
     }
 
     /**
+     * Simple function to generate all the points of intersection between 2 other polygons
+     * Built off the logic of polygon/segment intersection points.
+     * @param otherPolygon other polygon
+     * @return a list of points where the perimeter of the polygons intersects
+     */
+    public ArrayList<BBDPoint> polygonIntersectPolygonPoints(BBDPolygon otherPolygon){
+        ArrayList<BBDPoint> intersectPoints = new ArrayList<>();
+        for (BBDSegment segment: otherPolygon.getSegments()){
+            Collections.addAll(intersectPoints, this.segmentIntersectPolygonPoints(segment));
+        }
+        return intersectPoints;
+    }
+
+    /**
      * helper function to determine if a segment intersects the polygon.
      * @param segmentToCheck Segment not part of polygon to check for intersection
      * @return boolean stating if this segment intersects the polygon
@@ -617,8 +662,15 @@ public class BBDPolygon implements BBDGeometry{
         ArrayList<BBDSegment> otherSegments = new ArrayList<>();
         float currentAngle;
         BBDSegment segment;
-        ArrayList<BBDSegment> segmentList = new ArrayList<>(this.segments);
+
+        //deep copy to avoid rotating the original list.
+        ArrayList<BBDSegment> segmentList = new ArrayList<>();
+        for (BBDSegment seg: this.segments){
+            segmentList.add(new BBDSegment(seg));
+        }
+
         Collections.rotate(segmentList, -startIndex);
+
         for(int i = 0; i< segmentList.size() ; i++){
             segment = segmentList.get(i);
             if(i<=(endIndex-startIndex + this.segments.size())%this.segments.size()) {
@@ -741,6 +793,87 @@ public class BBDPolygon implements BBDGeometry{
             }
         }
         return minDist;
+    }
+
+    /**
+     * Create a polygon containing  a copy of all the points of the source polygon and the points of intersection inserted
+     * to the correct location.  This method is likely never called by the end user, but serves as an important step in
+     * polygon boolean operations.
+     * @param otherPolygon the other polygon we are looking at
+     * @return a new polygon with the same shape, but a few extra points
+     */
+    private BBDPolygon prepPolygonForBooleanOperations(BBDPolygon otherPolygon){
+        BBDPolygon returnPoly = this.copyPolygon();
+
+        ArrayList<BBDPoint> pointsToInsert = this.polygonIntersectPolygonPoints(otherPolygon);
+
+        while (!pointsToInsert.isEmpty()){
+            BBDPoint point = pointsToInsert.get(0);
+            for(int i = 0; i < returnPoly.segments.size(); i++){
+                if(returnPoly.segments.get(i).pointOnSegment(point)){
+                    returnPoly.points.add(i+1, point);
+                    returnPoly.buildSegments(returnPoly.points);
+                    pointsToInsert.remove(0);
+                    break;
+                }
+            }
+        }
+        returnPoly.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+        return returnPoly;
+    }
+
+    public BBDPolygon createPolygonIntersection(BBDPolygon otherPolygon){
+        //let's catch some corner cases first
+        if(this.checkPolygonContainsPolygon(otherPolygon)){
+            return otherPolygon.copyPolygon();
+        }
+        if(otherPolygon.checkPolygonContainsPolygon(this)){
+            return this.copyPolygon();
+        }
+
+        if(!this.checkPolygonIntersectsPolygon(otherPolygon)){
+            return null;
+        }
+
+        BBDPolygon polyThis = this.prepPolygonForBooleanOperations(otherPolygon);
+        BBDPolygon polyOther = otherPolygon.prepPolygonForBooleanOperations(this);
+
+        ArrayList<BBDPoint> newPolygonList = new ArrayList<>();
+
+        //find the first point that is inside while the preceding one is outside
+        int startingIndexThis = 0;
+        int currentIndexThis = 0;
+        int currentIndexOther;
+        int thisLength = polyThis.points.size();
+        int otherLength = polyOther.points.size();
+        for (int i=0; i<polyThis.points.size(); i++){
+            if(polyOther.checkPointInside(polyThis.points.get(i)) && !polyOther.checkPointInside(polyThis.points.get((i + thisLength-1)%thisLength))){
+                startingIndexThis = i;
+                currentIndexThis = i;
+                break;
+            }
+        }
+
+        // the goal is to make a full circuit around polyThis, so once we get all the way around we are done
+        // we can't use that as the only conditional because otherwise we will skip the whole block initially since
+        // the start and current index begin the same.  Therefore we check if it is empty initially, and once that becomes
+        // false on all other loops we will be checking if we have completed the full circuit
+        while (newPolygonList.isEmpty() || currentIndexThis-1 != startingIndexThis){
+            while(polyOther.checkPointInside(polyThis.points.get(currentIndexThis % thisLength))){
+                newPolygonList.add(polyThis.points.get(currentIndexThis % thisLength));
+                currentIndexThis++;
+            }
+            //at this point we are just added an intersection point, so let's find the same intersection on the other one, and then use the next point
+            currentIndexOther = polyOther.points.indexOf(polyThis.points.get((currentIndexThis-1)  % thisLength)) + 1;
+            while(polyThis.checkPointInside(polyOther.points.get(currentIndexOther % otherLength))){
+                newPolygonList.add(polyOther.points.get(currentIndexOther % otherLength));
+                currentIndexOther++;
+            }
+            currentIndexThis = polyThis.points.indexOf(polyOther.points.get((currentIndexOther-1) % otherLength)) + 1;
+        }
+        //remove the last one because it is a repeat of the first one
+        newPolygonList.remove(newPolygonList.size()-1);
+        return new BBDPolygon(newPolygonList);
     }
 
     /**
