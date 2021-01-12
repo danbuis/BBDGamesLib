@@ -5,7 +5,6 @@ import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.Geometry2d.BBDSegment;
 import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
-import org.joml.GeometryUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -645,6 +644,14 @@ public class TestBBDPolygon {
         BBDPolygon dirty = new BBDPolygon(points);
 
         assertEquals(this.buildSquare(), dirty.cleanPolygon());
+
+        BBDPolygon dupVert = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point2, point2, point3, point4)));
+        assertEquals(5, dupVert.getPoints().size());
+        assertNotEquals(dupVert, this.buildSquare());
+
+        BBDPolygon cleanedDupVert = dupVert.cleanPolygon();
+        assertEquals(4, cleanedDupVert.getPoints().size());
+        assertEquals(cleanedDupVert, this.buildSquare());
     }
 
     @Test
@@ -801,13 +808,73 @@ public class TestBBDPolygon {
         } catch (ParallelLinesException e) {
             e.printStackTrace();
         }
+    }
 
     @Test
     public void testCircleCreation(){
         BBDPolygon test = BBDGeometryUtils.createCircle(new BBDPoint(0,0), 3, 360);
 
         assertEquals(360, test.getPoints().size());
+        for(BBDPoint point: test.getPoints()){
+            System.out.println(point);
+        }
         assertEquals(new BBDPoint(0,3), test.getPoints().get(0));
-        assertEquals(new BBDPoint(3,0), test.getPoints().get(89));
+        assertEquals(new BBDPoint(3,0), test.getPoints().get(90));
+    }
+
+    @Test
+    public void testConvexPolygonIntersection(){
+        BBDPolygon controlPolygon = this.buildSquare();
+        BBDPolygon overlapping = this.buildSquare();
+        BBDPolygon adjacent = this.buildSquare();
+        BBDPolygon contains = this.buildSquare();
+        BBDPolygon separate = this.buildSquare();
+
+        //modify most of them to create several types of scenarios
+        overlapping.translate(0.2f, 0.2f);
+        adjacent.translate(0.5f, 2);
+        contains.scale(0.5f);
+        separate.translate(3,3);
+
+        ArrayList<BBDPoint> overlappingPoints = new ArrayList<>();
+        overlappingPoints.add(new BBDPoint(1,1));
+        overlappingPoints.add(new BBDPoint(1,-0.8f));
+        overlappingPoints.add(new BBDPoint(-0.8f,-0.8f));
+        overlappingPoints.add(new BBDPoint(-0.8f, 1));
+
+        assertEquals(new BBDPolygon(overlappingPoints), controlPolygon.createPolygonIntersection(overlapping));
+
+        // one contains the other
+        assertEquals(contains, controlPolygon.createPolygonIntersection(contains));
+        // check symmetry of the above
+        assertEquals(contains, contains.createPolygonIntersection(controlPolygon));
+
+        //check no intersection
+        assertNull(controlPolygon.createPolygonIntersection(separate));
+
+        //check if polygons are the same
+        assertEquals(controlPolygon, controlPolygon.createPolygonIntersection(controlPolygon));
+
+        //test that using the copyPolygon() has indeed made copies and not impacted the originals
+        assertEquals(4, controlPolygon.getPoints().size());
+
+        //check polygons that have more than 2 intersection points
+        ArrayList<BBDPoint> wideList = new ArrayList<>();
+        wideList.add(new BBDPoint(2, 0.5f));
+        wideList.add(new BBDPoint(-2, 0.5f));
+        wideList.add(new BBDPoint(-2, -0.5f));
+        wideList.add(new BBDPoint(2, -0.5f));
+        BBDPolygon widePoly = new BBDPolygon(wideList);
+
+        ArrayList<BBDPoint> testList = new ArrayList<>();
+        testList.add(new BBDPoint(1, 0.5f));
+        testList.add(new BBDPoint(-1, 0.5f));
+        testList.add(new BBDPoint(-1, -0.5f));
+        testList.add(new BBDPoint(1, -0.5f));
+        BBDPolygon testPoly = new BBDPolygon(testList);
+
+        controlPolygon.createPolygonIntersection(widePoly);
+
+        assertEquals(testPoly, controlPolygon.createPolygonIntersection(widePoly));
     }
 }
