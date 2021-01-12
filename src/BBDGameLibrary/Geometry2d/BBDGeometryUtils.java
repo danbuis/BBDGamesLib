@@ -56,8 +56,8 @@ public class BBDGeometryUtils {
 
         for(int i = 0 ; i < steps; i++){
             float angle = i*increment;
-            points.add(new BBDPoint(centerX + (float)(Math.sin(angle)) * radius,
-                                    centerY + (float)(Math.cos(angle)) * radius));
+            points.add(new BBDPoint(centerX + (float)(Math.sin(Math.toRadians(angle))) * radius,
+                                    centerY + (float)(Math.cos(Math.toRadians(angle))) * radius));
         }
 
         return new BBDPolygon(points);
