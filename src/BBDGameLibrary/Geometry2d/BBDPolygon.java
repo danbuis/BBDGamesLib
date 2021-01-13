@@ -85,7 +85,7 @@ public class BBDPolygon implements BBDGeometry{
     /**
      * This function is used to get a clean copy of this polygon.  For instance if this polygon has to adjacent colinear
      * segments that can cause issues for offsets, so this function can be used to create a polygon that merges the 2 into
-     * 1. (After all you might have a good reason for having adjacent colinear segments)
+     * 1. (After all you might have a good reason for having adjacent colinear segments).  It will also remove adjacent duplicate vertices.
      * @return a cleaner polygon that still has the same shape
      */
     public BBDPolygon cleanPolygon(){
@@ -94,9 +94,16 @@ public class BBDPolygon implements BBDGeometry{
 
         boolean done = false;
         BBDPoint pointToRemove = null;
+        float zeroLengthThreshold = BBDGeometryUtils.ALLOWABLE_DELTA * BBDGeometryUtils.ALLOWABLE_DELTA;
 
         while(!done){
             for (int i = 0; i < returnPolygon.points.size(); i++){
+                //remove 0 length segments
+                if(returnPolygon.segments.get(i).lengthSquared() <= zeroLengthThreshold){
+                    pointToRemove = returnPolygon.segments.get(i).getEndPoint();
+                    break;
+                }
+
                 float slope1 = returnPolygon.segments.get(i).slopeInDegrees();
                 float slope2 = returnPolygon.segments.get((i + 1) % returnPolygon.segments.size()).slopeInDegrees();
 

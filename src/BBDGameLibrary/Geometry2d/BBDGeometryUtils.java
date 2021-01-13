@@ -48,16 +48,23 @@ public class BBDGeometryUtils {
         return seg1.slopeInDegrees() == seg2.slopeInDegrees();
     }
 
+    /**
+     * Create a circle centered at a given location, with a specified radius and resolution (number of steps/segments)
+     * @param centerPoint center of circle
+     * @param radius radius of circle
+     * @param steps how many segments in the circle
+     * @return BBDPolygon shaped like a circle.
+     */
     public static BBDPolygon createCircle(BBDPoint centerPoint, float radius, int steps){
-        float increment = 360/steps;
+        float increment = 360f/steps;
         float centerX = centerPoint.getXLoc();
         float centerY = centerPoint.getYLoc();
         ArrayList<BBDPoint> points = new ArrayList<>();
 
         for(int i = 0 ; i < steps; i++){
             float angle = i*increment;
-            points.add(new BBDPoint(centerX + (float)(Math.sin(angle)) * radius,
-                                    centerY + (float)(Math.cos(angle)) * radius));
+            points.add(new BBDPoint(centerX + (float)(Math.sin(Math.toRadians(angle))) * radius,
+                                    centerY + (float)(Math.cos(Math.toRadians(angle))) * radius));
         }
 
         return new BBDPolygon(points);
