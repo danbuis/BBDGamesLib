@@ -13,20 +13,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Renderer {
 
-    /**
-     * Field of View in Radians
-     */
-    private static float FOV = (float) Math.toRadians(60.0f);
-
-    /**
-     * Near cutoff to render on the z axis
-     */
-    private static float Z_NEAR = 0.01f;
-
-    /**
-     * Far cutoff to render on the z axis
-     */
-    private static float Z_FAR = 1000.f;
 
     /**
      * Object ot user for transforming with the world and projection matrices
@@ -65,7 +51,8 @@ public class Renderer {
      */
     public void renderArray(Window window, GameItem[] gameItems, Camera camera) {
         // Update projection Matrix
-        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        window.updateProjectionMatrix();
+        Matrix4f projectionMatrix = window.getProjectionMatrix();
 
         // Render each gameItem
         for (GameItem gameItem : gameItems) {
@@ -75,7 +62,8 @@ public class Renderer {
 
     public void renderList(Window window, List<GameItem> gameItems, Camera camera){
         // Update projection Matrix
-        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        window.updateProjectionMatrix();
+        Matrix4f projectionMatrix = window.getProjectionMatrix();
 
         // Render each gameItem
         for (GameItem gameItem : gameItems) {
@@ -85,7 +73,8 @@ public class Renderer {
 
     public void renderItem(Window window, GameItem item, Camera camera){
         // Update projection Matrix
-        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        window.updateProjectionMatrix();
+        Matrix4f projectionMatrix = window.getProjectionMatrix();
         render(item, projectionMatrix, camera);
     }
 
@@ -113,53 +102,5 @@ public class Renderer {
 
     public void cleanup() {
 
-    }
-
-    /**
-     * Get the current field of view
-     * @return current FOV
-     */
-    public float getFOV(){
-        return this.FOV;
-    }
-
-    /**
-     * Set a new field of view
-     * @param newFOV
-     */
-    public void setFOV(float newFOV){
-        this.FOV = newFOV;
-    }
-
-    /**
-     * Get the current near clipping distance
-     * @return current Z_NEAR
-     */
-    public float getZNear(){
-        return this.Z_NEAR;
-    }
-
-    /**
-     * Set the near clipping distance
-     * @param newZNear
-     */
-    public void setZNear(float newZNear){
-        this.Z_NEAR = newZNear;
-    }
-
-    /**
-     * Get the current near clipping distance
-     * @return current Z_FAR
-     */
-    public float getZFar(){
-        return this.Z_FAR;
-    }
-
-    /**
-     * Set the far clipping distance
-     * @param newZFar
-     */
-    public void setZFar(float newZFar){
-        this.Z_FAR = newZFar;
     }
 }

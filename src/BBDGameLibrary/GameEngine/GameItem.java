@@ -131,9 +131,10 @@ public class GameItem implements GameComponent{
      * Empty input function to conform to the GameComponent interface.  Intended to be overridden by classes that extend
      * GameItem.
      * @param window the Window object this GameComponent is using.
+     * @param mouseInput object to handle the mouse input.
      */
     @Override
-    public void input(Window window) {
+    public void input(Window window, MouseInput mouseInput) {
 
     }
 
@@ -141,9 +142,11 @@ public class GameItem implements GameComponent{
      * Empty update function to conform to the GameComponent interface.  Intended to be overridden by classes that extend
      * GameItem.
      * @param interval elapsed time
+     * @param mouseInput object to handle the mouse input.
+     * @param window the window being used to render the game
      */
     @Override
-    public void update(float interval) {
+    public void update(float interval, MouseInput mouseInput, Window window) {
 
     }
 
