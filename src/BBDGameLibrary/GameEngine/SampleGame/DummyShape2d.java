@@ -1,10 +1,14 @@
 package BBDGameLibrary.GameEngine.SampleGame;
 
 import BBDGameLibrary.GameEngine.GameItem2d;
+import BBDGameLibrary.GameEngine.MouseInput;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.ShaderProgram;
+import BBDGameLibrary.OpenGL.Window;
 import org.joml.Matrix4f;
+
+import java.awt.event.MouseAdapter;
 
 public class DummyShape2d extends GameItem2d {
     int rotationType;
@@ -26,7 +30,7 @@ public class DummyShape2d extends GameItem2d {
      * @param interval elapsed time
      */
     @Override
-    public void update(float interval){
+    public void update(float interval, MouseInput mouseInput, Window window){
         if(rotationType == 0) {
             this.rotate(1 * interval);
         }else{

@@ -146,8 +146,8 @@ public class DummyGame implements GameComponent {
         by updating its position.  In openGL land this means that the object internally thinks it is centered at the origin
         but at render time the position matrix shifts the position in world space.
          */
-        BBDPolygon poly1 = new BBDPolygon((ArrayList<BBDPoint>) Arrays.asList(new BBDPoint(-1.5f, 0), new BBDPoint(0.5f, 2),
-                new BBDPoint(1.5f,1), new BBDPoint(1.5f,0), new BBDPoint(-0.5f,-2)));
+        BBDPolygon poly1 = new BBDPolygon(new BBDPoint[]{new BBDPoint(-1.5f, 0), new BBDPoint(0.5f, 2),
+                new BBDPoint(1.5f, 1), new BBDPoint(1.5f, 0), new BBDPoint(-0.5f, -2)});
         Mesh shape1 = Mesh.buildMeshFromPolygon(poly1, null);
         ShaderProgram example2 = buildSolidColorShader("dark_green");
         GameItem2d item2 = new DummyShape2d(shape1, example2, poly1, 5000, false, 7);
@@ -156,8 +156,8 @@ public class DummyGame implements GameComponent {
         /*
         Build a background 2d object to demo and test with
          */
-        BBDPolygon poly2 = new BBDPolygon((ArrayList<BBDPoint>)Arrays.asList(new BBDPoint(0, 0), new BBDPoint(0, 2),
-                new BBDPoint(-3,2), new BBDPoint(-3,-2), new BBDPoint(-2,-2), new BBDPoint(-2,0)));
+        BBDPolygon poly2 = new BBDPolygon(new BBDPoint[]{new BBDPoint(0, 0), new BBDPoint(0, 2),
+                new BBDPoint(-3,2), new BBDPoint(-3,-2), new BBDPoint(-2,-2), new BBDPoint(-2,0)});
         Mesh shape2 = Mesh.buildMeshFromPolygon(poly2, null);
         ShaderProgram example3 = buildSolidColorShader("brown");
         GameItem2d item3 = new DummyShape2d(shape2, example3, poly2, 5100, false, 0);
@@ -219,16 +219,16 @@ public class DummyGame implements GameComponent {
     }
 
     @Override
-    public void input(Window window) {
+    public void input(Window window, MouseInput mouseInput) {
         for (GameItem gameItem: gameItems){
-            gameItem.input(window);
+            gameItem.input(window, mouseInput);
         }
     }
 
     @Override
-    public void update(float interval) {
+    public void update(float interval, MouseInput mouseInput, Window window) {
         for (GameItem gameItem : gameItems) {
-            gameItem.update(interval);
+            gameItem.update(interval, mouseInput, window);
         }
     }
 
