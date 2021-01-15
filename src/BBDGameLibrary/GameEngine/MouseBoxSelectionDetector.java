@@ -12,19 +12,23 @@ public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
 
     private final Matrix4f invViewMatrix;
 
-    private final Vector3f mouseDir;
-
     private final Vector4f tmpVec;
 
     public MouseBoxSelectionDetector() {
         super();
         invProjectionMatrix = new Matrix4f();
         invViewMatrix = new Matrix4f();
-        mouseDir = new Vector3f();
         tmpVec = new Vector4f();
     }
 
     public GameItem selectGameItem(GameItem[] gameItems, Window window, Vector2d mousePos, Camera camera) {
+
+        Vector3f mouseDir = getMouseDir(window, mousePos, camera);
+
+        return selectGameItem(gameItems, camera.getPosition(), mouseDir);
+    }
+    
+    public Vector3f getMouseDir(Window window, Vector2d mousePos, Camera camera){
         // Transform mouse coordinates into normalized space [-1, 1]
         int wdwWidth = window.getWidth();
         int wdwHeight = window.getHeight();
@@ -46,9 +50,6 @@ public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
         invViewMatrix.invert();
         tmpVec.mul(invViewMatrix);
 
-        mouseDir.set(tmpVec.x, tmpVec.y, tmpVec.z);
-        System.out.println(mouseDir);
-
-        return selectGameItem(gameItems, camera.getPosition(), mouseDir);
+        return new Vector3f(tmpVec.x, tmpVec.y, tmpVec.z);
     }
 }
