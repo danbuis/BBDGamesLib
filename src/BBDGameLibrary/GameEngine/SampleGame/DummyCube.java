@@ -94,6 +94,6 @@ public class DummyCube extends GameItem {
         if (rotation > Math.PI * 2) {
             rotation = 0;
         }
-        //this.setRotation(rotation, rotation, rotation);
+        this.setRotation(rotation, rotation, rotation);
     }
 }

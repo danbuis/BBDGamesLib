@@ -15,7 +15,6 @@ public class DummyGame implements GameComponent {
     private GameItem[] gameItems;
 
     private Camera camera = new Camera();
-    MouseBoxSelectionDetector mouseDetector = new MouseBoxSelectionDetector();
 
     public DummyGame() {
         renderer = new Renderer();
@@ -167,7 +166,7 @@ public class DummyGame implements GameComponent {
         GameItem2d item3 = new DummyShape2d(shape2, example3, poly2, 5100, false, 0);
 
         //populate list of items to be rendered
-        gameItems = new GameItem[]{item1, item1a};
+        gameItems = new GameItem[]{item1, item1a, item2, item3};
     }
 
 
@@ -233,12 +232,6 @@ public class DummyGame implements GameComponent {
     public void update(float interval, MouseInput mouseInput, Window window) {
         for (GameItem gameItem : gameItems) {
             gameItem.update(interval, mouseInput, window);
-        }
-
-        //System.out.println(mouseInput.getCurrentPos());
-        if(mouseInput.isLeftButtonPressed()){
-            GameItem mouseOver = mouseDetector.selectGameItem(gameItems, window, mouseInput.getCurrentPos(), this.camera);
-            System.out.println("Mouse over : "+mouseOver);
         }
     }
 
