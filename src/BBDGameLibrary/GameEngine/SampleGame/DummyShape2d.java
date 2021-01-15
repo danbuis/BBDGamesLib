@@ -31,11 +31,11 @@ public class DummyShape2d extends GameItem2d {
      */
     @Override
     public void update(float interval, MouseInput mouseInput, Window window){
-        if(rotationType == 0) {
-            this.rotate(1 * interval);
-        }else{
-            this.rotate(0.5f * interval);
-        }
+        //if(rotationType == 0) {
+        //    this.rotate(1 * interval);
+        //}else{
+        //    this.rotate(0.5f * interval);
+        //}
     }
 
 }

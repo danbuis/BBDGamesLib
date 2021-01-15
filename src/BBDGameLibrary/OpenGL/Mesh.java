@@ -83,7 +83,7 @@ public class Mesh {
          return textureCoordinates;
     }
 
-    /*
+    /**
      * Build indices array for the mesh
      * @param inputShape BBDPolygon to use to create a mesh
      * @return indices array

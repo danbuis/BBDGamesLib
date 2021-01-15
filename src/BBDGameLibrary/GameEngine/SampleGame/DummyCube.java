@@ -1,6 +1,7 @@
 package BBDGameLibrary.GameEngine.SampleGame;
 
 import BBDGameLibrary.GameEngine.GameItem;
+import BBDGameLibrary.GameEngine.MouseBoxSelectionDetector;
 import BBDGameLibrary.GameEngine.MouseInput;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;
@@ -93,6 +94,6 @@ public class DummyCube extends GameItem {
         if (rotation > Math.PI * 2) {
             rotation = 0;
         }
-        this.setRotation(rotation, rotation, rotation);
+        //this.setRotation(rotation, rotation, rotation);
     }
 }

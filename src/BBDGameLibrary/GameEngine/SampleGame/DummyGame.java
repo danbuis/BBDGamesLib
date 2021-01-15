@@ -15,6 +15,7 @@ public class DummyGame implements GameComponent {
     private GameItem[] gameItems;
 
     private Camera camera = new Camera();
+    MouseBoxSelectionDetector mouseDetector = new MouseBoxSelectionDetector();
 
     public DummyGame() {
         renderer = new Renderer();
@@ -140,6 +141,9 @@ public class DummyGame implements GameComponent {
         ShaderProgram exampleShader = buildShaderProgram();
         GameItem item1 = new DummyCube(mesh, exampleShader);
         item1.setPosition(0, 0, -2);
+
+        GameItem item1a = new DummyCube(mesh, exampleShader);
+        item1a.setPosition(2,0,-2);
         /*
         Build a background 2d object to demo and test with
         BBDGameLibrary.OpenGL objects rotate around their local origin.  This object is centered at the origin, but then we move it away
@@ -163,7 +167,7 @@ public class DummyGame implements GameComponent {
         GameItem2d item3 = new DummyShape2d(shape2, example3, poly2, 5100, false, 0);
 
         //populate list of items to be rendered
-        gameItems = new GameItem[]{item1, item2, item3};
+        gameItems = new GameItem[]{item1, item1a};
     }
 
 
@@ -229,6 +233,12 @@ public class DummyGame implements GameComponent {
     public void update(float interval, MouseInput mouseInput, Window window) {
         for (GameItem gameItem : gameItems) {
             gameItem.update(interval, mouseInput, window);
+        }
+
+        //System.out.println(mouseInput.getCurrentPos());
+        if(mouseInput.isLeftButtonPressed()){
+            GameItem mouseOver = mouseDetector.selectGameItem(gameItems, window, mouseInput.getCurrentPos(), this.camera);
+            System.out.println("Mouse over : "+mouseOver);
         }
     }
 
