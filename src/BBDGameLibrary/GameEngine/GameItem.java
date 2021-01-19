@@ -168,4 +168,27 @@ public class GameItem implements GameComponent{
     public void cleanup() {
 
     }
+
+
+    /**
+     * Query a mesh and get the real current positions of its vertices.  You will likely want this for collision
+     * checking and related logic.
+     * @return an set of current vertices
+     */
+    public Vector3f[] getMeshVerticesRealLocations(){
+        Vector3f[] meshVertices = this.mesh.getVertexPositions();
+        Vector3f[] currentVertices = new Vector3f[meshVertices.length];
+        Vector3f origin = new Vector3f();
+
+        for(int i = 0; i< meshVertices.length; i++){
+            currentVertices[i] = new Vector3f(meshVertices[i]);
+            new Matrix4f().translate(origin)
+                    .rotateAffineXYZ(this.getRotation().x, this.getRotation().y, this.getRotation().z)
+                    .translate(origin.negate())
+                    .translate(this.getPosition())
+                    .transformPosition(currentVertices[i]);
+        }
+
+        return currentVertices;
+    }
 }
