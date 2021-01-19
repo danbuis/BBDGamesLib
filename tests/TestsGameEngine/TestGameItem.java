@@ -1,7 +1,6 @@
 package TestsGameEngine;
 
 import BBDGameLibrary.GameEngine.GameItem;
-import BBDGameLibrary.Geometry2d.BBDGeometry;
 import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
@@ -20,7 +19,7 @@ public class TestGameItem {
         BBDPoint point3 = new BBDPoint(-1,-1);
         BBDPoint point4 = new BBDPoint(-1,1);
 
-        ArrayList<BBDPoint> points = new ArrayList<BBDPoint>(Arrays.asList(point1, point2, point3, point4));
+        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
 
         return Mesh.buildMeshFromPolygon(new BBDPolygon(points));
     }
@@ -38,7 +37,7 @@ public class TestGameItem {
         Vector3f original = test.getMesh().getVertexPositions()[0];
         Vector3f duplicate = test.getMeshVerticesRealLocations()[0];
         //check object ids
-        assertFalse(duplicate == original);
+        assertNotSame(duplicate, original);
         //check properties
         assertTrue(duplicate.equals(original, BBDGeometryUtils.ALLOWABLE_DELTA));
     }
@@ -58,9 +57,30 @@ public class TestGameItem {
     }
 
     // test to check that rotation works
+    @Test
+    public void testRotation(){
+        GameItem test = this.buildTestItem();
+        //rotate counter clockwise
+        test.setRotation(0,0,(float)Math.toRadians(90));
+
+        assertEquals(new Vector3f(1,1,0),test.getMeshVerticesRealLocations()[1]);
+        assertEquals(new Vector3f(1,-1,0),test.getMeshVerticesRealLocations()[2]);
+        assertEquals(new Vector3f(-1,-1,0),test.getMeshVerticesRealLocations()[3]);
+        assertEquals(new Vector3f(-1,1,0),test.getMeshVerticesRealLocations()[0]);
+    }
 
     // test to check that both work at the same time
+    @Test
+    public void testRotationAndTranslation(){
+        GameItem test = this.buildTestItem();
+        //rotate counter clockwise
+        test.setRotation(0,0,(float)Math.toRadians(90));
+        test.setPosition(1,1,1);
 
-    // test to check that mesh's verts are unmodified
+        assertEquals(new Vector3f(2,2,1),test.getMeshVerticesRealLocations()[1]);
+        assertEquals(new Vector3f(2,0,1),test.getMeshVerticesRealLocations()[2]);
+        assertEquals(new Vector3f(0,0,1),test.getMeshVerticesRealLocations()[3]);
+        assertEquals(new Vector3f(0,2,1),test.getMeshVerticesRealLocations()[0]);
+    }
 
 }

@@ -183,9 +183,9 @@ public class GameItem implements GameComponent{
         for(int i = 0; i< meshVertices.length; i++){
             currentVertices[i] = new Vector3f(meshVertices[i]);
             new Matrix4f().translate(origin)
+                    .translate(this.getPosition())
                     .rotateAffineXYZ(this.getRotation().x, this.getRotation().y, this.getRotation().z)
                     .translate(origin.negate())
-                    .translate(this.getPosition())
                     .transformPosition(currentVertices[i]);
         }
 
