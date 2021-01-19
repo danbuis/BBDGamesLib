@@ -4,6 +4,7 @@ import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
+import org.joml.Vector3f;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -102,5 +103,17 @@ public class TestMesh {
         assertEquals(testPositions[3], 3);
         assertEquals(testPositions[4], 2);
         assertEquals(testPositions[5], 0);
+    }
+
+    @Test
+    public void testMeshVertPositions(){
+        BBDPolygon poly = this.buildSquare();
+        Mesh test = Mesh.buildMeshFromPolygon(poly);
+        Vector3f[] testVertices = test.getVertexPositions();
+        assertEquals(4, testVertices.length);
+        assertEquals(new Vector3f(1,1,0), testVertices[0]);
+        assertEquals(new Vector3f(1,-1,0), testVertices[1]);
+        assertEquals(new Vector3f(-1,-1,0), testVertices[2]);
+        assertEquals(new Vector3f(-1,1,0), testVertices[3]);
     }
 }
