@@ -1,12 +1,15 @@
 package BBDGameLibrary.GameEngine;
 
+import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
+import java.util.ArrayList;
+
+public class MouseSelectionDetector extends CameraSelectionDetector {
 
     private final Matrix4f invProjectionMatrix;
 
@@ -14,18 +17,18 @@ public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
 
     private final Vector4f tmpVec;
 
-    public MouseBoxSelectionDetector() {
+    public MouseSelectionDetector() {
         super();
         invProjectionMatrix = new Matrix4f();
         invViewMatrix = new Matrix4f();
         tmpVec = new Vector4f();
     }
 
-    public GameItem selectGameItem(GameItem[] gameItems, Window window, Vector2d mousePos, Camera camera) {
+    public Mesh selectMesh(ArrayList<Mesh> meshList, Window window, Vector2d mousePos, Camera camera) {
 
         Vector3f mouseDir = getMouseDir(window, mousePos, camera);
 
-        return selectGameItem(gameItems, camera.getPosition(), mouseDir);
+        return selectMesh(meshList, camera.getPosition(), mouseDir);
     }
     
     public Vector3f getMouseDir(Window window, Vector2d mousePos, Camera camera){

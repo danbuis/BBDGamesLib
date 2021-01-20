@@ -1,7 +1,6 @@
 package BBDGameLibrary.GameEngine.SampleGame;
 
 import BBDGameLibrary.GameEngine.GameItem;
-import BBDGameLibrary.GameEngine.MouseBoxSelectionDetector;
 import BBDGameLibrary.GameEngine.MouseInput;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;

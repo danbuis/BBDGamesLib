@@ -1,10 +1,13 @@
 package BBDGameLibrary.GameEngine;
 
+import BBDGameLibrary.OpenGL.Mesh;
 import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class CameraBoxSelectionDetector {
+import java.util.ArrayList;
+
+public class CameraSelectionDetector {
 
     private final Vector3f max;
 
@@ -14,7 +17,7 @@ public class CameraBoxSelectionDetector {
 
     private Vector3f dir;
 
-    public CameraBoxSelectionDetector() {
+    public CameraSelectionDetector() {
         dir = new Vector3f();
         min = new Vector3f();
         max = new Vector3f();
@@ -24,6 +27,28 @@ public class CameraBoxSelectionDetector {
     public GameItem selectGameItem(GameItem[] gameItems, Camera camera) {
         dir = camera.getViewMatrix().positiveZ(dir).negate();
         return selectGameItem(gameItems, camera.getPosition(), dir);
+    }
+
+    protected GameItem selectItem(ArrayList<GameItem> itemList, Vector3f center, Vector3f dir, float marginOfError){
+        GameItem selectedItem = null;
+        float closestDistance = Float.POSITIVE_INFINITY;
+
+        for (GameItem item : itemList){
+            Vector3f[] vertexList = item.getMeshVerticesRealLocations();
+            int[] indices = item.getMesh().getIndices();
+            for(int i=0; i < indices.length; i +=3){
+                int startingIndex = i * 3;
+                float distance = Intersectionf.intersectRayTriangleFront(center, dir,
+                        vertexList[indices[startingIndex]], vertexList[indices[startingIndex+1]],
+                        vertexList[indices[startingIndex+2]], marginOfError);
+                if(distance < closestDistance){
+                    closestDistance = distance;
+                    selectedItem = item;
+                }
+            }
+        }
+
+        return selectedItem;
     }
 
     protected GameItem selectGameItem(GameItem[] gameItems, Vector3f center, Vector3f dir) {
