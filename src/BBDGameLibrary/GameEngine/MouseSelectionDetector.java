@@ -24,11 +24,11 @@ public class MouseSelectionDetector extends CameraSelectionDetector {
         tmpVec = new Vector4f();
     }
 
-    public Mesh selectMesh(ArrayList<Mesh> meshList, Window window, Vector2d mousePos, Camera camera) {
+    public GameItem selectItem(ArrayList<GameItem> itemList, Window window, Vector2d mousePos, Camera camera, float marginOfError) {
 
         Vector3f mouseDir = getMouseDir(window, mousePos, camera);
 
-        return selectMesh(meshList, camera.getPosition(), mouseDir);
+        return selectItem(itemList, camera.getPosition(), mouseDir, marginOfError);
     }
     
     public Vector3f getMouseDir(Window window, Vector2d mousePos, Camera camera){

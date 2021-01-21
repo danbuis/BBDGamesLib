@@ -6,6 +6,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class CameraSelectionDetector {
 
@@ -37,11 +38,10 @@ public class CameraSelectionDetector {
             Vector3f[] vertexList = item.getMeshVerticesRealLocations();
             int[] indices = item.getMesh().getIndices();
             for(int i=0; i < indices.length; i +=3){
-                int startingIndex = i * 3;
                 float distance = Intersectionf.intersectRayTriangleFront(center, dir,
-                        vertexList[indices[startingIndex]], vertexList[indices[startingIndex+1]],
-                        vertexList[indices[startingIndex+2]], marginOfError);
-                if(distance < closestDistance){
+                        vertexList[indices[i]], vertexList[indices[i+1]],
+                        vertexList[indices[i+2]], marginOfError);
+                if(distance != -1 && distance < closestDistance){
                     closestDistance = distance;
                     selectedItem = item;
                 }
