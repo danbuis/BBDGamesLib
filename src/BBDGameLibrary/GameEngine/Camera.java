@@ -1,5 +1,6 @@
 package BBDGameLibrary.GameEngine;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
@@ -18,17 +19,28 @@ public class Camera {
      */
     private final Vector3f rotation;
 
+    private Matrix4f viewMatrix;
+
     /** Generic constructor
      *
      */
     public Camera() {
         position = new Vector3f();
         rotation = new Vector3f();
+        viewMatrix = new Matrix4f();
     }
 
     public Camera(Vector3f position, Vector3f rotation) {
         this.position = position;
         this.rotation = rotation;
+    }
+
+    public Matrix4f getViewMatrix() {
+        return viewMatrix;
+    }
+
+    public Matrix4f updateViewMatrix() {
+        return Transformation.updateGenericViewMatrix(position, rotation, viewMatrix);
     }
 
     public Vector3f getPosition() {

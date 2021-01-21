@@ -131,9 +131,10 @@ public class GameItem implements GameComponent{
      * Empty input function to conform to the GameComponent interface.  Intended to be overridden by classes that extend
      * GameItem.
      * @param window the Window object this GameComponent is using.
+     * @param mouseInput object to handle the mouse input.
      */
     @Override
-    public void input(Window window) {
+    public void input(Window window, MouseInput mouseInput) {
 
     }
 
@@ -141,9 +142,11 @@ public class GameItem implements GameComponent{
      * Empty update function to conform to the GameComponent interface.  Intended to be overridden by classes that extend
      * GameItem.
      * @param interval elapsed time
+     * @param mouseInput object to handle the mouse input.
+     * @param window the window being used to render the game
      */
     @Override
-    public void update(float interval) {
+    public void update(float interval, MouseInput mouseInput, Window window) {
 
     }
 
@@ -164,5 +167,28 @@ public class GameItem implements GameComponent{
     @Override
     public void cleanup() {
 
+    }
+
+
+    /**
+     * Query a mesh and get the real current positions of its vertices.  You will likely want this for collision
+     * checking and related logic.
+     * @return an set of current vertices
+     */
+    public Vector3f[] getMeshVerticesRealLocations(){
+        Vector3f[] meshVertices = this.mesh.getVertexPositions();
+        Vector3f[] currentVertices = new Vector3f[meshVertices.length];
+        Vector3f origin = new Vector3f();
+
+        for(int i = 0; i< meshVertices.length; i++){
+            currentVertices[i] = new Vector3f(meshVertices[i]);
+            new Matrix4f().translate(origin)
+                    .translate(this.getPosition())
+                    .rotateAffineXYZ(this.getRotation().x, this.getRotation().y, this.getRotation().z)
+                    .translate(origin.negate())
+                    .transformPosition(currentVertices[i]);
+        }
+
+        return currentVertices;
     }
 }

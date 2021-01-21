@@ -1,6 +1,7 @@
 package BBDGameLibrary.GameEngine.SampleGame;
 
 import BBDGameLibrary.GameEngine.GameItem;
+import BBDGameLibrary.GameEngine.MouseInput;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;
 import BBDGameLibrary.OpenGL.ShaderProgram;
@@ -41,7 +42,7 @@ public class DummyCube extends GameItem {
      * @param window the Window object this GameComponent is using.
      */
     @Override
-    public void input(Window window){
+    public void input(Window window, MouseInput mouseInput){
         displyInc = 0;
         displxInc = 0;
         displzInc = 0;
@@ -71,7 +72,7 @@ public class DummyCube extends GameItem {
      * @param interval elapsed time
      */
     @Override
-    public void update(float interval){
+    public void update(float interval, MouseInput mouseInput, Window window){
         // Update position
         Vector3f itemPos = this.getPosition();
         float posx = itemPos.x + displxInc * 0.01f;

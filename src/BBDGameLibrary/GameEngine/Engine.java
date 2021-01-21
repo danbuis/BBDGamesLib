@@ -34,6 +34,14 @@ public class Engine implements Runnable {
      */
     private final GameComponent gameLogic;
 
+    private final MouseInput mouseInput;
+
+    private double lastFps;
+
+    private int fps;
+
+    private String windowTitle;
+
     /**
      * General purpose constructor
      * @param windowTitle title of the window
@@ -43,8 +51,10 @@ public class Engine implements Runnable {
      * @param gameLogic GameComponent item to be rendered by the engine
      * @throws Exception might throw an exception
      */
-    public Engine(String windowTitle, int width, int height, boolean vSync, GameComponent gameLogic) throws Exception {
-        window = new Window(windowTitle, width, height, vSync);
+    public Engine(String windowTitle, int width, int height, boolean vSync, Window.WindowOptions opts, GameComponent gameLogic) throws Exception {
+        this.windowTitle = windowTitle;
+        window = new Window(windowTitle, width, height, vSync, opts);
+        mouseInput = new MouseInput();
         this.gameLogic = gameLogic;
         timer = new Timer();
     }
@@ -68,10 +78,12 @@ public class Engine implements Runnable {
      * Actions to be performed when initializing the Engine
      */
     protected void init() {
-   
         window.init();
         timer.init();
+        mouseInput.init(window);
         gameLogic.init(window);
+        lastFps = timer.getTime();
+        fps = 0;
     }
 
     /**
@@ -129,7 +141,8 @@ public class Engine implements Runnable {
      * Ensures that the gameLogic item processes the input from the window
      */
     protected void input() {
-        gameLogic.input(window);
+        mouseInput.input(window);
+        gameLogic.input(window, mouseInput);
     }
 
     /**
@@ -137,13 +150,19 @@ public class Engine implements Runnable {
      * @param interval interval since last update
      */
     protected void update(float interval) {
-        gameLogic.update(interval);
+        gameLogic.update(interval, mouseInput, window);
     }
 
     /**
      * Ensures that the gameLogic item performs a render
      */
     protected void render() {
+        if ( window.getWindowOptions().showFps && timer.getLastLoopTime() - lastFps > 1 ) {
+            lastFps = timer.getLastLoopTime();
+            window.setWindowTitle(windowTitle + " - " + fps + " FPS");
+            fps = 0;
+        }
+        fps++;
         gameLogic.render(window);
         window.update();
     }

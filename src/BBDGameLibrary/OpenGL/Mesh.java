@@ -3,6 +3,7 @@ package BBDGameLibrary.OpenGL;
 import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -25,22 +26,40 @@ public class Mesh {
     /**
      * Vertex array object id.  Created automatically
      */
-    private final int vaoId;
+    private  int vaoId;
 
     /**
      * List of vertex buffer objects.  Created and populatd automatically
      */
-    private final List<Integer> vboIdList;
+    private  List<Integer> vboIdList;
 
     /**
      * Count of vertices for the mesh
      */
-    private final int vertexCount;
+    private int vertexCount;
 
     /**
      * What Texture to apply to the mesh
      */
-    private final Texture texture;
+    private  Texture texture;
+
+    /**
+     * A list of indices to match up with the positions
+     */
+    private int[] indices;
+
+    public int[] getIndices() {
+        return indices;
+    }
+
+    public Vector3f[] getVertexPositions() {
+        return vertexPositions;
+    }
+
+    /**
+     * An array of vertex positions.
+     */
+    private Vector3f[] vertexPositions;
 
     /**
      * Position coordinates are created directly from the BBDPoints that define the polygon.
@@ -83,7 +102,7 @@ public class Mesh {
          return textureCoordinates;
     }
 
-    /*
+    /**
      * Build indices array for the mesh
      * @param inputShape BBDPolygon to use to create a mesh
      * @return indices array
@@ -113,8 +132,35 @@ public class Mesh {
     public static Mesh buildMeshFromPolygon(BBDPolygon inputShape, Texture texture){
         float[] positions = buildMeshPositions(inputShape);
         float[] textureCoordinates = buildTextureCoordinates(inputShape);
-        int [] indices = buildIndices(inputShape);
+        int[] indices = buildIndices(inputShape);
         return new Mesh(positions, textureCoordinates, indices, texture);
+    }
+
+    /**
+     * Build a mesh object from a BBDPolygon object.
+     * @param inputShape BBDPolygon to use to create a mesh
+     * @return Mesh object
+     */
+    public static Mesh buildMeshFromPolygon(BBDPolygon inputShape){
+        float[] positions = buildMeshPositions(inputShape);
+        float[] textureCoordinates = buildTextureCoordinates(inputShape);
+        int[] indices = buildIndices(inputShape);
+        return new Mesh(positions, textureCoordinates, indices);
+    }
+
+    /**
+     * CAll purpose constructor to pass in vertex data for a mesh that doesn't need to be rendered to the screen.  A mesh
+     * created with this constructor won't be able to interact with any of the openGL functions.
+     * @param positions positions of vertices
+     * @param textCoords texture coordinates of vertices
+     * @param indices list of indices created triangles, triangles need to be clockwise
+     */
+    public Mesh(float[] positions, float[] textCoords, int[] indices) {
+        FloatBuffer posBuffer = null;
+        FloatBuffer textCoordsBuffer = null;
+        IntBuffer indicesBuffer = null;
+
+        this.populateVertexData(positions, indices);
     }
 
     /**
@@ -128,9 +174,11 @@ public class Mesh {
         FloatBuffer posBuffer = null;
         FloatBuffer textCoordsBuffer = null;
         IntBuffer indicesBuffer = null;
+
+        this.populateVertexData(positions, indices);
+
         try {
             this.texture = texture;
-            vertexCount = indices.length;
             vboIdList = new ArrayList<>();
 
             vaoId = glGenVertexArrays();
@@ -172,6 +220,22 @@ public class Mesh {
             if (indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer);
             }
+        }
+    }
+
+    /**
+     * Populate the non-changing vertex data so that it is in a form that can be referenced by other classes
+     * @param positions vertex positions
+     * @param indices indices used to create triangles of the mesh
+     */
+    private void populateVertexData(float[] positions, int[] indices) {
+        //build vertex data
+        this.indices = indices;
+        this.vertexCount = indices.length;
+        this.vertexPositions = new Vector3f[positions.length / 3];
+        for(int i = 0; i<vertexPositions.length; i++){
+            int startingIndex = i*3;
+            vertexPositions[i] = new Vector3f(positions[startingIndex], positions[startingIndex + 1], positions[startingIndex + 2]);
         }
     }
 

@@ -17,7 +17,7 @@ public class TestGameItem2d {
     Window window = null;
     boolean windowInit = false;
     public void initWindow(){
-        window = new Window("test", 5, 5, true);
+        window = new Window("test", 5, 5, true, new Window.WindowOptions());
         window.init();
     }
 

@@ -18,13 +18,13 @@ public interface GameComponent {
      * Handle keyboard or mouse input
      * @param window the Window object this GameComponent is using.
      */
-    void input(Window window);
+    void input(Window window, MouseInput mouseInput);
 
     /**
      * Update the GameComponent
      * @param interval elapsed time
      */
-    void update(float interval);
+    void update(float interval, MouseInput mouseInput, Window window);
 
     /**
      * Render the GameComponent
