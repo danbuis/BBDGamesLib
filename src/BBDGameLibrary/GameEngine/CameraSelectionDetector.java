@@ -8,6 +8,9 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.Vector;
 
+/**
+ * A class to select items that are directly in front of the center of the camera
+ */
 public class CameraSelectionDetector {
 
     private final Vector3f max;
@@ -25,12 +28,27 @@ public class CameraSelectionDetector {
         nearFar = new Vector2f();
     }
 
-    public GameItem selectGameItem(GameItem[] gameItems, Camera camera) {
+    /**
+     * Select the GameItem that is closest to the camera and intersects a ray going straight out from the center.
+     * @param itemList  List of GameItems that are eligible for selection
+     * @param camera Camera object to be used for selecting objects
+     * @return Closest GameItem that is intersected
+     */
+    public GameItem selectGameItem(ArrayList<GameItem> itemList, Camera camera) {
         dir = camera.getViewMatrix().positiveZ(dir).negate();
-        return selectGameItem(gameItems, camera.getPosition(), dir);
+        return selectItem(itemList, camera.getPosition(), dir, 0.001f);
     }
 
-    protected GameItem selectItem(ArrayList<GameItem> itemList, Vector3f center, Vector3f dir, float marginOfError){
+    /**
+     * Select the GameItem that is closest to the camera and intersects a ray going in the given direction and starting
+     * at the given point
+     * @param itemList  List of GameItems that are eligible for selection
+     * @param origin Origin of the ray to use for intersection
+     * @param dir Direction of the ray to use for intersection
+     * @param marginOfError How close to parallel to the dir do you want to have count as an intersection
+     * @return Closest GameItem that is intersected
+     */
+    protected GameItem selectItem(ArrayList<GameItem> itemList, Vector3f origin, Vector3f dir, float marginOfError){
         GameItem selectedItem = null;
         float closestDistance = Float.POSITIVE_INFINITY;
 
@@ -38,7 +56,7 @@ public class CameraSelectionDetector {
             Vector3f[] vertexList = item.getMeshVerticesRealLocations();
             int[] indices = item.getMesh().getIndices();
             for(int i=0; i < indices.length; i +=3){
-                float distance = Intersectionf.intersectRayTriangleFront(center, dir,
+                float distance = Intersectionf.intersectRayTriangleFront(origin, dir,
                         vertexList[indices[i]], vertexList[indices[i+1]],
                         vertexList[indices[i+2]], marginOfError);
                 if(distance != -1 && distance < closestDistance){
@@ -47,31 +65,6 @@ public class CameraSelectionDetector {
                 }
             }
         }
-
         return selectedItem;
-    }
-
-    protected GameItem selectGameItem(GameItem[] gameItems, Vector3f center, Vector3f dir) {
-        GameItem selectedGameItem = null;
-        float closestDistance = Float.POSITIVE_INFINITY;
-
-        System.out.println("Start of select");
-        for (GameItem gameItem : gameItems) {
-            min.set(gameItem.getPosition());
-            max.set(gameItem.getPosition());
-            min.add(-gameItem.getScale(), -gameItem.getScale(), -gameItem.getScale());
-            max.add(gameItem.getScale(), gameItem.getScale(), gameItem.getScale());
-            System.out.println("Checking : "+gameItem);
-            System.out.println("min : "+min);
-            System.out.println("max : "+max);
-            System.out.println("nearFar : "+nearFar);
-            if (Intersectionf.intersectRayAab(center, dir, min, max, nearFar) && nearFar.x < closestDistance) {
-                System.out.println("Intersected : "+gameItem);
-                closestDistance = nearFar.x;
-                selectedGameItem = gameItem;
-            }
-        }
-
-        return selectedGameItem;
     }
 }

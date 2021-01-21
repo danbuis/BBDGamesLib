@@ -9,6 +9,9 @@ import org.joml.Vector4f;
 
 import java.util.ArrayList;
 
+/**
+ * A class to select items using the mouse
+ */
 public class MouseSelectionDetector extends CameraSelectionDetector {
 
     private final Matrix4f invProjectionMatrix;
@@ -24,13 +27,29 @@ public class MouseSelectionDetector extends CameraSelectionDetector {
         tmpVec = new Vector4f();
     }
 
+    /**
+     * Select an item using the mouse.
+     * @param itemList List of GameItems that are eligible for selection
+     * @param window Window object being used for rendering
+     * @param mousePos Position of the mouse curser
+     * @param camera Camera object to be used for selecting objects
+     * @param marginOfError How close to parallel to the dir do you want to have count as an intersection
+     * @return Closest GameItem that is intersected
+     */
     public GameItem selectItem(ArrayList<GameItem> itemList, Window window, Vector2d mousePos, Camera camera, float marginOfError) {
 
         Vector3f mouseDir = getMouseDir(window, mousePos, camera);
 
         return selectItem(itemList, camera.getPosition(), mouseDir, marginOfError);
     }
-    
+
+    /**
+     * Get the ray projected from the given Camera object, through the mouse curser, and out to infinity.
+     * @param window Window object being used for rendering
+     * @param mousePos Position of the mouse curser
+     * @param camera Camera object to be used for selecting objects
+     * @return Direction of the ray from the Camera location through the mouse curser
+     */
     public Vector3f getMouseDir(Window window, Vector2d mousePos, Camera camera){
         // Transform mouse coordinates into normalized space [-1, 1]
         int wdwWidth = window.getWidth();
