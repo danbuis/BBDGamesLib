@@ -6,6 +6,7 @@ import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;
+import BBDGameLibrary.TestUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -19,17 +20,6 @@ public class TestGameItem2d {
     public void initWindow(){
         window = new Window("test", 5, 5, true, new Window.WindowOptions());
         window.init();
-    }
-
-    public BBDPolygon buildSquare(){
-        BBDPoint point1 = new BBDPoint(1,1);
-        BBDPoint point2 = new BBDPoint(1,-1);
-        BBDPoint point3 = new BBDPoint(-1,-1);
-        BBDPoint point4 = new BBDPoint(-1,1);
-
-        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
-
-        return new BBDPolygon(points);
     }
 
     public BBDPolygon buildSquareOffCenter(){
@@ -48,7 +38,7 @@ public class TestGameItem2d {
         if(!windowInit){
             initWindow();
         }
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
@@ -66,7 +56,7 @@ public class TestGameItem2d {
             initWindow();
         }
 
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
@@ -103,7 +93,7 @@ public class TestGameItem2d {
             initWindow();
         }
 
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
@@ -136,7 +126,7 @@ public class TestGameItem2d {
             initWindow();
         }
 
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3500, true);
@@ -173,7 +163,7 @@ public class TestGameItem2d {
             initWindow();
         }
 
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3500, true);
@@ -225,7 +215,7 @@ public class TestGameItem2d {
             initWindow();
         }
 
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
@@ -264,7 +254,7 @@ public class TestGameItem2d {
             initWindow();
         }
 
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
@@ -301,7 +291,7 @@ public class TestGameItem2d {
             initWindow();
         }
 
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);
@@ -347,7 +337,7 @@ public class TestGameItem2d {
             initWindow();
         }
 
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
         GameItem2d item = new GameItem2d(mesh, null, poly, 3000, true);

@@ -5,6 +5,7 @@ import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.Geometry2d.BBDSegment;
 import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
+import BBDGameLibrary.TestUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -15,17 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class TestBBDPolygon {
-
-    public BBDPolygon buildSquare(){
-        BBDPoint point1 = new BBDPoint(1,1);
-        BBDPoint point2 = new BBDPoint(1,-1);
-        BBDPoint point3 = new BBDPoint(-1,-1);
-        BBDPoint point4 = new BBDPoint(-1,1);
-
-        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
-
-        return new BBDPolygon(points);
-    }
 
     public BBDPolygon buildDiamond(){
         BBDPoint point1 = new BBDPoint(1,0);
@@ -40,7 +30,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testConstructor(){
-        BBDPolygon test = buildSquare();
+        BBDPolygon test = TestUtils.buildSquare();
 
         //make sure that the arrays have the right length
         assertEquals(4, test.getPoints().size());
@@ -55,7 +45,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testDimensions(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         BBDPolygon diamond = this.buildDiamond();
 
         assertEquals(2, square.width());
@@ -66,7 +56,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testTranslate(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         square.translate(4,4);
         assertEquals(new BBDPoint(5,5), square.getPoints().get(0));
         assertEquals(new BBDPoint(5,3), square.getPoints().get(1));
@@ -76,7 +66,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testCenter(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         assertEquals(new BBDPoint(0,0), square.center());
 
         square.translate(5,5);
@@ -85,7 +75,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testScale(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         square.scale(0.5f);
         assertEquals(new BBDPoint(0.5f, 0.5f), square.getPoints().get(0));
@@ -99,7 +89,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testScaleFromPoint(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         square.scaleFromPoint(new BBDPoint(1,1), 0.5f);
         assertEquals(new BBDPoint(1, 1), square.getPoints().get(0));
@@ -107,7 +97,7 @@ public class TestBBDPolygon {
         assertEquals(new BBDPoint(0, 0), square.getPoints().get(2));
         assertEquals(new BBDPoint(0, 1), square.getPoints().get(3));
 
-        BBDPolygon otherSquare = this.buildSquare();
+        BBDPolygon otherSquare = TestUtils.buildSquare();
 
         otherSquare.scaleFromPoint(new BBDPoint(-1,-1), 5);
         assertEquals(9, otherSquare.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -117,7 +107,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testRotate(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         square.rotate((float) Math.PI);
         assertEquals(new BBDPoint(-1, -1), square.getPoints().get(0));
@@ -128,7 +118,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testRotateAroundPoint(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         square.rotateAroundPoint(new BBDPoint(1,1), (float) Math.PI);
         assertEquals(new BBDPoint(1, 1), square.getPoints().get(0));
@@ -174,7 +164,7 @@ public class TestBBDPolygon {
         assertEquals(3, diamond.segmentIntersectPolygonList(colinear).length);
 
         //a block of tests to help pinpoint an issue elsewhere
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f)));
         assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, 0.5f), new BBDPoint(12, 0.5f))).length);
         assertEquals(1, square.segmentIntersectPolygonList(new BBDSegment(new BBDPoint(0.5f, -0.5f), new BBDPoint(12, -0.5f))).length);
@@ -198,7 +188,7 @@ public class TestBBDPolygon {
         assertTrue(diamond.checkPointInside(onVertex));
         assertTrue(diamond.checkPointInside(onEdge));
 
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         assertTrue(square.checkPointInside(new BBDPoint(0.5f, 0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(0.5f, -0.5f)));
         assertTrue(square.checkPointInside(new BBDPoint(-0.5f, -0.5f)));
@@ -216,7 +206,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testArea(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         //check basic method
         assertEquals(4, square.area(), BBDGeometryUtils.ALLOWABLE_DELTA);
         //check if object is modified
@@ -245,14 +235,14 @@ public class TestBBDPolygon {
     @Test
     public void testPolygonTouchesPolygon(){
         //set up some squares
-        BBDPolygon controlPolygon = this.buildSquare();
-        BBDPolygon copy = this.buildSquare();
-        BBDPolygon overlapping = this.buildSquare();
-        BBDPolygon adjacent = this.buildSquare();
-        BBDPolygon insideEdge = this.buildSquare();
-        BBDPolygon shareVertex = this.buildSquare();
-        BBDPolygon contains = this.buildSquare();
-        BBDPolygon separate = this.buildSquare();
+        BBDPolygon controlPolygon = TestUtils.buildSquare();
+        BBDPolygon copy = TestUtils.buildSquare();
+        BBDPolygon overlapping = TestUtils.buildSquare();
+        BBDPolygon adjacent = TestUtils.buildSquare();
+        BBDPolygon insideEdge = TestUtils.buildSquare();
+        BBDPolygon shareVertex = TestUtils.buildSquare();
+        BBDPolygon contains = TestUtils.buildSquare();
+        BBDPolygon separate = TestUtils.buildSquare();
 
         //modify most of them to create several types of scenarios
         overlapping.translate(0.2f, 0.2f);
@@ -288,14 +278,14 @@ public class TestBBDPolygon {
     @Test
     public void testPolygonIntersectingPolygon(){
         //set up some squares
-        BBDPolygon controlPolygon = this.buildSquare();
-        BBDPolygon copy = this.buildSquare();
-        BBDPolygon overlapping = this.buildSquare();
-        BBDPolygon adjacent = this.buildSquare();
-        BBDPolygon insideEdge = this.buildSquare();
-        BBDPolygon shareVertex = this.buildSquare();
-        BBDPolygon contains = this.buildSquare();
-        BBDPolygon separate = this.buildSquare();
+        BBDPolygon controlPolygon = TestUtils.buildSquare();
+        BBDPolygon copy = TestUtils.buildSquare();
+        BBDPolygon overlapping = TestUtils.buildSquare();
+        BBDPolygon adjacent = TestUtils.buildSquare();
+        BBDPolygon insideEdge = TestUtils.buildSquare();
+        BBDPolygon shareVertex = TestUtils.buildSquare();
+        BBDPolygon contains = TestUtils.buildSquare();
+        BBDPolygon separate = TestUtils.buildSquare();
 
         //modify most of them to create several types of scenarios
         overlapping.translate(0.2f, 0.2f);
@@ -331,14 +321,14 @@ public class TestBBDPolygon {
     @Test
     public void testPolygonContainsPolygon(){
         //set up some squares
-        BBDPolygon controlPolygon = this.buildSquare();
-        BBDPolygon copy = this.buildSquare();
-        BBDPolygon overlapping = this.buildSquare();
-        BBDPolygon adjacent = this.buildSquare();
-        BBDPolygon insideEdge = this.buildSquare();
-        BBDPolygon shareVertex = this.buildSquare();
-        BBDPolygon contains = this.buildSquare();
-        BBDPolygon separate = this.buildSquare();
+        BBDPolygon controlPolygon = TestUtils.buildSquare();
+        BBDPolygon copy = TestUtils.buildSquare();
+        BBDPolygon overlapping = TestUtils.buildSquare();
+        BBDPolygon adjacent = TestUtils.buildSquare();
+        BBDPolygon insideEdge = TestUtils.buildSquare();
+        BBDPolygon shareVertex = TestUtils.buildSquare();
+        BBDPolygon contains = TestUtils.buildSquare();
+        BBDPolygon separate = TestUtils.buildSquare();
 
         //modify most of them to create several types of scenarios
         overlapping.translate(0.2f, 0.2f);
@@ -455,12 +445,12 @@ public class TestBBDPolygon {
     @Test
     public void testDistanceToPolygon(){
         //set up some squares
-        BBDPolygon controlPolygon = this.buildSquare();
-        BBDPolygon copy = this.buildSquare();
-        BBDPolygon overlapping = this.buildSquare();
-        BBDPolygon adjacent = this.buildSquare();
-        BBDPolygon contains = this.buildSquare();
-        BBDPolygon separate = this.buildSquare();
+        BBDPolygon controlPolygon = TestUtils.buildSquare();
+        BBDPolygon copy = TestUtils.buildSquare();
+        BBDPolygon overlapping = TestUtils.buildSquare();
+        BBDPolygon adjacent = TestUtils.buildSquare();
+        BBDPolygon contains = TestUtils.buildSquare();
+        BBDPolygon separate = TestUtils.buildSquare();
 
         //modify most of them to create several types of scenarios
         overlapping.translate(0.2f, 0.2f);
@@ -477,7 +467,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testDistanceToSegment(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         BBDSegment adjacentShorter = new BBDSegment(new BBDPoint(0,1), new BBDPoint(0.5f, 1));
         BBDSegment adjacentLonger = new BBDSegment(new BBDPoint(-4,1), new BBDPoint(4,1));
@@ -494,7 +484,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testDistanceToPoint(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(0,0)), BBDGeometryUtils.ALLOWABLE_DELTA);
         assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(1,1)), BBDGeometryUtils.ALLOWABLE_DELTA);
@@ -504,10 +494,10 @@ public class TestBBDPolygon {
 
     @Test
     public void testEquals(){
-        BBDPolygon square1 = this.buildSquare();
-        BBDPolygon square2 = this.buildSquare();
-        BBDPolygon square3 = this.buildSquare();
-        BBDPolygon square4 = this.buildSquare();
+        BBDPolygon square1 = TestUtils.buildSquare();
+        BBDPolygon square2 = TestUtils.buildSquare();
+        BBDPolygon square3 = TestUtils.buildSquare();
+        BBDPolygon square4 = TestUtils.buildSquare();
         square3.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
         square4.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
 
@@ -541,7 +531,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testInsertPoint(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         BBDPoint insert = new BBDPoint(0,0);
 
         assertFalse(square.insertPoint(insert, -1));
@@ -556,7 +546,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testDeletePointIndex(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         assertFalse(square.deletePoint(-1));
         assertFalse(square.deletePoint(4));
@@ -574,7 +564,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testDeletePointObject(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         BBDPoint deleted = new BBDPoint(1,1);
 
         assertFalse(square.deletePoint(new BBDPoint(0,0)));
@@ -593,7 +583,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testMoveSinglePoint(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         assertFalse(square.movePoint(-1, 9,9));
         assertFalse(square.movePoint(7, 9,9));
@@ -610,7 +600,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testMoveMultiplePoints(){
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
 
         assertFalse(square.movePoint(-1, 9,9));
         assertFalse(square.movePoint(7, 9,9));
@@ -643,20 +633,20 @@ public class TestBBDPolygon {
         ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point15, point2, point25, point3, point35, point4, point45));
         BBDPolygon dirty = new BBDPolygon(points);
 
-        assertEquals(this.buildSquare(), dirty.cleanPolygon());
+        assertEquals(TestUtils.buildSquare(), dirty.cleanPolygon());
 
         BBDPolygon dupVert = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point2, point2, point3, point4)));
         assertEquals(5, dupVert.getPoints().size());
-        assertNotEquals(dupVert, this.buildSquare());
+        assertNotEquals(dupVert, TestUtils.buildSquare());
 
         BBDPolygon cleanedDupVert = dupVert.cleanPolygon();
         assertEquals(4, cleanedDupVert.getPoints().size());
-        assertEquals(cleanedDupVert, this.buildSquare());
+        assertEquals(cleanedDupVert, TestUtils.buildSquare());
     }
 
     @Test
     public void testDirectionalityOfSegments(){
-        BBDPolygon square1 = this.buildSquare();
+        BBDPolygon square1 = TestUtils.buildSquare();
         square1.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
         assertEquals(new BBDPoint(1,1), square1.getSegments().get(0).getStartPoint());
         assertEquals(new BBDPoint(1,-1), square1.getSegments().get(0).getEndPoint());
@@ -668,7 +658,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testOffsetOutwardConvex() {
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         try {
             //try offsetting.  It is already CW by default
             BBDPolygon offsetZero = square.offsetPolygon(1, 0, 0);
@@ -729,7 +719,7 @@ public class TestBBDPolygon {
             assertEquals(expectedFourContig, offsetWhole);
 
             //do a test to ensure that the original shape hasn't had its segments rotated.
-            square = this.buildSquare();
+            square = TestUtils.buildSquare();
             BBDSegment firstSeg = square.getSegments().get(0);
             square.offsetPolygon(1);
             BBDSegment newFirstSeg = square.getSegments().get(0);
@@ -741,7 +731,7 @@ public class TestBBDPolygon {
 
     @Test
     public void testOffsetInwardConvex() {
-        BBDPolygon square = this.buildSquare();
+        BBDPolygon square = TestUtils.buildSquare();
         try {
             //try offsetting.  It is already CW by default
             BBDPolygon offsetZero = square.offsetPolygon(-0.5f, 0, 0);
@@ -800,7 +790,7 @@ public class TestBBDPolygon {
             assertEquals(expectedFourContig, offsetWhole);
 
             //do a test to ensure that the original shape hasn't had its segments rotated.
-            square = this.buildSquare();
+            square = TestUtils.buildSquare();
             BBDSegment firstSeg = square.getSegments().get(0);
             square.offsetPolygon(-0.5f);
             BBDSegment newFirstSeg = square.getSegments().get(0);
@@ -824,11 +814,11 @@ public class TestBBDPolygon {
 
     @Test
     public void testConvexPolygonIntersection(){
-        BBDPolygon controlPolygon = this.buildSquare();
-        BBDPolygon overlapping = this.buildSquare();
-        BBDPolygon adjacent = this.buildSquare();
-        BBDPolygon contains = this.buildSquare();
-        BBDPolygon separate = this.buildSquare();
+        BBDPolygon controlPolygon = TestUtils.buildSquare();
+        BBDPolygon overlapping = TestUtils.buildSquare();
+        BBDPolygon adjacent = TestUtils.buildSquare();
+        BBDPolygon contains = TestUtils.buildSquare();
+        BBDPolygon separate = TestUtils.buildSquare();
 
         //modify most of them to create several types of scenarios
         overlapping.translate(0.2f, 0.2f);

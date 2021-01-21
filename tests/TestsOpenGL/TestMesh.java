@@ -4,6 +4,7 @@ import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
+import BBDGameLibrary.TestUtils;
 import org.joml.Vector3f;
 import org.junit.jupiter.api.Test;
 
@@ -14,20 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestMesh {
 
-    public BBDPolygon buildSquare(){
-        BBDPoint point1 = new BBDPoint(1,1);
-        BBDPoint point2 = new BBDPoint(1,-1);
-        BBDPoint point3 = new BBDPoint(-1,-1);
-        BBDPoint point4 = new BBDPoint(-1,1);
-
-        ArrayList<BBDPoint> points = new ArrayList<BBDPoint>(Arrays.asList(point1, point2, point3, point4));
-
-        return new BBDPolygon(points);
-    }
-
     @Test
     public void testBuildMeshPositionsFromPolygon(){
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         float[] testPositions = Mesh.buildMeshPositions(poly);
         assertEquals(12, testPositions.length);
 
@@ -93,7 +83,7 @@ public class TestMesh {
 
     @Test
     public void testBuildMeshIndicesFromPolygon(){
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         int[] testPositions = Mesh.buildIndices(poly);
         assertEquals(6, testPositions.length);
         assertEquals(testPositions[0], 2);
@@ -107,7 +97,7 @@ public class TestMesh {
 
     @Test
     public void testMeshVertPositions(){
-        BBDPolygon poly = this.buildSquare();
+        BBDPolygon poly = TestUtils.buildSquare();
         Mesh test = Mesh.buildMeshFromPolygon(poly);
         Vector3f[] testVertices = test.getVertexPositions();
         assertEquals(4, testVertices.length);
