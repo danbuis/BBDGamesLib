@@ -45,6 +45,11 @@ public class GameItem implements GameComponent{
     public final ShaderProgram shader;
 
     /**
+     * Mesh to be used for anything related to collisions or selections.  Typically a low-poly version of the regular mesh.
+     */
+    private Mesh collisionMesh;
+
+    /**
      * General purpose constructor to create a GameItem.  Instantiates translation, rotation, and scale to neutral
      * values.
      * @param mesh Mesh object to be rendered to the screen
@@ -53,6 +58,7 @@ public class GameItem implements GameComponent{
     public GameItem(Mesh mesh, ShaderProgram shaderProgram) {
         this.mesh = mesh;
         this.shader = shaderProgram;
+        this.collisionMesh = mesh;
         position = new Vector3f();
         scale = 1;
         rotation = new Vector3f();
@@ -103,6 +109,19 @@ public class GameItem implements GameComponent{
 
     public Mesh getMesh() {
         return mesh;
+    }
+
+    public Mesh getCollisionMesh(){
+        return this.collisionMesh;
+    }
+
+    /**
+     * Set the collision mesh to something other than the default.  This lets the user define their own custom collision
+     * mesh using whatever logic they want.
+     * @param mesh Mesh object to use for a collision mesh
+     */
+    public void setCollisionMesh(Mesh mesh){
+        this.collisionMesh = mesh;
     }
 
     /**
@@ -176,7 +195,7 @@ public class GameItem implements GameComponent{
      * @return an set of current vertices
      */
     public Vector3f[] getMeshVerticesRealLocations(){
-        Vector3f[] meshVertices = this.mesh.getVertexPositions();
+        Vector3f[] meshVertices = this.collisionMesh.getVertexPositions();
         Vector3f[] currentVertices = new Vector3f[meshVertices.length];
         Vector3f origin = new Vector3f();
 

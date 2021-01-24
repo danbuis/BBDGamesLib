@@ -2,26 +2,16 @@ package TestsGameEngine;
 
 import BBDGameLibrary.GameEngine.GameItem;
 import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
-import BBDGameLibrary.Geometry2d.BBDPoint;
-import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
+import BBDGameLibrary.TestUtils;
 import org.joml.Vector3f;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class TestGameItem {
 
     private Mesh buildSquare(){
-        BBDPoint point1 = new BBDPoint(1,1);
-        BBDPoint point2 = new BBDPoint(1,-1);
-        BBDPoint point3 = new BBDPoint(-1,-1);
-        BBDPoint point4 = new BBDPoint(-1,1);
-
-        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
-
-        return Mesh.buildMeshFromPolygon(new BBDPolygon(points));
+        return Mesh.buildMeshFromPolygon(TestUtils.buildSquare());
     }
 
     // create a basic shader program

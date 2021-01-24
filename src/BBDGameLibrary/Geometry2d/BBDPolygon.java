@@ -74,7 +74,7 @@ public class BBDPolygon implements BBDGeometry{
         this.segments = segments;
     }
 
-    private BBDPolygon copyPolygon(){
+    BBDPolygon copyPolygon(){
         ArrayList<BBDPoint> copyList = new ArrayList<>();
         for(BBDPoint point : this.points){
             copyList.add(new BBDPoint(point));
@@ -627,108 +627,6 @@ public class BBDPolygon implements BBDGeometry{
         return true;
     }
 
-    /**
-     * Offset an entire polygon with a simpler function call.  Positive offsets make the shape bigger.  Negative values
-     * can be used, but may behave unpredictable.  Convex polygons are the only ones supported right now cancave polygons
-     * may behave unpredictably
-     * @param offsetDistance How far to offset the shape.  Positive numbers shift the edge away from the center.  Negative
-     *                       values are not supported right now and may behave unpredictably
-     * @return  new BBDPolygon that has the offset added to the base shape
-     * @throws ParallelLinesException if you are trying to calculate the intercept of parallel lines.  If you encounter this
-     *                                it means you have some colinear lines and they should probably be combined
-     */
-    public BBDPolygon offsetPolygon(float offsetDistance) throws ParallelLinesException {
-        return this.offsetPolygon(offsetDistance, 0, this.segments.size() -1);
-    }
-
-    /**
-     * Offset a contiguous portion of a polygon.  Positive offsets make the shape bigger.  Negative values can be used,
-     * but may behave unpredictably.  Convex polygons are the only ones supported right now, concave polygons may behave
-     * unpredictably.
-     * @param offsetDistance How far to offset the shape.  Positive numbers shift the edge away from the center.  Negative
-     *                       values are not supported right now and may behave unpredictably
-     * @param startIndex The segment index from which to start the offset.  The offset will proceed to the next highest
-     *                   index and wrap to 0 when it reaches the end
-     * @param endIndex The segment index to terminate the offset.
-     * @return A new BBDPolygon that has the offset added to the base shape
-     * @throws ParallelLinesException if you are trying to calculate the intercept of parallel lines.  If you encounter this
-     *                                it means you have some colinear lines and they should probably be combined
-     */
-    public BBDPolygon offsetPolygon(float offsetDistance, int startIndex, int endIndex) throws ParallelLinesException {
-        //check polygon direction so we know which way to offset
-        float offsetAngleModifier;
-        if (this.determineDirectionality() == BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON){
-            offsetAngleModifier = (float)Math.PI/2;
-        }else{
-            offsetAngleModifier = (float)-Math.PI/2;
-        }
-
-        //loop through the segments from the start to the end and copy
-        //build a list off offsets and a list of not, which is 2 contiguous lists
-        ArrayList<BBDSegment> offsetSegments = new ArrayList<>();
-        ArrayList<BBDSegment> otherSegments = new ArrayList<>();
-        float currentAngle;
-        BBDSegment segment;
-
-        //deep copy to avoid rotating the original list.
-        ArrayList<BBDSegment> segmentList = new ArrayList<>();
-        for (BBDSegment seg: this.segments){
-            segmentList.add(new BBDSegment(seg));
-        }
-
-        Collections.rotate(segmentList, -startIndex);
-
-        for(int i = 0; i< segmentList.size() ; i++){
-            segment = segmentList.get(i);
-            if(i<=(endIndex-startIndex + this.segments.size())%this.segments.size()) {
-                currentAngle = segment.getStartPoint().angleToOtherPoint(segment.getEndPoint());
-                BBDSegment segmentToAdd = new BBDSegment(segment, offsetDistance, (float) (currentAngle-offsetAngleModifier));
-                offsetSegments.add(segmentToAdd);
-            }else{
-                otherSegments.add(segment);
-            }
-        }
-
-        ArrayList<BBDPoint> offsetPoints = new ArrayList<>();
-        //find new vertices
-        if(otherSegments.size() != 0) {
-            //get the first
-            offsetPoints.add(offsetSegments.get(0).interceptPoint(otherSegments.get(otherSegments.size() - 1)));
-            //get the middles
-            if (offsetSegments.size() > 1) {
-                for (int i = 0; i < offsetSegments.size() - 1; i++) {
-                    offsetPoints.add(offsetSegments.get(i).interceptPoint(offsetSegments.get(i + 1)));
-                }
-            }
-            //get the last
-            offsetPoints.add(offsetSegments.get(offsetSegments.size() - 1).interceptPoint(otherSegments.get(0)));
-        }else{
-            for(int i = 0; i<offsetSegments.size() -1; i++){
-                offsetPoints.add(offsetSegments.get(i).interceptPoint(offsetSegments.get(i + 1)));
-            }
-            offsetPoints.add(offsetSegments.get(0).interceptPoint(offsetSegments.get(offsetSegments.size()-1)));
-        }
-
-        //find original verts to carry over
-        ArrayList<BBDPoint> otherPoints = new ArrayList<>();
-        if(otherSegments.size() != 0) {
-            for (BBDSegment nonOffsetSegment : otherSegments) {
-                if (!otherPoints.contains(nonOffsetSegment.getStartPoint())) {
-                    otherPoints.add(nonOffsetSegment.getStartPoint());
-                }
-                if (!otherPoints.contains(nonOffsetSegment.getEndPoint())) {
-                    otherPoints.add(nonOffsetSegment.getEndPoint());
-                }
-            }
-            //remove last and first as they will be effectively repeats of the first and last of the offsets
-            otherPoints.remove(otherPoints.size() - 1);
-            otherPoints.remove(0);
-        }
-
-        //combine and create new BBDPolygon
-        offsetPoints.addAll(otherPoints);
-        return new BBDPolygon(offsetPoints);
-    }
 
     /**
      * Determine the distance squared to another polygon.  If a polygon is overlapping
@@ -809,7 +707,7 @@ public class BBDPolygon implements BBDGeometry{
      * @param otherPolygon the other polygon we are looking at
      * @return a new polygon with the same shape, but a few extra points
      */
-    private BBDPolygon prepPolygonForBooleanOperations(BBDPolygon otherPolygon){
+    BBDPolygon prepPolygonForBooleanOperations(BBDPolygon otherPolygon){
         BBDPolygon returnPoly = this.copyPolygon();
 
         ArrayList<BBDPoint> pointsToInsert = this.polygonIntersectPolygonPoints(otherPolygon);
@@ -829,59 +727,6 @@ public class BBDPolygon implements BBDGeometry{
         return returnPoly;
     }
 
-    public BBDPolygon createPolygonIntersection(BBDPolygon otherPolygon){
-        //let's catch some corner cases first
-        if(this.checkPolygonContainsPolygon(otherPolygon)){
-            return otherPolygon.copyPolygon();
-        }
-        if(otherPolygon.checkPolygonContainsPolygon(this)){
-            return this.copyPolygon();
-        }
-
-        if(!this.checkPolygonIntersectsPolygon(otherPolygon)){
-            return null;
-        }
-
-        BBDPolygon polyThis = this.prepPolygonForBooleanOperations(otherPolygon);
-        BBDPolygon polyOther = otherPolygon.prepPolygonForBooleanOperations(this);
-
-        ArrayList<BBDPoint> newPolygonList = new ArrayList<>();
-
-        //find the first point that is inside while the preceding one is outside
-        int startingIndexThis = 0;
-        int currentIndexThis = 0;
-        int currentIndexOther;
-        int thisLength = polyThis.points.size();
-        int otherLength = polyOther.points.size();
-        for (int i=0; i<polyThis.points.size(); i++){
-            if(polyOther.checkPointInside(polyThis.points.get(i)) && !polyOther.checkPointInside(polyThis.points.get((i + thisLength-1)%thisLength))){
-                startingIndexThis = i;
-                currentIndexThis = i;
-                break;
-            }
-        }
-
-        // the goal is to make a full circuit around polyThis, so once we get all the way around we are done
-        // we can't use that as the only conditional because otherwise we will skip the whole block initially since
-        // the start and current index begin the same.  Therefore we check if it is empty initially, and once that becomes
-        // false on all other loops we will be checking if we have completed the full circuit
-        while (newPolygonList.isEmpty() || currentIndexThis-1 != startingIndexThis){
-            while(polyOther.checkPointInside(polyThis.points.get(currentIndexThis % thisLength))){
-                newPolygonList.add(polyThis.points.get(currentIndexThis % thisLength));
-                currentIndexThis++;
-            }
-            //at this point we are just added an intersection point, so let's find the same intersection on the other one, and then use the next point
-            currentIndexOther = polyOther.points.indexOf(polyThis.points.get((currentIndexThis-1)  % thisLength)) + 1;
-            while(polyThis.checkPointInside(polyOther.points.get(currentIndexOther % otherLength))){
-                newPolygonList.add(polyOther.points.get(currentIndexOther % otherLength));
-                currentIndexOther++;
-            }
-            currentIndexThis = polyThis.points.indexOf(polyOther.points.get((currentIndexOther-1) % otherLength)) + 1;
-        }
-        //remove the last one because it is a repeat of the first one
-        newPolygonList.remove(newPolygonList.size()-1);
-        return new BBDPolygon(newPolygonList);
-    }
 
     /**
      * Convert the polygon to an array of triangles.  Each triangle is guaranteed to be a

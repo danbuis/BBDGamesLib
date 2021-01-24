@@ -7,6 +7,7 @@ import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;
+import BBDGameLibrary.TestUtils;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 import org.junit.jupiter.api.Test;
@@ -20,36 +21,33 @@ public class TestSelection {
 
     Window window = null;
     boolean windowInit = false;
+    Camera camera = new Camera();
+    MouseSelectionDetector detector = new MouseSelectionDetector();
+
     public void initWindow(){
         window = new Window("test", 200, 200, true, new Window.WindowOptions());
         window.init();
     }
 
-    public BBDPolygon buildSquare(){
-        BBDPoint point1 = new BBDPoint(1,1);
-        BBDPoint point2 = new BBDPoint(1,-1);
-        BBDPoint point3 = new BBDPoint(-1,-1);
-        BBDPoint point4 = new BBDPoint(-1,1);
+    public GameItem makeItem(){
+        BBDPolygon poly = TestUtils.buildSquare();
+        Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
 
-        ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point2, point3, point4));
-
-        return new BBDPolygon(points);
+        return new GameItem(mesh, null);
     }
+
+
 
     @Test
     public void testSingleObjectSelection(){
         if(!windowInit){
             initWindow();
+            camera.setPosition(0,0,1);
         }
-        BBDPolygon poly = this.buildSquare();
-        Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
-
-        GameItem item = new GameItem(mesh, null);
+        GameItem item = makeItem();
         ArrayList<GameItem> itemList= new ArrayList<>();
         itemList.add(item);
-        Camera camera = new Camera();
-        camera.setPosition(0,0,1);
-        MouseSelectionDetector detector = new MouseSelectionDetector();
+
         GameItem selectedItem = null;
 
         selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
@@ -70,16 +68,12 @@ public class TestSelection {
     public void testRotatedItem(){
         if(!windowInit){
             initWindow();
+            camera.setPosition(0,0,1);
         }
-        BBDPolygon poly = this.buildSquare();
-        Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
-
-        GameItem item = new GameItem(mesh, null);
+        GameItem item = makeItem();
         ArrayList<GameItem> itemList= new ArrayList<>();
         itemList.add(item);
-        Camera camera = new Camera();
-        camera.setPosition(0,0,1);
-        MouseSelectionDetector detector = new MouseSelectionDetector();
+
         GameItem selectedItem = null;
 
         item.setPosition(0.95f, 0.95f, 0);
@@ -100,19 +94,15 @@ public class TestSelection {
     public void nearbyTest(){
         if(!windowInit){
             initWindow();
+            camera.setPosition(0,0,1);
         }
-        BBDPolygon poly = this.buildSquare();
-        Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
-
-        GameItem item = new GameItem(mesh, null);
-        GameItem item2 = new GameItem(mesh, null);
+        GameItem item = makeItem();
+        GameItem item2 = makeItem();
         ArrayList<GameItem> itemList= new ArrayList<>();
         itemList.add(item);
         itemList.add(item2);
-        Camera camera = new Camera();
-        camera.setPosition(0,0,1);
         item2.setPosition(2,0,0);
-        MouseSelectionDetector detector = new MouseSelectionDetector();
+
         GameItem selectedItem = null;
         selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertEquals(item, selectedItem);
@@ -123,20 +113,15 @@ public class TestSelection {
     public void testStacked(){
         if(!windowInit){
             initWindow();
+            camera.setPosition(0,0,1);
         }
-        BBDPolygon poly = this.buildSquare();
-        Mesh mesh = Mesh.buildMeshFromPolygon(poly, null);
-
-        GameItem item = new GameItem(mesh, null);
-        GameItem item2 = new GameItem(mesh, null);
+        GameItem item = makeItem();
+        GameItem item2 = makeItem();
         ArrayList<GameItem> itemList= new ArrayList<>();
         itemList.add(item);
         itemList.add(item2);
-        Camera camera = new Camera();
-        camera.setPosition(0,0,1);
         item2.setPosition(0,0,-1);
 
-        MouseSelectionDetector detector = new MouseSelectionDetector();
         GameItem selectedItem = null;
         selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertEquals(item, selectedItem);
