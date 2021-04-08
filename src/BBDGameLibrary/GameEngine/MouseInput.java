@@ -3,6 +3,9 @@ package BBDGameLibrary.GameEngine;
 import BBDGameLibrary.OpenGL.Window;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
+
+import java.util.Vector;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
@@ -49,10 +52,18 @@ public class MouseInput {
 
     /**
      * Get the location of the mouse.  Returns the location right now as a new object, not a reference to the class variable.
-     * @return Current location of the mouse curser
+     * @return Current location of the mouse
      */
     public Vector2d getCurrentPos() {
         return new Vector2d(currentPos.x, currentPos.y);
+    }
+
+    /**
+     * Get a reference to the current position.  This one will update in real time.
+     * @return Current location of the mouse
+     */
+    public Vector2d getCurrentPosReference(){
+        return currentPos;
     }
 
     public void input(Window window) {
