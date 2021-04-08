@@ -47,8 +47,12 @@ public class MouseInput {
         return displVec;
     }
 
+    /**
+     * Get the location of the mouse.  Returns the location right now as a new object, not a reference to the class variable.
+     * @return Current location of the mouse curser
+     */
     public Vector2d getCurrentPos() {
-        return currentPos;
+        return new Vector2d(currentPos.x, currentPos.y);
     }
 
     public void input(Window window) {
