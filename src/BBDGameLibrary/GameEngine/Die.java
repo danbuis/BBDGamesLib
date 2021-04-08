@@ -31,11 +31,12 @@ public class Die<T> {
         this.currentFace = this.faces[(int)Math.floor(Math.random() * this.sides)];
     }
 
-    public void setToFace(T facing){
+    public boolean setToFace(T facing){
         int indexOfFace = Arrays.asList(this.faces).indexOf(facing);
         if(indexOfFace != -1){
             this.currentFace = facing;
         }
+        return indexOfFace != -1;
     }
 
     public boolean isUnrolled(){
