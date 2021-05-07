@@ -233,4 +233,67 @@ public class BBDGeometryUtils {
         offsetPoints.addAll(otherPoints);
         return new BBDPolygon(offsetPoints);
     }
+
+    public static BBDPolygon offsetPolygonWithRadius(BBDPolygon poly1, float offsetDistance, int resolution) throws ParallelLinesException {
+        //check polygon direction so we know which way to offset
+        int polygonDirection = poly1.determineDirectionality();
+        float offsetAngleModifier;
+        if (polygonDirection == BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON){
+            offsetAngleModifier = (float)Math.PI/2;
+        }else{
+            offsetAngleModifier = (float)-Math.PI/2;
+        }
+
+        //build a list off offsets and a list of not, which is 2 contiguous lists
+        ArrayList<BBDSegment> offsetSegments = new ArrayList<>();
+        ArrayList<BBDSegment> otherSegments = new ArrayList<>();
+        float currentAngle;
+
+        //deep copy to avoid rotating the original list.
+        ArrayList<BBDSegment> segmentList = new ArrayList<>();
+        for (BBDSegment seg: poly1.getSegments()){
+            segmentList.add(new BBDSegment(seg));
+        }
+
+        //loop through the segments from the start to the end and copy
+        for(BBDSegment segment : poly1.getSegments()){
+            currentAngle = segment.getStartPoint().angleToOtherPoint(segment.getEndPoint());
+            BBDSegment segmentToAdd = new BBDSegment(segment, offsetDistance, (currentAngle-offsetAngleModifier));
+            offsetSegments.add(segmentToAdd);
+        }
+        float fullCircleRadians = 2 * (float)Math.PI;
+        float angleIncrement = fullCircleRadians/resolution;
+        ArrayList<BBDPoint> newPoints = new ArrayList<>();
+        //Build output by grabbing segments and building arc to next segment
+        for (int i=0; i<offsetSegments.size(); i++){
+            BBDPoint centerPoint = poly1.getSegments().get(i).getEndPoint();
+
+            BBDSegment currentSegment = offsetSegments.get(i);
+            BBDSegment nextSegment = offsetSegments.get((i+1)%offsetSegments.size());
+
+            newPoints.add(currentSegment.getEndPoint());
+
+            float startAngle = centerPoint.angleToOtherPoint(currentSegment.getEndPoint());
+            float endAngle = centerPoint.angleToOtherPoint(nextSegment.getStartPoint());
+            int numberOfSteps = (int)Math.floor(((startAngle+4)-(endAngle+4))/angleIncrement); //+4 to avoid the +/- flip at 180 degrees
+            if (numberOfSteps < 0){
+                numberOfSteps = (int)Math.floor(((startAngle+4+2*Math.PI)-(endAngle+4))/angleIncrement); //+4 to avoid the +/- flip at 180 degrees
+
+            }
+            float tempAngle = startAngle;
+            for (int count = 0; count < numberOfSteps; count++){
+                if (polygonDirection == BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON){
+                    tempAngle -= angleIncrement;
+                }else{
+                    tempAngle += angleIncrement;
+                }
+                newPoints.add(new BBDPoint(centerPoint, offsetDistance, tempAngle));
+            }
+
+            newPoints.add(nextSegment.getStartPoint());
+        }
+
+        //return new polygon
+        return new BBDPolygon(newPoints);
+    }
 }

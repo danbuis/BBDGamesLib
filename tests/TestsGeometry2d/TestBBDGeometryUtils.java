@@ -224,4 +224,20 @@ public class TestBBDGeometryUtils {
 
         assertEquals(testPoly, BBDGeometryUtils.createPolygonIntersection(controlPolygon, widePoly));
     }
+
+    @Test
+    public void testOffsetWithRadius(){
+        BBDPolygon square = TestUtils.buildSquare();
+
+        try {
+            //angle is a smidge more than 45, so we will for sure only have 1 per corner
+            BBDPolygon offset = BBDGeometryUtils.offsetPolygonWithRadius(square, 1, 7);
+            assertEquals(12, offset.getPoints().size());
+
+            //let's check the positions on this simple shape
+
+        } catch (ParallelLinesException e) {
+            e.printStackTrace();
+        }
+    }
 }
