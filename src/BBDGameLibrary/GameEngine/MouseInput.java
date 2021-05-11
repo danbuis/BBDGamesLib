@@ -16,8 +16,9 @@ public class MouseInput {
     private boolean inWindow = false;
 
     private boolean leftButtonPressed = false;
-
     private boolean rightButtonPressed = false;
+
+    private double scrollAmount = 0;
 
     public MouseInput() {
         previousPos = new Vector2d(-1, -1);
@@ -34,8 +35,11 @@ public class MouseInput {
             inWindow = entered;
         });
         glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode) -> {
-            leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
-            rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
+            leftButtonPressed = ((button == GLFW_MOUSE_BUTTON_1) && (action == GLFW_PRESS));
+            rightButtonPressed = ((button == GLFW_MOUSE_BUTTON_2) && (action == GLFW_PRESS));
+        });
+        glfwSetScrollCallback(window.getWindowHandle(), (windowHandle, xOffset, yOffset) ->{
+            scrollAmount = yOffset;
         });
     }
 
@@ -43,8 +47,12 @@ public class MouseInput {
         return displVec;
     }
 
+    /**
+     * Get the location of the mouse.  Returns the location right now as a new object, not a reference to the class variable.
+     * @return Current location of the mouse curser
+     */
     public Vector2d getCurrentPos() {
-        return currentPos;
+        return new Vector2d(currentPos.x, currentPos.y);
     }
 
     public void input(Window window) {
@@ -66,6 +74,18 @@ public class MouseInput {
         previousPos.y = currentPos.y;
     }
 
+    /**
+     * Current setup captures the latest input, button presses change on a per frame basis, but scroll wheel does not,
+     * so we need to clear it to 0 regularly so that it doesn't get "stuck"
+     */
+    public void clearScrollInput(){
+        this.scrollAmount = 0;
+    }
+
+    public double getScrollAmount() {
+        return scrollAmount;
+    }
+
     public boolean isLeftButtonPressed() {
         return leftButtonPressed;
     }
@@ -73,5 +93,6 @@ public class MouseInput {
     public boolean isRightButtonPressed() {
         return rightButtonPressed;
     }
+
 }
 
