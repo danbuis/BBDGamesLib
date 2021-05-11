@@ -1,9 +1,6 @@
 package TestsGeometry2d;
 
-import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
-import BBDGameLibrary.Geometry2d.BBDPoint;
-import BBDGameLibrary.Geometry2d.BBDPolygon;
-import BBDGameLibrary.Geometry2d.BBDSegment;
+import BBDGameLibrary.Geometry2d.*;
 import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
 import BBDGameLibrary.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -223,5 +220,28 @@ public class TestBBDGeometryUtils {
         BBDPolygon testPoly = new BBDPolygon(testList);
 
         assertEquals(testPoly, BBDGeometryUtils.createPolygonIntersection(controlPolygon, widePoly));
+    }
+
+    @Test
+    public void testOffsetWithRadius(){
+        BBDPolygon square = TestUtils.buildSquare();
+        BBDPolygon squareReverse = TestUtils.buildSquare();
+
+        square.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
+        squareReverse.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+
+        try {
+            //angle is a smidge more than 45, so we will for sure only have 1 per corner
+            BBDPolygon offset = BBDGeometryUtils.offsetPolygonWithRadius(square, 1, 7);
+            assertEquals(12, offset.getPoints().size());
+
+            BBDPolygon offsetReverse = BBDGeometryUtils.offsetPolygonWithRadius(squareReverse, 1, 7);
+            assertEquals(12, offsetReverse.getPoints().size());
+
+
+
+        } catch (ParallelLinesException e) {
+            e.printStackTrace();
+        }
     }
 }

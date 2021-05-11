@@ -1,6 +1,7 @@
 package BBDGameLibrary.OpenGL;
 
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
 import java.util.HashMap;
@@ -72,6 +73,15 @@ public class ShaderProgram {
             glUniformMatrix4fv(uniforms.get(uniformName), false,
                     value.get(stack.mallocFloat(16)));
         }
+    }
+
+    /**
+     * Assign a color to a uniform
+     * @param uniformName Name of the uniform
+     * @param color 4 floats for the color.  Follows the format RGBA.
+     */
+    public void setUniform(String uniformName, float[] color){
+        glUniform4fv(uniforms.get(uniformName), color);
     }
 
     /**

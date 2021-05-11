@@ -122,13 +122,17 @@ public class BBDPoint implements BBDGeometry{
      * 0 degrees is east on the screen, north is 90 degrees, west is +180 degrees,
      * and south is -90 degrees
      * @param otherPoint The other point to measure to
-     * @return angle to that point in degrees
+     * @return angle to that point in radians
      */
     public float angleToOtherPoint(BBDPoint otherPoint){
         float deltaX = otherPoint.xLoc - this.xLoc;
         float deltaY = otherPoint.yLoc - this.yLoc;
 
         return (float) Math.atan2(deltaY, deltaX);
+    }
+
+    public float angleToOtherPointDegrees(BBDPoint otherPoint){
+        return (float) (180 / Math.PI * angleToOtherPoint(otherPoint));
     }
 
     /**
