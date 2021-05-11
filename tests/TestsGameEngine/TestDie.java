@@ -24,6 +24,9 @@ public class TestDie {
 
         test.setToFace(99);
         assertEquals(2, test.getCurrentFace());
+
+        assertTrue(test.setToFace(2));
+        assertFalse(test.setToFace(99));
     }
 
     @Test

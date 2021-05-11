@@ -74,7 +74,7 @@ public class BBDPolygon implements BBDGeometry{
         this.segments = segments;
     }
 
-    BBDPolygon copyPolygon(){
+    public BBDPolygon copyPolygon(){
         ArrayList<BBDPoint> copyList = new ArrayList<>();
         for(BBDPoint point : this.points){
             copyList.add(new BBDPoint(point));

@@ -57,7 +57,7 @@ public class GameItem2d extends GameItem{
      * @param mesh Mesh object to be rendered to the screen
      * @param shaderProgram Shader Program to be used to render this object
      * @param shape BBDPolygon object to be used as the shape
-     * @param layer what layer to draw the shape on. Higher numbers are further back and will be overlapped by more items
+     * @param layer what layer to draw the shape on. Higher numbers are further back
      * @param shapeInteracts flag to denote if this shape needs to interact with other shapes.  If not, then we can bypass
      *                       lots of logic keeping the shape updated with its position in world space.
      */
