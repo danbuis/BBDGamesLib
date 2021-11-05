@@ -1,7 +1,7 @@
 package TestsGameEngine;
 
 import BBDGameLibrary.GameEngine.GameItem;
-import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDGeometryHelpers;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.TestUtils;
 import org.joml.Vector3f;
@@ -29,7 +29,7 @@ public class TestGameItem {
         //check object ids
         assertNotSame(duplicate, original);
         //check properties
-        assertTrue(duplicate.equals(original, BBDGeometryUtils.ALLOWABLE_DELTA));
+        assertTrue(duplicate.equals(original, BBDGeometryHelpers.ALLOWABLE_DELTA));
     }
 
     // test to check that translation works

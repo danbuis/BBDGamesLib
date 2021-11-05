@@ -2,11 +2,9 @@ package BBDGameLibrary.Geometry2d;
 
 import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 public class BBDPolygon implements BBDGeometry{
 
@@ -94,7 +92,7 @@ public class BBDPolygon implements BBDGeometry{
 
         boolean done = false;
         BBDPoint pointToRemove = null;
-        float zeroLengthThreshold = BBDGeometryUtils.ALLOWABLE_DELTA * BBDGeometryUtils.ALLOWABLE_DELTA;
+        float zeroLengthThreshold = BBDGeometryHelpers.ALLOWABLE_DELTA * BBDGeometryHelpers.ALLOWABLE_DELTA;
 
         while(!done){
             for (int i = 0; i < returnPolygon.points.size(); i++){
@@ -107,7 +105,7 @@ public class BBDPolygon implements BBDGeometry{
                 float slope1 = returnPolygon.segments.get(i).slopeInDegrees();
                 float slope2 = returnPolygon.segments.get((i + 1) % returnPolygon.segments.size()).slopeInDegrees();
 
-                if(Math.abs(slope1 - slope2) < BBDGeometryUtils.ALLOWABLE_DELTA_COARSE){
+                if(Math.abs(slope1 - slope2) < BBDGeometryHelpers.ALLOWABLE_DELTA_COARSE){
                     pointToRemove = returnPolygon.segments.get(i).getEndPoint();
                     break;
                 }
@@ -433,11 +431,11 @@ public class BBDPolygon implements BBDGeometry{
         float angleDiff2 = angle1 - angle2;
 
         if(angle1 > angle2){
-            if(angleDiff2 > Math.PI) return BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON;
-            else return BBDGeometryUtils.CLOCKWISE_POLYGON;
+            if(angleDiff2 > Math.PI) return BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON;
+            else return BBDGeometryHelpers.CLOCKWISE_POLYGON;
         } else{
-            if (angleDiff1 > Math.PI) return BBDGeometryUtils.CLOCKWISE_POLYGON;
-            else return BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON;
+            if (angleDiff1 > Math.PI) return BBDGeometryHelpers.CLOCKWISE_POLYGON;
+            else return BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON;
         }
 
     }
@@ -723,7 +721,7 @@ public class BBDPolygon implements BBDGeometry{
                 }
             }
         }
-        returnPoly.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+        returnPoly.enforceDirectionality(BBDGeometryHelpers.CLOCKWISE_POLYGON);
         return returnPoly;
     }
 

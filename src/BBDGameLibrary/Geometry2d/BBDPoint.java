@@ -160,8 +160,8 @@ public class BBDPoint implements BBDGeometry{
             return false;
         }
         BBDPoint otherPoint = (BBDPoint)other;
-        return (Math.abs(this.xLoc - otherPoint.xLoc) < BBDGeometryUtils.ALLOWABLE_DELTA
-                && Math.abs(this.yLoc - otherPoint.yLoc) < BBDGeometryUtils.ALLOWABLE_DELTA);
+        return (Math.abs(this.xLoc - otherPoint.xLoc) < BBDGeometryHelpers.ALLOWABLE_DELTA
+                && Math.abs(this.yLoc - otherPoint.yLoc) < BBDGeometryHelpers.ALLOWABLE_DELTA);
     }
 
     private void validateCoordinates(){

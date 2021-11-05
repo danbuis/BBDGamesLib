@@ -50,16 +50,16 @@ public class TestSelection {
 
         GameItem selectedItem = null;
 
-        selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
+        selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0.00001f);
 
         assertEquals(item, selectedItem);
 
         item.setPosition(400,400,0);
-        selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
+        selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertNull(selectedItem);
 
         item.setPosition(0,0,0);
-        selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
+        selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertEquals(item, selectedItem);
     }
 
@@ -81,11 +81,11 @@ public class TestSelection {
         System.out.println(item.getMeshVerticesRealLocations()[1]);
         System.out.println(item.getMeshVerticesRealLocations()[2]);
         System.out.println(item.getMeshVerticesRealLocations()[3]);
-        selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0);
+        selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0);
         assertEquals(item, selectedItem);
 
         item.setRotation(0,0, (float)Math.PI/4);
-        selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
+        selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertNull(selectedItem);
     }
 
@@ -104,7 +104,7 @@ public class TestSelection {
         item2.setPosition(2,0,0);
 
         GameItem selectedItem = null;
-        selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
+        selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertEquals(item, selectedItem);
     }
 
@@ -123,11 +123,11 @@ public class TestSelection {
         item2.setPosition(0,0,-1);
 
         GameItem selectedItem = null;
-        selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
+        selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertEquals(item, selectedItem);
 
         item.setPosition(400,400,0);
-        selectedItem = detector.selectItem(itemList, window, new Vector2d(100,100), camera, 0.00001f);
+        selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertEquals(item2, selectedItem);
     }
 

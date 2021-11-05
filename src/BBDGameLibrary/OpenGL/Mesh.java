@@ -1,6 +1,6 @@
 package BBDGameLibrary.OpenGL;
 
-import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDGeometryHelpers;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import org.joml.Vector3f;
@@ -109,7 +109,7 @@ public class Mesh {
      */
     public static int[] buildIndices(BBDPolygon inputShape){
         ArrayList<BBDPoint> points = inputShape.getPoints();
-        BBDPolygon[] triangles = inputShape.decomposeIntoTriangles(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
+        BBDPolygon[] triangles = inputShape.decomposeIntoTriangles(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON);
         int[] output = new int[3 * triangles.length];
         for (int tri = 0; tri < triangles.length; tri++){
             for (int vert = 0; vert < 3; vert++){

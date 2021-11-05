@@ -1,6 +1,6 @@
 package TestsGeometry2d;
 
-import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDGeometryHelpers;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDSegment;
 import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
@@ -128,17 +128,17 @@ public class TestBBDSegment {
         assertEquals(0, horizontal.slopeInRadians());
 
         BBDSegment vertical = this.buildVertical();
-        assertEquals(Math.PI/2, vertical.slopeInRadians(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(Math.PI/2, vertical.slopeInRadians(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         BBDSegment angled1 = this.buildAngleOne();
-        assertEquals(Math.PI/4, angled1.slopeInRadians(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(Math.PI/4, angled1.slopeInRadians(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         BBDSegment angled2 = this.buildAngleTwo();
-        assertEquals(Math.PI/-4, angled2.slopeInRadians(),BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(Math.PI/-4, angled2.slopeInRadians(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         //test that slope is direction agnostic
         angled2.rotate((float) Math.PI);
-        assertEquals(Math.PI/-4, angled2.slopeInRadians(),BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(Math.PI/-4, angled2.slopeInRadians(), BBDGeometryHelpers.ALLOWABLE_DELTA);
     }
 
     @Test
@@ -147,17 +147,17 @@ public class TestBBDSegment {
         assertEquals(0, horizontal.slopeInDegrees());
 
         BBDSegment vertical = this.buildVertical();
-        assertEquals(90, vertical.slopeInDegrees(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(90, vertical.slopeInDegrees(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         BBDSegment angled1 = this.buildAngleOne();
-        assertEquals(45, angled1.slopeInDegrees(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(45, angled1.slopeInDegrees(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         BBDSegment angled2 = this.buildAngleTwo();
-        assertEquals(-45, angled2.slopeInDegrees(),BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-45, angled2.slopeInDegrees(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         //test that slope is direction agnostic
         angled2.rotate((float) Math.PI);
-        assertEquals(-45, angled2.slopeInDegrees(),BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-45, angled2.slopeInDegrees(), BBDGeometryHelpers.ALLOWABLE_DELTA);
     }
 
     @Test
@@ -225,23 +225,23 @@ public class TestBBDSegment {
         BBDSegment testSeg = this.buildVertical();
 
         BBDPoint point1 = new BBDPoint(1,0);
-        assertEquals(0, testSeg.distanceSquaredToPoint(point1), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, testSeg.distanceSquaredToPoint(point1), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point1a = new BBDPoint(1, 0.6f);
-        assertEquals(0, testSeg.distanceSquaredToPoint(point1a), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, testSeg.distanceSquaredToPoint(point1a), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point2 = new BBDPoint(2, 0.5f);
-        assertEquals(1, testSeg.distanceSquaredToPoint(point2), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, testSeg.distanceSquaredToPoint(point2), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point3 = new BBDPoint(1,4);
-        assertEquals(9, testSeg.distanceSquaredToPoint(point3), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, testSeg.distanceSquaredToPoint(point3), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         testSeg = this.buildVertical();
         BBDPoint point4 = new BBDPoint(5,5);
-        assertEquals(32, testSeg.distanceSquaredToPoint(point4), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(32, testSeg.distanceSquaredToPoint(point4), BBDGeometryHelpers.ALLOWABLE_DELTA);
     }
     
     @Test

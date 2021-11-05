@@ -1,6 +1,6 @@
 package TestsOpenGL;
 
-import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDGeometryHelpers;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
@@ -56,29 +56,29 @@ public class TestMesh {
         float[] testCoords = Mesh.buildTextureCoordinates(poly);
         assertEquals(16, testCoords.length);
 
-        assertEquals(1, testCoords[0], BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0,testCoords[1], BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, testCoords[0], BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0,testCoords[1], BBDGeometryHelpers.ALLOWABLE_DELTA);
 
-        assertEquals(1, testCoords[2], BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0.5, testCoords[3], BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(1, testCoords[2], BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0.5, testCoords[3], BBDGeometryHelpers.ALLOWABLE_DELTA);
 
-        assertEquals(0.5, testCoords[4], BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0.5, testCoords[5], BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0.5, testCoords[4], BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0.5, testCoords[5], BBDGeometryHelpers.ALLOWABLE_DELTA);
 
-        assertEquals(0.5, testCoords[6], BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, testCoords[7], BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0.5, testCoords[6], BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(1, testCoords[7], BBDGeometryHelpers.ALLOWABLE_DELTA);
 
-        assertEquals(0, testCoords[8], BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, testCoords[9], BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, testCoords[8], BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(1, testCoords[9], BBDGeometryHelpers.ALLOWABLE_DELTA);
 
-        assertEquals(0.1, testCoords[10], BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0.5, testCoords[11], BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0.1, testCoords[10], BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0.5, testCoords[11], BBDGeometryHelpers.ALLOWABLE_DELTA);
 
-        assertEquals(0.1, testCoords[12], BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0.1, testCoords[13], BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0.1, testCoords[12], BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0.1, testCoords[13], BBDGeometryHelpers.ALLOWABLE_DELTA);
 
-        assertEquals(0.5, testCoords[14], BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0, testCoords[15], BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0.5, testCoords[14], BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0, testCoords[15], BBDGeometryHelpers.ALLOWABLE_DELTA);
     }
 
     @Test

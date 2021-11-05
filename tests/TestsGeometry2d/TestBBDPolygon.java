@@ -1,10 +1,9 @@
 package TestsGeometry2d;
 
-import BBDGameLibrary.Geometry2d.BBDGeometryUtils;
+import BBDGameLibrary.Geometry2d.BBDGeometryHelpers;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.Geometry2d.BBDSegment;
-import BBDGameLibrary.Geometry2d.Exceptions.ParallelLinesException;
 import BBDGameLibrary.TestUtils;
 import org.junit.jupiter.api.Test;
 
@@ -100,8 +99,8 @@ public class TestBBDPolygon {
         BBDPolygon otherSquare = TestUtils.buildSquare();
 
         otherSquare.scaleFromPoint(new BBDPoint(-1, -1), 5);
-        assertEquals(9, otherSquare.getPoints().get(0).getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(9, otherSquare.getPoints().get(0).getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(9, otherSquare.getPoints().get(0).getXLoc(), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(9, otherSquare.getPoints().get(0).getYLoc(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
     }
 
@@ -198,8 +197,8 @@ public class TestBBDPolygon {
         // to ensure that it doesn't happen in regression.
         BBDPolygon bugged = new BBDPolygon(new ArrayList<>(Arrays.asList(new BBDPoint(-3, -2), new BBDPoint(-2, -2), new BBDPoint(-2, 0))));
         BBDPoint center = bugged.centerAverage();
-        assertEquals(-2.333333, center.getXLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(-1.333334, center.getYLoc(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(-2.333333, center.getXLoc(), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(-1.333334, center.getYLoc(), BBDGeometryHelpers.ALLOWABLE_DELTA);
         boolean test = bugged.checkPointInside(center);
         assertTrue(test);
     }
@@ -208,10 +207,10 @@ public class TestBBDPolygon {
     public void testArea() {
         BBDPolygon square = TestUtils.buildSquare();
         //check basic method
-        assertEquals(4, square.area(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(4, square.area(), BBDGeometryHelpers.ALLOWABLE_DELTA);
         //check if object is modified
         square.scale(2);
-        assertEquals(16, square.area(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(16, square.area(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         //construct a square that has co-linear points on the edges.
         BBDPoint point1 = new BBDPoint(1, 1);
@@ -224,12 +223,12 @@ public class TestBBDPolygon {
         BBDPoint point45 = new BBDPoint(0, 1);
 
         ArrayList<BBDPoint> points = new ArrayList<>(Arrays.asList(point1, point15, point2, point25, point3, point35, point4, point45));
-        assertEquals(4, new BBDPolygon(points).area(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(4, new BBDPolygon(points).area(), BBDGeometryHelpers.ALLOWABLE_DELTA);
 
         //make a concave polygon, and make sure that the first 3 points make a triangle NOT inside
         point2 = new BBDPoint(0, 0);
         ArrayList<BBDPoint> points2 = new ArrayList<>(Arrays.asList(point15, point2, point25, point3, point35, point4, point45, point1));
-        assertEquals(3, new BBDPolygon(points2).area(), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(3, new BBDPolygon(points2).area(), BBDGeometryHelpers.ALLOWABLE_DELTA);
     }
 
     @Test
@@ -371,17 +370,17 @@ public class TestBBDPolygon {
         BBDPolygon cw2 = new BBDPolygon(new ArrayList<>(Arrays.asList(point2, point3, point1)));
         BBDPolygon cw3 = new BBDPolygon(new ArrayList<>(Arrays.asList(point3, point1, point2)));
 
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw1.determineDirectionality());
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw2.determineDirectionality());
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw3.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, cw1.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, cw2.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, cw3.determineDirectionality());
 
         BBDPolygon ccw1 = new BBDPolygon(new ArrayList<>(Arrays.asList(point3, point2, point1)));
         BBDPolygon ccw2 = new BBDPolygon(new ArrayList<>(Arrays.asList(point2, point1, point3)));
         BBDPolygon ccw3 = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point3, point2)));
 
-        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw1.determineDirectionality());
-        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw2.determineDirectionality());
-        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw3.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON, ccw1.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON, ccw2.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON, ccw3.determineDirectionality());
     }
 
     @Test
@@ -394,17 +393,17 @@ public class TestBBDPolygon {
         BBDPolygon cw2 = new BBDPolygon(new ArrayList<>(Arrays.asList(point2, point3, point1)));
         BBDPolygon cw3 = new BBDPolygon(new ArrayList<>(Arrays.asList(point3, point1, point2)));
 
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw1.determineDirectionality());
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw2.determineDirectionality());
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, cw3.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, cw1.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, cw2.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, cw3.determineDirectionality());
 
         BBDPolygon ccw1 = new BBDPolygon(new ArrayList<>(Arrays.asList(point3, point2, point1)));
         BBDPolygon ccw2 = new BBDPolygon(new ArrayList<>(Arrays.asList(point2, point1, point3)));
         BBDPolygon ccw3 = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point3, point2)));
 
-        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw1.determineDirectionality());
-        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw2.determineDirectionality());
-        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, ccw3.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON, ccw1.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON, ccw2.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON, ccw3.determineDirectionality());
     }
 
     @Test
@@ -416,30 +415,30 @@ public class TestBBDPolygon {
         BBDPolygon polygon = new BBDPolygon(new ArrayList<>(Arrays.asList(point1, point2, point3)));
 
         //test beforehand
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, polygon.determineDirectionality());
 
         //check that it doesn't change anything
-        polygon.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
+        polygon.enforceDirectionality(BBDGeometryHelpers.CLOCKWISE_POLYGON);
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, polygon.determineDirectionality());
 
         //try to change it
-        polygon.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
-        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, polygon.determineDirectionality());
+        polygon.enforceDirectionality(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON);
+        assertEquals(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON, polygon.determineDirectionality());
 
         //try to leave it
-        polygon.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
-        assertEquals(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON, polygon.determineDirectionality());
+        polygon.enforceDirectionality(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON);
+        assertEquals(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON, polygon.determineDirectionality());
 
         //change it back
-        polygon.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
+        polygon.enforceDirectionality(BBDGeometryHelpers.CLOCKWISE_POLYGON);
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, polygon.determineDirectionality());
 
         //try some invalid values
         polygon.enforceDirectionality(-3);
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, polygon.determineDirectionality());
 
         polygon.enforceDirectionality(45);
-        assertEquals(BBDGeometryUtils.CLOCKWISE_POLYGON, polygon.determineDirectionality());
+        assertEquals(BBDGeometryHelpers.CLOCKWISE_POLYGON, polygon.determineDirectionality());
     }
 
     @Test
@@ -475,21 +474,21 @@ public class TestBBDPolygon {
         BBDSegment crosses = new BBDSegment(new BBDPoint(-4, 0), new BBDPoint(4, 0));
         BBDSegment separate1 = new BBDSegment(new BBDPoint(-4, 2), new BBDPoint(4, 2));
 
-        assertEquals(0, square.distanceSquaredToSegment(adjacentShorter), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0, square.distanceSquaredToSegment(adjacentLonger), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0, square.distanceSquaredToSegment(contains), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0, square.distanceSquaredToSegment(crosses), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(1, square.distanceSquaredToSegment(separate1), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToSegment(adjacentShorter), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToSegment(adjacentLonger), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToSegment(contains), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToSegment(crosses), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(1, square.distanceSquaredToSegment(separate1), BBDGeometryHelpers.ALLOWABLE_DELTA);
     }
 
     @Test
     public void testDistanceToPoint() {
         BBDPolygon square = TestUtils.buildSquare();
 
-        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(0, 0)), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(1, 1)), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(0, 1)), BBDGeometryUtils.ALLOWABLE_DELTA);
-        assertEquals(18, square.distanceSquaredToPoint(new BBDPoint(4, 4)), BBDGeometryUtils.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(0, 0)), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(1, 1)), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(0, square.distanceSquaredToPoint(new BBDPoint(0, 1)), BBDGeometryHelpers.ALLOWABLE_DELTA);
+        assertEquals(18, square.distanceSquaredToPoint(new BBDPoint(4, 4)), BBDGeometryHelpers.ALLOWABLE_DELTA);
     }
 
     @Test
@@ -498,8 +497,8 @@ public class TestBBDPolygon {
         BBDPolygon square2 = TestUtils.buildSquare();
         BBDPolygon square3 = TestUtils.buildSquare();
         BBDPolygon square4 = TestUtils.buildSquare();
-        square3.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
-        square4.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+        square3.enforceDirectionality(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON);
+        square4.enforceDirectionality(BBDGeometryHelpers.CLOCKWISE_POLYGON);
 
         assertEquals(square1, square1);
         assertEquals(square2, square1);
@@ -647,11 +646,11 @@ public class TestBBDPolygon {
     @Test
     public void testDirectionalityOfSegments() {
         BBDPolygon square1 = TestUtils.buildSquare();
-        square1.enforceDirectionality(BBDGeometryUtils.CLOCKWISE_POLYGON);
+        square1.enforceDirectionality(BBDGeometryHelpers.CLOCKWISE_POLYGON);
         assertEquals(new BBDPoint(1, 1), square1.getSegments().get(0).getStartPoint());
         assertEquals(new BBDPoint(1, -1), square1.getSegments().get(0).getEndPoint());
 
-        square1.enforceDirectionality(BBDGeometryUtils.COUNTERCLOCKWISE_POLYGON);
+        square1.enforceDirectionality(BBDGeometryHelpers.COUNTERCLOCKWISE_POLYGON);
         assertEquals(new BBDPoint(-1, -1), square1.getSegments().get(2).getStartPoint());
         assertEquals(new BBDPoint(-1, 1), square1.getSegments().get(2).getEndPoint());
     }

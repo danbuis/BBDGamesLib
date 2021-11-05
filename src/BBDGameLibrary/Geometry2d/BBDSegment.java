@@ -184,7 +184,7 @@ public class BBDSegment implements BBDGeometry{
         float seg1rad = seg1.slopeInRadians();
         float seg2rad = seg2.slopeInRadians();
         float degreeDif = Math.abs(seg1deg - seg2deg);
-        boolean condition1 = (degreeDif<= BBDGeometryUtils.ALLOWABLE_DELTA_COARSE);
+        boolean condition1 = (degreeDif<= BBDGeometryHelpers.ALLOWABLE_DELTA_COARSE);
         boolean sameSlope =  (condition1
                 || ((1.57079-Math.abs(seg1rad) <= 0.001) && (1.57079-Math.abs(seg2rad) <= 0.001)));
 
@@ -216,10 +216,10 @@ public class BBDSegment implements BBDGeometry{
             return true;
         }else{
             //apply a delta around the min and max due to floating point math drift
-            maxX += BBDGeometryUtils.ALLOWABLE_DELTA;
-            maxY += BBDGeometryUtils.ALLOWABLE_DELTA;
-            minX -= BBDGeometryUtils.ALLOWABLE_DELTA;
-            minY -= BBDGeometryUtils.ALLOWABLE_DELTA;
+            maxX += BBDGeometryHelpers.ALLOWABLE_DELTA;
+            maxY += BBDGeometryHelpers.ALLOWABLE_DELTA;
+            minX -= BBDGeometryHelpers.ALLOWABLE_DELTA;
+            minY -= BBDGeometryHelpers.ALLOWABLE_DELTA;
 
             return withinSegmentBounds(point, maxX, minX, maxY, minY);
         }
@@ -251,7 +251,7 @@ public class BBDSegment implements BBDGeometry{
      * @return the point at which these 2 segments would intersect
      */
     public BBDPoint interceptPoint(BBDSegment otherSegment) throws ParallelLinesException{
-        if(BBDGeometryUtils.checkParallelSegments(this, otherSegment)){
+        if(BBDGeometryHelpers.checkParallelSegments(this, otherSegment)){
             throw new ParallelLinesException("Can not calculate an intercept point between 2 parallel lines: "
                     + this.toString()+ " and "+ otherSegment.toString());
         }

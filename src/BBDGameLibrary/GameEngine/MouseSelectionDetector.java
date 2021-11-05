@@ -36,7 +36,7 @@ public class MouseSelectionDetector extends CameraSelectionDetector {
      * @param marginOfError How close to parallel to the dir do you want to have count as an intersection
      * @return Closest GameItem that is intersected
      */
-    public GameItem selectItem(ArrayList<GameItem> itemList, Window window, Vector2d mousePos, Camera camera, float marginOfError) {
+    public GameItem selectItemByMouse(ArrayList<GameItem> itemList, Window window, Vector2d mousePos, Camera camera, float marginOfError) {
 
         Vector3f mouseDir = getMouseDir(window, mousePos, camera);
 
