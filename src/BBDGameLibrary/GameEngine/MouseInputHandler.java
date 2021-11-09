@@ -48,7 +48,7 @@ public class MouseInputHandler extends CameraSelectionDetector {
      * @param intersectionPlane Z-plane we are calculating the intersection with
      * @return
      */
-    public Vector2d mouseLocationOnPlane(Camera camera, Vector3d mouseDir, float intersectionPlane){
+    public Vector2d mouseLocationOnPlane(Camera camera, Vector3f mouseDir, float intersectionPlane){
         float deltaZ = camera.getPosition().z - intersectionPlane;
 
         return new Vector2d(deltaZ * mouseDir.x, deltaZ * mouseDir.y);
