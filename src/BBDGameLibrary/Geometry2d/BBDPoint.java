@@ -1,6 +1,7 @@
 package BBDGameLibrary.Geometry2d;
 
 import BBDGameLibrary.Geometry2d.Exceptions.CoordinateOverflowException;
+import org.joml.Vector2d;
 
 public class BBDPoint implements BBDGeometry{
     /**
@@ -21,6 +22,11 @@ public class BBDPoint implements BBDGeometry{
     public BBDPoint(BBDPoint toCopy) {
         this.xLoc = toCopy.xLoc;
         this.yLoc = toCopy.yLoc;
+    }
+
+    public BBDPoint(Vector2d vector){
+        this.xLoc = (float)vector.x;
+        this.yLoc = (float)vector.y;
     }
 
     /**

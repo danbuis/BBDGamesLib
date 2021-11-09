@@ -44,6 +44,10 @@ public class Camera {
     }
 
     public Vector3f getPosition() {
+        return new Vector3f(position.x, position.y, position.z);
+    }
+
+    public Vector3f getPositionReference() {
         return position;
     }
 

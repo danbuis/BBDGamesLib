@@ -2,17 +2,14 @@ package BBDGameLibrary.GameEngine;
 
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;
-import org.joml.Matrix4f;
-import org.joml.Vector2d;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
 
 import java.util.ArrayList;
 
 /**
  * A class to select items using the mouse
  */
-public class MouseSelectionDetector extends CameraSelectionDetector {
+public class MouseInputHandler extends CameraSelectionDetector {
 
     private final Matrix4f invProjectionMatrix;
 
@@ -20,7 +17,7 @@ public class MouseSelectionDetector extends CameraSelectionDetector {
 
     private final Vector4f tmpVec;
 
-    public MouseSelectionDetector() {
+    public MouseInputHandler() {
         super();
         invProjectionMatrix = new Matrix4f();
         invViewMatrix = new Matrix4f();
@@ -44,7 +41,23 @@ public class MouseSelectionDetector extends CameraSelectionDetector {
     }
 
     /**
+     * Find out where the click location corresponds to on the given  plane.  Intended for getting coordinates in
+     * top down type use cases.
+     * @param camera camera object being used for rendering and such right now
+     * @param mouseDir vector of the mouse click relative to the camera
+     * @param intersectionPlane Z-plane we are calculating the intersection with
+     * @return
+     */
+    public Vector2d mouseLocationOnPlane(Camera camera, Vector3d mouseDir, float intersectionPlane){
+        float deltaZ = camera.getPosition().z - intersectionPlane;
+
+        return new Vector2d(deltaZ * mouseDir.x, deltaZ * mouseDir.y);
+    }
+
+    /**
      * Get the ray projected from the given Camera object, through the mouse curser, and out to infinity.
+     * The Z component relative to the camera is always 1, and the other components reflect the real distance
+     * traveled for each Z component.
      * @param window Window object being used for rendering
      * @param mousePos Position of the mouse curser
      * @param camera Camera object to be used for selecting objects

@@ -2,18 +2,16 @@ package TestsGameEngine;
 
 import BBDGameLibrary.GameEngine.Camera;
 import BBDGameLibrary.GameEngine.GameItem;
-import BBDGameLibrary.GameEngine.MouseSelectionDetector;
-import BBDGameLibrary.Geometry2d.BBDPoint;
+import BBDGameLibrary.GameEngine.MouseInputHandler;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.Mesh;
 import BBDGameLibrary.OpenGL.Window;
 import BBDGameLibrary.TestUtils;
 import org.joml.Vector2d;
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +20,7 @@ public class TestSelection {
     Window window = null;
     boolean windowInit = false;
     Camera camera = new Camera();
-    MouseSelectionDetector detector = new MouseSelectionDetector();
+    MouseInputHandler detector = new MouseInputHandler();
 
     public void initWindow(){
         window = new Window("test", 200, 200, true, new Window.WindowOptions());
@@ -129,6 +127,31 @@ public class TestSelection {
         item.setPosition(400,400,0);
         selectedItem = detector.selectItemByMouse(itemList, window, new Vector2d(100,100), camera, 0.00001f);
         assertEquals(item2, selectedItem);
+    }
+
+    @Test
+    public void testMouseClickOnPlane(){
+        if(!windowInit){
+            initWindow();
+        }
+        camera.setPosition(0,0,1000);
+        MouseInputHandler detector = new MouseInputHandler();
+
+        //check straight down
+        Vector3d mouseDir = new Vector3d(0,0,1);
+        assertEquals(new Vector2d(0,0), detector.mouseLocationOnPlane(camera, mouseDir, 0));
+        assertEquals(new Vector2d(0,0), detector.mouseLocationOnPlane(camera, mouseDir, -100));
+
+        //check 45 North
+        mouseDir = new Vector3d(0,0.5,1);
+        assertEquals(new Vector2d(0,500), detector.mouseLocationOnPlane(camera, mouseDir, 0));
+        assertEquals(new Vector2d(0,550), detector.mouseLocationOnPlane(camera, mouseDir, -100));
+
+        //check 45 NE
+        mouseDir = new Vector3d(0.5,0.5,1);
+        assertEquals(new Vector2d(500,500), detector.mouseLocationOnPlane(camera, mouseDir, 0));
+        assertEquals(new Vector2d(550,550), detector.mouseLocationOnPlane(camera, mouseDir, -100));
+
     }
 
 }
