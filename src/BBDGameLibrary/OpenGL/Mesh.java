@@ -103,6 +103,29 @@ public class Mesh {
     }
 
     /**
+     * Texture coordinates are created with the assumption that the shape should go to the very edges of the given texture.
+     * Remember that 0,0 is the upper left corner of the image file, and 1,1 is the lower right.
+     * @param inputShape shape to use for a mesh.
+     * @return array of floats for texture coordinates
+     */
+    public static float[] buildTextureCoordinates(BBDPolygon inputShape, float originX, float originY, float oppositeX, float oppositeY){
+        float width =  originX - oppositeX;
+        float height = originY - oppositeY;
+        ArrayList<BBDPoint> points = inputShape.getPoints();
+        float[] textureCoordinates = new float[2*points.size()];
+        float deltaX;
+        float deltaY;
+        for(int i = 0; i< points.size(); i++){
+            deltaY = oppositeY - points.get(i).getYLoc();
+            deltaX = points.get(i).getXLoc() - originX;
+
+            textureCoordinates[2 * i] = deltaX/width;
+            textureCoordinates[2 * i+1] = deltaY/height;
+        }
+        return textureCoordinates;
+    }
+
+    /**
      * Build indices array for the mesh
      * @param inputShape BBDPolygon to use to create a mesh
      * @return indices array
@@ -176,7 +199,6 @@ public class Mesh {
         IntBuffer indicesBuffer = null;
 
         this.populateVertexData(positions, indices);
-
         try {
             this.texture = texture;
             vboIdList = new ArrayList<>();

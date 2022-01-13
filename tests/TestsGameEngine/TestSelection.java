@@ -9,6 +9,7 @@ import BBDGameLibrary.OpenGL.Window;
 import BBDGameLibrary.TestUtils;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -138,17 +139,17 @@ public class TestSelection {
         MouseInputHandler detector = new MouseInputHandler();
 
         //check straight down
-        Vector3d mouseDir = new Vector3d(0,0,1);
+        Vector3f mouseDir = new Vector3f(0,0,1);
         assertEquals(new Vector2d(0,0), detector.mouseLocationOnPlane(camera, mouseDir, 0));
         assertEquals(new Vector2d(0,0), detector.mouseLocationOnPlane(camera, mouseDir, -100));
 
         //check 45 North
-        mouseDir = new Vector3d(0,0.5,1);
+        mouseDir = new Vector3f(0,0.5f,1);
         assertEquals(new Vector2d(0,500), detector.mouseLocationOnPlane(camera, mouseDir, 0));
         assertEquals(new Vector2d(0,550), detector.mouseLocationOnPlane(camera, mouseDir, -100));
 
         //check 45 NE
-        mouseDir = new Vector3d(0.5,0.5,1);
+        mouseDir = new Vector3f(0.5f,0.5f,1);
         assertEquals(new Vector2d(500,500), detector.mouseLocationOnPlane(camera, mouseDir, 0));
         assertEquals(new Vector2d(550,550), detector.mouseLocationOnPlane(camera, mouseDir, -100));
 
