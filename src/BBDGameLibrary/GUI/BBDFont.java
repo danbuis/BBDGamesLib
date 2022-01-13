@@ -11,11 +11,29 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * Class that contains all the assets to create text based components.  Requires what amounts to a bitmap and a
+ * csv file describing the bitmap and what bits can be found where, similar to a spritesheet.
+ */
 public class BBDFont {
 
+    /**
+     * Map of key-value pairs derived from the metadata
+     */
     HashMap<String, String> fontDataTable;
-    HashMap<Integer, Mesh> charMap;
 
+    /**
+     * Map of char codes to mesh objects, this is what is actually used to build text objects
+     */
+    HashMap<Integer, Mesh> charMap = new HashMap<>();
+
+
+    /**
+     * Constructor
+     * @param imageFile file containing the bitmap of the font
+     * @param fontData metadata about the font
+     * @throws FileNotFoundException exception if file name is invalid
+     */
     public BBDFont (String imageFile, String fontData) throws FileNotFoundException {
         //Bring in font data
         fontDataTable = new HashMap<>();
@@ -42,10 +60,10 @@ public class BBDFont {
         int cellHeight = Integer.parseInt(fontDataTable.get("Cell Height"));
         int imageWidth = Integer.parseInt(fontDataTable.get("Image Width"));
         int imageHeight = Integer.parseInt(fontDataTable.get("Image Height"));
-        for (int charCode = 32; charCode<120; charCode++) {
+        for (int charCode = startIndex; charCode<180; charCode++) {
             int charCodeDelta = charCode - startIndex;
-            int col = charCodeDelta % ((int) Math.floor(imageWidth / cellWidth));
-            int row = charCodeDelta / (int) Math.floor(imageWidth / cellWidth);
+            int col = charCodeDelta % ((int) Math.floor((float)imageWidth / cellWidth));
+            int row = charCodeDelta / (int) Math.floor((float)imageWidth / cellWidth);
 
             Vector2i charOrigins = new Vector2i(col * cellWidth, row * cellHeight);
             Vector2i charOpposite = new Vector2i(charOrigins.x + Integer.parseInt(fontDataTable.get("Char " + charCode + " Base Width")), charOrigins.y + cellHeight);
@@ -54,14 +72,15 @@ public class BBDFont {
             float[] positions = Mesh.buildMeshPositions(poly);
             int[] indices = Mesh.buildIndices(poly);
             float[] textureCoords = new float[8];
-            textureCoords[0] = charOrigins.x / imageWidth;
-            textureCoords[1] = charOrigins.y / imageHeight;
-            textureCoords[2] = charOpposite.x / imageWidth;
-            textureCoords[3] = charOrigins.y / imageHeight;
-            textureCoords[4] = charOpposite.x / imageWidth;
-            textureCoords[5] = charOpposite.y / imageHeight;
-            textureCoords[6] = charOrigins.x / imageWidth;
-            textureCoords[7] = charOpposite.y / imageHeight;
+
+            textureCoords[0] = (float)charOpposite.x / imageWidth;
+            textureCoords[1] = (float)charOrigins.y / imageHeight;
+            textureCoords[2] = (float)charOrigins.x / imageWidth;
+            textureCoords[3] = (float)charOrigins.y / imageHeight;
+            textureCoords[4] = (float)charOrigins.x / imageWidth;
+            textureCoords[5] = (float)charOpposite.y / imageHeight;
+            textureCoords[6] = (float)charOpposite.x / imageWidth;
+            textureCoords[7] = (float)charOpposite.y / imageHeight;
 
             Mesh charMesh = new Mesh(positions, textureCoords, indices, fontBitmap);
             charMap.put(charCode, charMesh);
