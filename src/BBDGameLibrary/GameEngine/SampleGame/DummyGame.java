@@ -1,11 +1,14 @@
 package BBDGameLibrary.GameEngine.SampleGame;
 
+import BBDGameLibrary.GUI.BBDFont;
+import BBDGameLibrary.GUI.BBDTextLine;
 import BBDGameLibrary.GameEngine.*;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.*;
 import BBDGameLibrary.Utils.ShaderPrograms;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -16,6 +19,9 @@ public class DummyGame implements GameComponent {
     private GameItem[] gameItems;
 
     private Camera camera = new Camera();
+
+    private BBDFont font;
+    private BBDTextLine text;
 
     public DummyGame() {
         renderer = new Renderer();
@@ -40,7 +46,12 @@ public class DummyGame implements GameComponent {
      */
     @Override
     public void init(Window window) {
-
+        try {
+            font = new BBDFont("resources/text/Arial_Bold_White.bmp", "resources/text/Arial_Bold_White.csv");
+            text = new BBDTextLine(font, 1, "Hi Greta!", 4000);
+        } catch(FileNotFoundException e){
+            System.out.println("font file not found : " + e);
+        }
         // Create the Mesh
         float[] positions = new float[] {
                 // V0
@@ -188,6 +199,7 @@ public class DummyGame implements GameComponent {
     public void render(Window window) {
         renderer.resetRenderer(window);
         renderer.renderArray(window, gameItems, camera);
+        text.renderTextLine(window, renderer, camera);
     }
 
     @Override
