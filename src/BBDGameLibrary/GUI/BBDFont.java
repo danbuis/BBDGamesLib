@@ -86,6 +86,7 @@ public class BBDFont {
             Mesh charMesh = new Mesh(positions, textureCoords, indices, fontBitmap);
             charMap.put(charCode, charMesh);
             polyMap.put(charCode, poly);
+
         }
     }
 }

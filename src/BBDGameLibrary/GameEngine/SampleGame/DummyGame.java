@@ -1,10 +1,14 @@
 package BBDGameLibrary.GameEngine.SampleGame;
 
+import BBDGameLibrary.GUI.BBDFont;
+import BBDGameLibrary.GUI.BBDTextLine;
 import BBDGameLibrary.GameEngine.*;
 import BBDGameLibrary.Geometry2d.BBDPoint;
 import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.*;
+import BBDGameLibrary.Utils.ShaderPrograms;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,6 +19,9 @@ public class DummyGame implements GameComponent {
     private GameItem[] gameItems;
 
     private Camera camera = new Camera();
+
+    private BBDFont font;
+    private BBDTextLine text;
 
     public DummyGame() {
         renderer = new Renderer();
@@ -39,16 +46,13 @@ public class DummyGame implements GameComponent {
      */
     @Override
     public void init(Window window) {
-<<<<<<< Updated upstream
-
-=======
         try {
             font = new BBDFont("resources/text/Arial_Bold_White.bmp", "resources/text/Arial_Bold_White.csv");
-            text = new BBDTextLine(font, 1, "Hi Gretta rose! ", 4000);
+            text = new BBDTextLine(font, 1, "Hi Player! ", 4000);
         } catch(FileNotFoundException e){
             System.out.println("font file not found : " + e);
         }
->>>>>>> Stashed changes
+
         // Create the Mesh
         float[] positions = new float[] {
                 // V0
@@ -146,7 +150,7 @@ public class DummyGame implements GameComponent {
                 4, 6, 7, 5, 4, 7,};
         Texture texture = new Texture("resources/textures/grassblock.png");
         Mesh mesh = new Mesh(positions, textCoords, indices, texture);
-        ShaderProgram exampleShader = buildShaderProgram();
+        ShaderProgram exampleShader = ShaderPrograms.TEXTURED_GENERIC;
         GameItem item1 = new DummyCube(mesh, exampleShader);
         item1.setPosition(0, 0, -2);
 
@@ -161,12 +165,8 @@ public class DummyGame implements GameComponent {
         BBDPolygon poly1 = new BBDPolygon(new BBDPoint[]{new BBDPoint(-1.5f, 0), new BBDPoint(0.5f, 2),
                 new BBDPoint(1.5f, 1), new BBDPoint(1.5f, 0), new BBDPoint(-0.5f, -2)});
         Mesh shape1 = Mesh.buildMeshFromPolygon(poly1, null);
-<<<<<<< Updated upstream
-        ShaderProgram example2 = buildSolidColorShader("dark_green");
-=======
         ShaderProgram example2 = ShaderPrograms.buildSolidColorShader();
         float[] color = {0.06f, 0.47f, 0.03f, 1.0f};
->>>>>>> Stashed changes
         GameItem2d item2 = new DummyShape2d(shape1, example2, poly1, 5000, false, 7);
         item2.addSolidColorUniform(color[0], color[1], color[2], color[3]);
         item2.translate(1.5f, 0);
@@ -177,12 +177,8 @@ public class DummyGame implements GameComponent {
         BBDPolygon poly2 = new BBDPolygon(new BBDPoint[]{new BBDPoint(0, 0), new BBDPoint(0, 2),
                 new BBDPoint(-3,2), new BBDPoint(-3,-2), new BBDPoint(-2,-2), new BBDPoint(-2,0)});
         Mesh shape2 = Mesh.buildMeshFromPolygon(poly2, null);
-<<<<<<< Updated upstream
-        ShaderProgram example3 = buildSolidColorShader("brown");
-=======
         float[] color2 = {0.46f, 0.37f, 0.24f, 1.0f};
         ShaderProgram example3 = ShaderPrograms.buildSolidColorShader();
->>>>>>> Stashed changes
         GameItem2d item3 = new DummyShape2d(shape2, example3, poly2, 5100, false, 0);
         item3.addSolidColorUniform(color2[0], color2[1], color2[2], color2[3]);
 
@@ -190,57 +186,6 @@ public class DummyGame implements GameComponent {
         gameItems = new GameItem[]{item1, item1a, item2, item3};
     }
 
-
-	/**
-     * Build a simple shader program.  Adds a fragment and vertex shader, a texture, and feeds it the appropriate uniforms.
-     * The shaders should probably be under a resources folder that is added to your projects path.  In my case in
-     * intelliJ I right clicked the resources folder and went "Mark Directory As" -> "Resources".
-     * @return a complete shader program
-     */
-    private ShaderProgram buildShaderProgram(){
-        ShaderProgram returnProgram = null;
-        try {
-            returnProgram = new ShaderProgram();
-
-            //create and attach shaders
-            returnProgram.createVertexShader(Utils.loadShaderScript("/shaders/vertex.vs"));
-            returnProgram.createFragmentShader(Utils.loadShaderScript("/shaders/fragment.fs"));
-
-            //give the shader program an id
-            returnProgram.link();
-
-            // Create uniforms for world and projection matrices and texture
-            returnProgram.createUniform("projectionMatrix");
-            returnProgram.createUniform("modelViewMatrix");
-            returnProgram.createUniform("texture_sampler");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return returnProgram;
-    }
-
-    private ShaderProgram buildSolidColorShader(String color){
-        ShaderProgram returnProgram = null;
-        try {
-            returnProgram = new ShaderProgram();
-
-            //create and attach shaders
-            returnProgram.createVertexShader(Utils.loadShaderScript("/shaders/vertex.vs"));
-            returnProgram.createFragmentShader(Utils.loadShaderScript("/shaders/"+color+".fs"));
-
-            //build and compile
-            returnProgram.link();
-
-            // Create uniforms for world and projection matrices and texture
-            returnProgram.createUniform("projectionMatrix");
-            returnProgram.createUniform("modelViewMatrix");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return returnProgram;
-    }
 
     @Override
     public void input(Window window, MouseInput mouseInput) {
@@ -259,6 +204,7 @@ public class DummyGame implements GameComponent {
     public void render(Window window) {
         renderer.resetRenderer(window);
         renderer.renderArray(window, gameItems, camera);
+        text.renderTextLine(window, renderer, camera);
     }
 
     @Override

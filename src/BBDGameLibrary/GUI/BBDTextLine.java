@@ -8,7 +8,6 @@ import BBDGameLibrary.Geometry2d.BBDPolygon;
 import BBDGameLibrary.OpenGL.*;
 import BBDGameLibrary.Utils.ShaderPrograms;
 import org.joml.Vector3f;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -105,6 +104,7 @@ public class BBDTextLine {
     public void translate(float x, float y){
         for (GameItem2d item : textMeshes) {
             item.translate(x, y);
+
         }
     }
 

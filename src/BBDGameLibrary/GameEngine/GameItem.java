@@ -135,7 +135,7 @@ public class GameItem implements GameComponent{
      */
     public void setUniforms(Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
         this.shader.setUniform("projectionMatrix", projectionMatrix);
-        this.shader.setUniform("modelViewMatrix", modelViewMatrix);
+        this.shader.setUniform("worldMatrix", modelViewMatrix);
     }
 
     public void setOptionalColorUniform(){

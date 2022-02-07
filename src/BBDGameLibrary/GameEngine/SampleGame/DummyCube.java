@@ -31,13 +31,7 @@ public class DummyCube extends GameItem {
     @Override
     public void setUniforms(Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
         this.shader.setUniform("projectionMatrix", projectionMatrix);
-<<<<<<< Updated upstream
         this.shader.setUniform("modelViewMatrix", modelViewMatrix);
-        this.shader.setUniform("texture_sampler", 0);
-=======
-        this.shader.setUniform("worldMatrix", modelViewMatrix);
-        //this.shader.setUniform("texture_sampler", 0);
->>>>>>> Stashed changes
     }
 
     /**
