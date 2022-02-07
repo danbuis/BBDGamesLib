@@ -49,6 +49,8 @@ public class GameItem implements GameComponent{
      */
     private Mesh collisionMesh;
 
+    private float[] solidColor = null;
+
     /**
      * General purpose constructor to create a GameItem.  Instantiates translation, rotation, and scale to neutral
      * values.
@@ -134,6 +136,17 @@ public class GameItem implements GameComponent{
     public void setUniforms(Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
         this.shader.setUniform("projectionMatrix", projectionMatrix);
         this.shader.setUniform("modelViewMatrix", modelViewMatrix);
+    }
+
+    public void setOptionalColorUniform(){
+        if (this.solidColor != null){
+            this.shader.setUniform("solidColor", this.solidColor);
+        }
+    }
+
+    public void addSolidColorUniform(float red, float green, float blue, float alpha){
+        float[] color = {red, green, blue, alpha};
+        this.solidColor = color;
     }
 
     /**

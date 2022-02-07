@@ -81,7 +81,7 @@ public class ShaderProgram {
      * @param color 4 floats for the color.  Follows the format RGBA.
      */
     public void setUniform(String uniformName, float[] color){
-        glUniform4fv(uniforms.get(uniformName), color);
+        glUniform4f(uniforms.get(uniformName), color[0], color[1], color[2], color[3]);
     }
 
     /**

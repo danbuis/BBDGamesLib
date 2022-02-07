@@ -94,6 +94,7 @@ public class Renderer {
         item.shader.bind();
 
         item.setUniforms(projectionMatrix, modelViewMatrix);
+        item.setOptionalColorUniform();
 
         // Render the mesh for this game item
         item.getMesh().render();
