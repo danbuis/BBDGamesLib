@@ -12,10 +12,12 @@ import java.awt.event.MouseAdapter;
 
 public class DummyShape2d extends GameItem2d {
     int rotationType;
+    float[] colors;
 
     public DummyShape2d(Mesh mesh, ShaderProgram shaderProgram, BBDPolygon shape, int layer, boolean shapeInteracts, int rotationType) {
         super(mesh, shaderProgram, shape, layer, shapeInteracts);
         this.rotationType = rotationType;
+        //this.colors = colors;
     }
 
     @Override

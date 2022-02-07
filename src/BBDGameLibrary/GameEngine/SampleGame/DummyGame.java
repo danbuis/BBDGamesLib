@@ -39,7 +39,16 @@ public class DummyGame implements GameComponent {
      */
     @Override
     public void init(Window window) {
+<<<<<<< Updated upstream
 
+=======
+        try {
+            font = new BBDFont("resources/text/Arial_Bold_White.bmp", "resources/text/Arial_Bold_White.csv");
+            text = new BBDTextLine(font, 1, "Hi Gretta rose! ", 4000);
+        } catch(FileNotFoundException e){
+            System.out.println("font file not found : " + e);
+        }
+>>>>>>> Stashed changes
         // Create the Mesh
         float[] positions = new float[] {
                 // V0
@@ -152,8 +161,14 @@ public class DummyGame implements GameComponent {
         BBDPolygon poly1 = new BBDPolygon(new BBDPoint[]{new BBDPoint(-1.5f, 0), new BBDPoint(0.5f, 2),
                 new BBDPoint(1.5f, 1), new BBDPoint(1.5f, 0), new BBDPoint(-0.5f, -2)});
         Mesh shape1 = Mesh.buildMeshFromPolygon(poly1, null);
+<<<<<<< Updated upstream
         ShaderProgram example2 = buildSolidColorShader("dark_green");
+=======
+        ShaderProgram example2 = ShaderPrograms.buildSolidColorShader();
+        float[] color = {0.06f, 0.47f, 0.03f, 1.0f};
+>>>>>>> Stashed changes
         GameItem2d item2 = new DummyShape2d(shape1, example2, poly1, 5000, false, 7);
+        item2.addSolidColorUniform(color[0], color[1], color[2], color[3]);
         item2.translate(1.5f, 0);
 
         /*
@@ -162,8 +177,14 @@ public class DummyGame implements GameComponent {
         BBDPolygon poly2 = new BBDPolygon(new BBDPoint[]{new BBDPoint(0, 0), new BBDPoint(0, 2),
                 new BBDPoint(-3,2), new BBDPoint(-3,-2), new BBDPoint(-2,-2), new BBDPoint(-2,0)});
         Mesh shape2 = Mesh.buildMeshFromPolygon(poly2, null);
+<<<<<<< Updated upstream
         ShaderProgram example3 = buildSolidColorShader("brown");
+=======
+        float[] color2 = {0.46f, 0.37f, 0.24f, 1.0f};
+        ShaderProgram example3 = ShaderPrograms.buildSolidColorShader();
+>>>>>>> Stashed changes
         GameItem2d item3 = new DummyShape2d(shape2, example3, poly2, 5100, false, 0);
+        item3.addSolidColorUniform(color2[0], color2[1], color2[2], color2[3]);
 
         //populate list of items to be rendered
         gameItems = new GameItem[]{item1, item1a, item2, item3};
